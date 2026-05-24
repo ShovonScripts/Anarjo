@@ -1,0 +1,169 @@
+<?php
+
+namespace App\Livewire\Admin;
+
+use App\Models\Book;
+use App\Models\Author;
+use App\Models\Category;
+use Livewire\Component;
+use Livewire\WithPagination;
+use Livewire\WithFileUploads;
+use Illuminate\Support\Str;
+
+class Books extends Component
+{
+    use WithPagination, WithFileUploads;
+
+    public $book_id;
+    public $title;
+    public $isbn;
+    public $author_id;
+    public $category_id;
+    public $description;
+    public $excerpt;
+    public $price;
+    public $sale_price;
+    public $stock;
+    public $cover_image;
+    public $new_cover_image;
+    public $language;
+    public $pages;
+    public $edition;
+    public $publish_date;
+    public $weight;
+    public $featured = false;
+    public $bestseller = false;
+    public $new_arrival = false;
+    public $pre_order = false;
+    public $status = 'draft';
+
+    public $search = '';
+    public $isOpen = false;
+
+    protected function rules(): array
+    {
+        return [
+            'title' => 'required|string|max:255',
+            'isbn' => 'nullable|string|max:20|unique:books,isbn,' . $this->book_id,
+            'author_id' => 'nullable|exists:authors,id',
+            'category_id' => 'nullable|exists:categories,id',
+            'description' => 'nullable|string',
+            'excerpt' => 'nullable|string|max:500',
+            'price' => 'required|numeric|min:0',
+            'sale_price' => 'nullable|numeric|min:0|lt:price',
+            'stock' => 'required|integer|min:0',
+            'new_cover_image' => 'nullable|image|max:2048',
+            'language' => 'nullable|string|max:50',
+            'pages' => 'nullable|integer|min:1',
+            'edition' => 'nullable|string|max:50',
+            'publish_date' => 'nullable|date',
+            'weight' => 'nullable|numeric|min:0',
+            'featured' => 'boolean',
+            'bestseller' => 'boolean',
+            'new_arrival' => 'boolean',
+            'pre_order' => 'boolean',
+            'status' => 'required|in:draft,published,archived',
+        ];
+    }
+
+    public function render()
+    {
+        $books = Book::with('author', 'category')
+            ->where(function ($q) {
+                $q->where('title', 'like', '%' . $this->search . '%')
+                  ->orWhere('isbn', 'like', '%' . $this->search . '%');
+            })
+            ->latest()
+            ->paginate(10);
+
+        $authors = Author::where('status', 'active')->get();
+        $categories = Category::all();
+
+        return view('livewire.admin.books', compact('books', 'authors', 'categories'))
+            ->layout('layouts.admin');
+    }
+
+    public function create()
+    {
+        $this->resetInputFields();
+        $this->isOpen = true;
+    }
+
+    public function edit($id)
+    {
+        $book = Book::findOrFail($id);
+        $this->book_id = $book->id;
+        $this->title = $book->title;
+        $this->isbn = $book->isbn;
+        $this->author_id = $book->author_id;
+        $this->category_id = $book->category_id;
+        $this->description = $book->description;
+        $this->excerpt = $book->excerpt;
+        $this->price = $book->price;
+        $this->sale_price = $book->sale_price;
+        $this->stock = $book->stock;
+        $this->cover_image = $book->cover_image;
+        $this->language = $book->language;
+        $this->pages = $book->pages;
+        $this->edition = $book->edition;
+        $this->publish_date = $book->publish_date?->format('Y-m-d');
+        $this->weight = $book->weight;
+        $this->featured = $book->featured;
+        $this->bestseller = $book->bestseller;
+        $this->new_arrival = $book->new_arrival;
+        $this->pre_order = $book->pre_order;
+        $this->status = $book->status;
+        $this->isOpen = true;
+    }
+
+    public function store()
+    {
+        $this->validate();
+
+        $data = $this->except(['book_id', 'cover_image', 'new_cover_image', 'isOpen', 'search']);
+
+        if ($this->new_cover_image) {
+            $data['cover_image'] = $this->new_cover_image->store('books', 'public');
+        }
+
+        $data['slug'] = Str::slug($this->title);
+
+        Book::updateOrCreate(['id' => $this->book_id], $data);
+
+        session()->flash('message', $this->book_id ? 'Book updated.' : 'Book created.');
+        $this->resetInputFields();
+        $this->isOpen = false;
+    }
+
+    public function delete($id)
+    {
+        Book::find($id)?->delete();
+        session()->flash('message', 'Book deleted.');
+    }
+
+    private function resetInputFields()
+    {
+        $this->book_id = null;
+        $this->title = '';
+        $this->isbn = '';
+        $this->author_id = null;
+        $this->category_id = null;
+        $this->description = '';
+        $this->excerpt = '';
+        $this->price = 0;
+        $this->sale_price = null;
+        $this->stock = 0;
+        $this->cover_image = null;
+        $this->new_cover_image = null;
+        $this->language = 'Bengali';
+        $this->pages = null;
+        $this->edition = '';
+        $this->publish_date = null;
+        $this->weight = null;
+        $this->featured = false;
+        $this->bestseller = false;
+        $this->new_arrival = false;
+        $this->pre_order = false;
+        $this->status = 'draft';
+    }
+}

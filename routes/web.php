@@ -38,6 +38,7 @@ Route::prefix('blog')->name('blog.')->group(function () {
 
 Route::prefix('events')->name('events.')->group(function () {
     Route::get('/', [EventController::class, 'index'])->name('index');
+    Route::get('/{slug}', [EventController::class, 'show'])->name('show');
 });
 
 Route::get('/publication/submit', \App\Livewire\ManuscriptForm::class)->name('publication.submit');
@@ -45,9 +46,13 @@ Route::view('/publication', 'frontend.publication')->name('publication');
 
 Route::get('/cart', \App\Livewire\Cart::class)->name('cart');
 
+Route::middleware('auth')->get('/wishlist', \App\Livewire\WishlistPage::class)->name('wishlist');
+
+Route::get('/checkout', \App\Livewire\Checkout::class)->name('checkout');
+Route::get('/order/{order}/confirmation', [OrderController::class, 'confirmation'])->name('order.confirmation');
+
 Route::middleware('auth')->group(function () {
-    Route::get('/checkout', \App\Livewire\Checkout::class)->name('checkout');
-    Route::get('/order/{order}/confirmation', [OrderController::class, 'confirmation'])->name('order.confirmation');
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/order/{order}/payment', [PaymentController::class, 'process'])->name('payment.process');
     Route::post('/payment/success', [PaymentController::class, 'success'])->name('payment.success');
     Route::post('/payment/cancel', [PaymentController::class, 'cancel'])->name('payment.cancel');

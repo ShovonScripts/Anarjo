@@ -9,7 +9,12 @@ use App\Livewire\Admin\Blogs;
 use App\Livewire\Admin\BlogForm;
 use App\Livewire\Admin\BlogCategories;
 use App\Livewire\Admin\BlogTags;
+use App\Livewire\Admin\Events;
+use App\Livewire\Admin\EventForm;
 use App\Livewire\Admin\Manuscripts;
+use App\Livewire\Admin\MediaManager;
+use App\Livewire\Admin\Orders;
+use App\Livewire\Admin\OrderDetail;
 use App\Livewire\Admin\Settings;
 use Illuminate\Support\Facades\Route;
 
@@ -30,12 +35,15 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
 
     Route::post('/upload-image', [UploadController::class, 'image'])->name('upload.image');
 
-    Route::get('/orders', fn () => view('admin.placeholder', ['section' => 'Orders']))->name('orders');
-    Route::get('/users', fn () => view('admin.placeholder', ['section' => 'Users']))->name('users');
-    Route::get('/reviews', fn () => view('admin.placeholder', ['section' => 'Reviews']))->name('reviews');
-    Route::get('/coupons', fn () => view('admin.placeholder', ['section' => 'Coupons']))->name('coupons');
-    Route::get('/events', fn () => view('admin.placeholder', ['section' => 'Events']))->name('events');
-    Route::get('/media', fn () => view('admin.placeholder', ['section' => 'Media']))->name('media');
+    Route::get('/orders', Orders::class)->name('orders');
+    Route::get('/orders/{order}', OrderDetail::class)->name('orders.show');
+    Route::get('/users', \App\Livewire\Admin\AdminUsers::class)->name('users');
+    Route::get('/reviews', \App\Livewire\Admin\Reviews::class)->name('reviews');
+    Route::get('/coupons', \App\Livewire\Admin\Coupons::class)->name('coupons');
+    Route::get('/events', Events::class)->name('events');
+    Route::get('/events/create', EventForm::class)->name('events.create');
+    Route::get('/events/{event}/edit', EventForm::class)->name('events.edit');
+    Route::get('/media', MediaManager::class)->name('media');
     Route::get('/newsletter', fn () => view('admin.placeholder', ['section' => 'Newsletter']))->name('newsletter');
     Route::get('/seo', fn () => view('admin.placeholder', ['section' => 'SEO']))->name('seo');
     Route::get('/reports', fn () => view('admin.placeholder', ['section' => 'Reports']))->name('reports');

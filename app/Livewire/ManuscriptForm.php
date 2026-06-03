@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\Manuscript;
+use App\Models\Media;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
@@ -43,7 +44,15 @@ class ManuscriptForm extends Component
         ];
 
         if ($this->file) {
-            $data['file'] = $this->file->store('manuscripts', 'public');
+            $path = $this->file->store('manuscripts', 'public');
+            $data['file'] = $path;
+            Media::create([
+                'name' => $this->file->getClientOriginalName(),
+                'path' => $path,
+                'type' => $this->file->getMimeType(),
+                'size' => $this->file->getSize(),
+                'disk' => 'public',
+            ]);
         }
 
         Manuscript::create($data);

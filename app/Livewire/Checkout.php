@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Jobs\ProcessOrderJob;
 use App\Jobs\SendOrderConfirmationJob;
 use App\Models\Address;
+use App\Models\Coupon;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Services\Cart\CartService;
@@ -13,6 +14,7 @@ use Illuminate\Support\Str;
 
 class Checkout extends Component
 {
+    public string $email = '';
     public string $name = '';
     public string $phone = '';
     public string $district = '';
@@ -20,6 +22,8 @@ class Checkout extends Component
     public string $address = '';
     public string $postal_code = '';
     public string $payment_method = 'cod';
+    public string $coupon_code = '';
+    public ?Coupon $appliedCoupon = null;
     public string $notes = '';
     public int $selected_address_id = 0;
 
@@ -40,7 +44,7 @@ class Checkout extends Component
             $methods[] = 'sslcommerz';
         }
 
-        return [
+        $rules = [
             'name' => 'required|string|max:255',
             'phone' => 'required|string|max:20',
             'district' => 'required|string|max:255',
@@ -50,6 +54,12 @@ class Checkout extends Component
             'payment_method' => 'required|in:' . implode(',', $methods),
             'notes' => 'nullable|string|max:500',
         ];
+
+        if (!auth()->check()) {
+            $rules['email'] = 'required|email|max:255';
+        }
+
+        return $rules;
     }
 
     public function mount(): void
@@ -88,6 +98,46 @@ class Checkout extends Component
             : (int) (setting('shipping_flat_rate_outside', '100'));
     }
 
+    public function applyCoupon(): void
+    {
+        $this->validate(['coupon_code' => 'required|string|max:50']);
+
+        $coupon = Coupon::where('code', strtoupper($this->coupon_code))->first();
+
+        if (!$coupon || !$coupon->isValid()) {
+            $this->addError('coupon_code', 'Invalid or expired coupon code.');
+            return;
+        }
+
+        $subtotal = $this->cartService->subtotal();
+
+        if ($coupon->min_amount && $subtotal < $coupon->min_amount) {
+            $this->addError('coupon_code', 'Minimum order amount of ' . setting('currency_symbol', '৳') . number_format($coupon->min_amount) . ' required.');
+            return;
+        }
+
+        $this->appliedCoupon = $coupon;
+        $this->coupon_code = '';
+        $this->dispatch('notify', message: 'Coupon applied!');
+    }
+
+    public function removeCoupon(): void
+    {
+        $this->appliedCoupon = null;
+        $this->coupon_code = '';
+    }
+
+    protected function getDiscount(): int
+    {
+        if (!$this->appliedCoupon) return 0;
+
+        $subtotal = $this->cartService->subtotal();
+
+        return $this->appliedCoupon->type === 'percent'
+            ? (int) round($subtotal * $this->appliedCoupon->value / 100)
+            : (int) $this->appliedCoupon->value;
+    }
+
     public function placeOrder(): void
     {
         $this->validate();
@@ -103,7 +153,8 @@ class Checkout extends Component
         $flatRate = $this->getShippingRate();
         $freeThreshold = (int) (setting('shipping_free_threshold', '500'));
         $shipping = $subtotal >= $freeThreshold ? 0 : $flatRate;
-        $total = $subtotal + $shipping;
+        $discount = $this->getDiscount();
+        $total = max(0, $subtotal + $shipping - $discount);
 
         $invoice = 'INV-' . date('Ymd') . '-' . strtoupper(Str::random(6));
 
@@ -119,14 +170,16 @@ class Checkout extends Component
 
         $order = Order::create([
             'user_id' => auth()->id(),
+            'guest_email' => auth()->check() ? null : $this->email,
             'invoice_no' => $invoice,
             'subtotal' => $subtotal,
             'shipping' => $shipping,
-            'discount' => 0,
+            'discount' => $discount,
             'total' => $total,
             'payment_method' => $this->payment_method,
             'payment_status' => $this->payment_method === 'cod' ? 'pending' : 'pending',
             'delivery_status' => 'pending',
+            'coupon_id' => $this->appliedCoupon?->id,
             'address_id' => $address->id,
             'notes' => $this->notes,
         ]);
@@ -139,6 +192,10 @@ class Checkout extends Component
                 'qty' => $item['qty'],
                 'subtotal' => $item['price'] * $item['qty'],
             ]);
+        }
+
+        if ($this->appliedCoupon) {
+            $this->appliedCoupon->increment('usage_count');
         }
 
         $this->cartService->clear();
@@ -174,10 +231,11 @@ class Checkout extends Component
         $flatRate = $this->getShippingRate();
         $freeThreshold = (int) (setting('shipping_free_threshold', '500'));
         $shipping = $subtotal >= $freeThreshold ? 0 : $flatRate;
-        $total = $subtotal + $shipping;
+        $discount = $this->getDiscount();
+        $total = max(0, $subtotal + $shipping - $discount);
         $paymentMethods = $this->getEnabledPaymentMethods();
 
-        return view('livewire.checkout', compact('items', 'subtotal', 'shipping', 'total', 'paymentMethods'))
+        return view('livewire.checkout', compact('items', 'subtotal', 'shipping', 'discount', 'total', 'paymentMethods'))
             ->layout('layouts.frontend');
     }
 }

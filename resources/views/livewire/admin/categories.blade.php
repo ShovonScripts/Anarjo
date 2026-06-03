@@ -62,6 +62,22 @@
                         @endforeach
                     </select>
                 </div>
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-widest mb-2">Image</label>
+                    @if($image)
+                        <div class="mb-2">
+                            <img src="{{ $image->temporaryUrl() }}" class="h-24 w-full object-cover border border-neutral-200">
+                            <button type="button" wire:click="$set('image', null)" class="text-xs text-brand-600 mt-1 block">Remove</button>
+                        </div>
+                    @elseif($existing_image)
+                        <div class="mb-2">
+                            <img src="{{ asset('storage/' . $existing_image) }}" class="h-24 w-full object-cover border border-neutral-200">
+                            <button type="button" wire:click="$set('existing_image', null)" class="text-xs text-brand-600 mt-1 block">Remove</button>
+                        </div>
+                    @endif
+                    <input type="file" wire:model="image" accept="image/*" class="block w-full text-sm text-neutral-500 file:mr-4 file:py-2 file:px-4 file:border file:border-neutral-300 file:text-sm file:font-semibold file:bg-white file:text-black hover:file:bg-neutral-50">
+                    @error('image') <span class="text-xs text-brand-600 mt-1">{{ $message }}</span> @enderror
+                </div>
                 <div class="flex justify-end gap-3 pt-4 border-t border-neutral-200">
                     <button type="button" wire:click="$set('isOpen', false)" class="btn-outline btn-sm">Cancel</button>
                     <button type="submit" class="btn-primary btn-sm">{{ $category_id ? 'Update' : 'Save' }}</button>

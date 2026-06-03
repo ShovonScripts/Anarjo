@@ -10,6 +10,13 @@
                 <h2 class="text-lg font-bold uppercase tracking-wider mb-8">Shipping Address</h2>
                 <form wire:submit="placeOrder" class="space-y-5">
                     <div class="grid grid-cols-2 gap-5">
+                        @guest
+                        <div class="col-span-2">
+                            <label class="block text-xs font-semibold uppercase tracking-widest mb-2">Email Address</label>
+                            <input type="email" wire:model="email" class="input-field" placeholder="For order confirmation">
+                            @error('email') <span class="text-xs text-brand-600 mt-1 block">{{ $message }}</span> @enderror
+                        </div>
+                        @endguest
                         <div>
                             <label class="block text-xs font-semibold uppercase tracking-widest mb-2">Full Name</label>
                             <input wire:model="name" class="input-field">
@@ -88,9 +95,27 @@
                         </div>
                     @endforeach
                 </div>
+                {{-- Coupon --}}
+                <div class="border-t border-neutral-200 pt-4 mt-4">
+                    @if($appliedCoupon)
+                        <div class="flex justify-between items-center text-sm mb-2">
+                            <span class="font-semibold text-brand-600 uppercase">{{ $appliedCoupon->code }}</span>
+                            <button wire:click="removeCoupon" class="text-xs text-brand-600 hover:text-black">Remove</button>
+                        </div>
+                    @else
+                        <form wire:submit="applyCoupon" class="flex gap-2">
+                            <input type="text" wire:model="coupon_code" placeholder="Coupon code" class="flex-1 px-3 py-2 border border-neutral-300 text-sm focus:outline-none focus:border-black transition-colors uppercase">
+                            <button type="submit" class="px-4 py-2 text-sm font-semibold bg-black text-white hover:bg-neutral-800 transition-colors">Apply</button>
+                        </form>
+                        @error('coupon_code') <span class="text-xs text-brand-600 mt-1 block">{{ $message }}</span> @enderror
+                    @endif
+                </div>
                 <div class="border-t border-neutral-200 pt-4 mt-4 space-y-2 text-sm">
                     <div class="flex justify-between"><span class="text-neutral-600">Subtotal</span><span class="font-semibold">{{ setting('currency_symbol', '৳') }}{{ number_format($subtotal) }}</span></div>
                     <div class="flex justify-between"><span class="text-neutral-600">Shipping</span><span class="font-semibold">{{ $shipping > 0 ? setting('currency_symbol', '৳') . number_format($shipping) : 'Free' }}</span></div>
+                    @if($discount > 0)
+                        <div class="flex justify-between text-brand-600"><span>Discount</span><span>–{{ setting('currency_symbol', '৳') }}{{ number_format($discount) }}</span></div>
+                    @endif
                     <div class="border-t border-neutral-200 pt-2 flex justify-between font-bold text-lg">
                         <span>Total</span>
                         <span>{{ setting('currency_symbol', '৳') }}{{ number_format($total) }}</span>

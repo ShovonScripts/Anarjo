@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Admin;
 
+use App\Models\Media;
 use App\Services\SettingsService;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -116,13 +117,19 @@ class Settings extends Component
             ];
         } elseif ($this->tab === 'logo') {
             if ($this->header_logo) {
-                $data['header_logo'] = $this->header_logo->store('settings', 'public');
+                $path = $this->header_logo->store('settings', 'public');
+                $data['header_logo'] = $path;
+                Media::create(['name' => $this->header_logo->getClientOriginalName(), 'path' => $path, 'type' => $this->header_logo->getMimeType(), 'size' => $this->header_logo->getSize(), 'disk' => 'public']);
             }
             if ($this->footer_logo) {
-                $data['footer_logo'] = $this->footer_logo->store('settings', 'public');
+                $path = $this->footer_logo->store('settings', 'public');
+                $data['footer_logo'] = $path;
+                Media::create(['name' => $this->footer_logo->getClientOriginalName(), 'path' => $path, 'type' => $this->footer_logo->getMimeType(), 'size' => $this->footer_logo->getSize(), 'disk' => 'public']);
             }
             if ($this->favicon) {
-                $data['favicon'] = $this->favicon->store('settings', 'public');
+                $path = $this->favicon->store('settings', 'public');
+                $data['favicon'] = $path;
+                Media::create(['name' => $this->favicon->getClientOriginalName(), 'path' => $path, 'type' => $this->favicon->getMimeType(), 'size' => $this->favicon->getSize(), 'disk' => 'public']);
             }
         } elseif ($this->tab === 'contact') {
             $data = [

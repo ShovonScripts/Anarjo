@@ -19,6 +19,10 @@ class SendOrderConfirmationJob implements ShouldQueue
     {
         if ($this->order->user && $this->order->user->email) {
             $this->order->user->notify(new OrderConfirmation($this->order));
+        } elseif ($this->order->guest_email) {
+            $notifiable = new \Illuminate\Notifications\AnonymousNotifiable;
+            $notifiable->route('mail', $this->order->guest_email);
+            $notifiable->notify(new OrderConfirmation($this->order));
         }
     }
 }

@@ -3,13 +3,15 @@
 namespace App\Livewire\Admin;
 
 use App\Models\Author;
+use App\Models\Media;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Livewire\WithFileUploads;
 use Illuminate\Support\Str;
 
 class Authors extends Component
 {
-    use WithPagination;
+    use WithPagination, WithFileUploads;
 
     public $author_id;
     public $name;
@@ -19,6 +21,8 @@ class Authors extends Component
     public $website;
     public $royalty_rate;
     public $status = 'active';
+    public $photo;
+    public $existing_photo;
     public $search = '';
     public $isOpen = false;
 
@@ -32,6 +36,7 @@ class Authors extends Component
             'website' => 'nullable|url|max:255',
             'royalty_rate' => 'required|numeric|min:0|max:100',
             'status' => 'required|in:active,inactive',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
         ];
     }
 
@@ -62,6 +67,7 @@ class Authors extends Component
         $this->website = $author->website;
         $this->royalty_rate = $author->royalty_rate;
         $this->status = $author->status;
+        $this->existing_photo = $author->photo;
         $this->isOpen = true;
     }
 
@@ -69,19 +75,32 @@ class Authors extends Component
     {
         $this->validate();
 
-        Author::updateOrCreate(
-            ['id' => $this->author_id],
-            [
-                'name' => $this->name,
-                'slug' => Str::slug($this->name),
-                'bio' => $this->bio,
-                'facebook' => $this->facebook,
-                'linkedin' => $this->linkedin,
-                'website' => $this->website,
-                'royalty_rate' => $this->royalty_rate,
-                'status' => $this->status,
-            ]
-        );
+        $data = [
+            'name' => $this->name,
+            'slug' => Str::slug($this->name),
+            'bio' => $this->bio,
+            'facebook' => $this->facebook,
+            'linkedin' => $this->linkedin,
+            'website' => $this->website,
+            'royalty_rate' => $this->royalty_rate,
+            'status' => $this->status,
+        ];
+
+        if ($this->photo) {
+            $path = $this->photo->store('authors', 'public');
+            $data['photo'] = $path;
+            Media::create([
+                'name' => $this->photo->getClientOriginalName(),
+                'path' => $path,
+                'type' => $this->photo->getMimeType(),
+                'size' => $this->photo->getSize(),
+                'disk' => 'public',
+            ]);
+        } elseif ($this->author_id && !$this->existing_photo) {
+            $data['photo'] = null;
+        }
+
+        Author::updateOrCreate(['id' => $this->author_id], $data);
 
         session()->flash('message', $this->author_id ? 'Author updated.' : 'Author created.');
         $this->resetInput();
@@ -104,5 +123,7 @@ class Authors extends Component
         $this->website = '';
         $this->royalty_rate = 0;
         $this->status = 'active';
+        $this->photo = null;
+        $this->existing_photo = null;
     }
 }

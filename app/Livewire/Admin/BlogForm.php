@@ -4,6 +4,7 @@ namespace App\Livewire\Admin;
 
 use App\Models\Blog;
 use App\Models\BlogCategory;
+use App\Models\Media;
 use App\Models\BlogTag;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -77,7 +78,15 @@ class BlogForm extends Component
         ];
 
         if ($this->featured_image) {
-            $data['featured_image'] = $this->featured_image->store('blog-images', 'public');
+            $path = $this->featured_image->store('blog-images', 'public');
+            $data['featured_image'] = $path;
+            Media::create([
+                'name' => $this->featured_image->getClientOriginalName(),
+                'path' => $path,
+                'type' => $this->featured_image->getMimeType(),
+                'size' => $this->featured_image->getSize(),
+                'disk' => 'public',
+            ]);
         } elseif ($this->blog_id && !$this->existing_featured_image) {
             $data['featured_image'] = null;
         }

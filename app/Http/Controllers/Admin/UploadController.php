@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Media;
 use Illuminate\Http\Request;
 
 class UploadController extends Controller
@@ -13,7 +14,16 @@ class UploadController extends Controller
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
         ]);
 
-        $path = $request->file('image')->store('blog-images', 'public');
+        $file = $request->file('image');
+        $path = $file->store('blog-images', 'public');
+
+        Media::create([
+            'name' => $file->getClientOriginalName(),
+            'path' => $path,
+            'type' => $file->getMimeType(),
+            'size' => $file->getSize(),
+            'disk' => 'public',
+        ]);
 
         return response()->json([
             'location' => asset('storage/' . $path),

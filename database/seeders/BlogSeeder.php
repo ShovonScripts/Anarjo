@@ -26,11 +26,14 @@ class BlogSeeder extends Seeder
         ];
 
         foreach ($categories as $cat) {
-            BlogCategory::create([
-                'name' => $cat['name'],
-                'slug' => Str::slug($cat['name']),
-                'description' => $cat['description'],
-            ]);
+            BlogCategory::firstOrCreate(
+                ['slug' => Str::slug($cat['name'])],
+                [
+                    'name' => $cat['name'],
+                    'slug' => Str::slug($cat['name']),
+                    'description' => $cat['description'],
+                ]
+            );
         }
 
         $catMap = BlogCategory::pluck('id', 'name');
@@ -43,7 +46,10 @@ class BlogSeeder extends Seeder
         ];
 
         foreach ($tagNames as $name) {
-            BlogTag::create(['name' => $name, 'slug' => Str::slug($name)]);
+            BlogTag::firstOrCreate(
+                ['slug' => Str::slug($name)],
+                ['name' => $name, 'slug' => Str::slug($name)]
+            );
         }
 
         $tagMap = BlogTag::pluck('id', 'name');
@@ -146,17 +152,21 @@ class BlogSeeder extends Seeder
         foreach ($posts as $index => $postData) {
             $publishedAt = $publishedAt->addDays(3);
 
-            $blog = Blog::create([
-                'title' => $postData['title'],
-                'slug' => Str::slug($postData['title']),
-                'content' => $postData['content'],
-                'blog_category_id' => $catMap[$postData['category']] ?? null,
-                'author' => $postData['author'],
-                'status' => 'published',
-                'meta_title' => $postData['title'],
-                'meta_description' => Str::limit(strip_tags($postData['content']), 160),
-                'published_at' => $publishedAt,
-            ]);
+            $slug = Str::slug($postData['title']);
+            $blog = Blog::firstOrCreate(
+                ['slug' => $slug],
+                [
+                    'title' => $postData['title'],
+                    'slug' => $slug,
+                    'content' => $postData['content'],
+                    'blog_category_id' => $catMap[$postData['category']] ?? null,
+                    'author' => $postData['author'],
+                    'status' => 'published',
+                    'meta_title' => $postData['title'],
+                    'meta_description' => Str::limit(strip_tags($postData['content']), 160),
+                    'published_at' => $publishedAt,
+                ]
+            );
 
             $tagIds = [];
             foreach ($postData['tags'] as $tagName) {

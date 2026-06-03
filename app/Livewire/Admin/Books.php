@@ -5,6 +5,7 @@ namespace App\Livewire\Admin;
 use App\Models\Book;
 use App\Models\Author;
 use App\Models\Category;
+use App\Models\Media;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\WithFileUploads;
@@ -35,6 +36,11 @@ class Books extends Component
     public $bestseller = false;
     public $new_arrival = false;
     public $pre_order = false;
+    public $publisher_id;
+    public $preview_pdf;
+    public $new_preview_pdf;
+    public $seo_title;
+    public $seo_description;
     public $status = 'draft';
 
     public $search = '';
@@ -62,6 +68,10 @@ class Books extends Component
             'bestseller' => 'boolean',
             'new_arrival' => 'boolean',
             'pre_order' => 'boolean',
+            'publisher_id' => 'nullable|exists:users,id',
+            'new_preview_pdf' => 'nullable|file|mimes:pdf|max:10240',
+            'seo_title' => 'nullable|string|max:255',
+            'seo_description' => 'nullable|string|max:500',
             'status' => 'required|in:draft,published,archived',
         ];
     }
@@ -78,8 +88,9 @@ class Books extends Component
 
         $authors = Author::where('status', 'active')->get();
         $categories = Category::all();
+        $publishers = \App\Models\User::all();
 
-        return view('livewire.admin.books', compact('books', 'authors', 'categories'))
+        return view('livewire.admin.books', compact('books', 'authors', 'categories', 'publishers'))
             ->layout('layouts.admin');
     }
 
@@ -112,6 +123,10 @@ class Books extends Component
         $this->bestseller = $book->bestseller;
         $this->new_arrival = $book->new_arrival;
         $this->pre_order = $book->pre_order;
+        $this->publisher_id = $book->publisher_id;
+        $this->preview_pdf = $book->preview_pdf;
+        $this->seo_title = $book->seo_title;
+        $this->seo_description = $book->seo_description;
         $this->status = $book->status;
         $this->isOpen = true;
     }
@@ -120,10 +135,30 @@ class Books extends Component
     {
         $this->validate();
 
-        $data = $this->except(['book_id', 'cover_image', 'new_cover_image', 'isOpen', 'search']);
+        $data = $this->except(['book_id', 'cover_image', 'new_cover_image', 'preview_pdf', 'new_preview_pdf', 'isOpen', 'search']);
 
         if ($this->new_cover_image) {
-            $data['cover_image'] = $this->new_cover_image->store('books', 'public');
+            $path = $this->new_cover_image->store('books', 'public');
+            $data['cover_image'] = $path;
+            Media::create([
+                'name' => $this->new_cover_image->getClientOriginalName(),
+                'path' => $path,
+                'type' => $this->new_cover_image->getMimeType(),
+                'size' => $this->new_cover_image->getSize(),
+                'disk' => 'public',
+            ]);
+        }
+
+        if ($this->new_preview_pdf) {
+            $path = $this->new_preview_pdf->store('books/pdfs', 'public');
+            $data['preview_pdf'] = $path;
+            Media::create([
+                'name' => $this->new_preview_pdf->getClientOriginalName(),
+                'path' => $path,
+                'type' => $this->new_preview_pdf->getMimeType(),
+                'size' => $this->new_preview_pdf->getSize(),
+                'disk' => 'public',
+            ]);
         }
 
         $data['slug'] = Str::slug($this->title);
@@ -164,6 +199,11 @@ class Books extends Component
         $this->bestseller = false;
         $this->new_arrival = false;
         $this->pre_order = false;
+        $this->publisher_id = null;
+        $this->preview_pdf = null;
+        $this->new_preview_pdf = null;
+        $this->seo_title = '';
+        $this->seo_description = '';
         $this->status = 'draft';
     }
 }

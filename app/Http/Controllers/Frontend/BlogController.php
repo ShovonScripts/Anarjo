@@ -25,8 +25,8 @@ class BlogController extends Controller
 
         $blogs = $query->latest()->paginate(9);
         $categories = BlogCategory::withCount(['blogs' => fn ($q) => $q->where('status', 'published')])
-            ->having('blogs_count', '>', 0)
-            ->get();
+            ->get()
+            ->filter(fn ($cat) => $cat->blogs_count > 0);
         $recentPosts = Blog::where('status', 'published')->latest()->take(4)->get();
 
         return view('frontend.blogs.index', compact('blogs', 'categories', 'recentPosts'));
@@ -34,7 +34,7 @@ class BlogController extends Controller
 
     public function show($slug)
     {
-        $blog = Blog::with(['category', 'tags'])->where('slug', $slug)->where('status', 'published')->firstOrFail();
+        $blog = Blog::with(['category', 'tags', 'comments.user', 'likes'])->where('slug', $slug)->where('status', 'published')->firstOrFail();
 
         $related = Blog::where('status', 'published')
             ->where('id', '!=', $blog->id)
@@ -50,8 +50,8 @@ class BlogController extends Controller
             ->get();
 
         $categories = BlogCategory::withCount(['blogs' => fn ($q) => $q->where('status', 'published')])
-            ->having('blogs_count', '>', 0)
-            ->get();
+            ->get()
+            ->filter(fn ($cat) => $cat->blogs_count > 0);
 
         return view('frontend.blogs.show', compact('blog', 'related', 'recentPosts', 'categories'));
     }

@@ -47,9 +47,8 @@
 
             <div class="flex gap-4 mt-8">
                 <livewire:add-to-cart-button :book-id="$book->id" :book-title="$book->title" size="lg" :key="'cart-' . $book->id" />
-                <button class="btn-outline px-4">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
-                </button>
+                <livewire:book-like :book-id="$book->id" :key="'like-' . $book->id" />
+                <livewire:book-wishlist :book-id="$book->id" :key="'wishlist-' . $book->id" />
             </div>
 
             @if($book->description)
@@ -70,6 +69,12 @@
             </div>
         </div>
     </div>
+
+    {{-- Reviews --}}
+    <livewire:book-reviews :book-id="$book->id" :key="'reviews-' . $book->id" />
+
+    {{-- Comments --}}
+    <livewire:book-comments :book-id="$book->id" :key="'comments-' . $book->id" />
 
     {{-- Related Books --}}
     @if($relatedBooks->count())

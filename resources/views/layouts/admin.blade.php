@@ -29,9 +29,19 @@
             </div>
             <nav class="p-4 space-y-0.5">
                 <x-admin.nav-item :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')" label="Dashboard" />
-                <x-admin.nav-item :href="route('admin.books')" :active="request()->routeIs('admin.books*')" label="Books" />
-                <x-admin.nav-item :href="route('admin.categories')" :active="request()->routeIs('admin.categories*')" label="Categories" />
-                <x-admin.nav-item :href="route('admin.authors')" :active="request()->routeIs('admin.authors*')" label="Authors" />
+                {{-- Books Dropdown --}}
+                @php $booksActive = request()->routeIs('admin.books*') || request()->routeIs('admin.categories*') || request()->routeIs('admin.authors*'); @endphp
+                <div x-data="{ open: @json($booksActive) }" class="space-y-0.5">
+                    <button @click="open = !open" class="flex items-center justify-between w-full px-4 py-2.5 text-sm font-medium transition-colors {{ $booksActive ? 'text-white bg-brand-600' : 'text-neutral-400 hover:text-white hover:bg-neutral-800' }}">
+                        <span>Books</span>
+                        <svg class="w-4 h-4 transition-transform" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </button>
+                    <div x-show="open" x-collapse class="space-y-0.5">
+                        <a href="{{ route('admin.books') }}" wire:navigate class="flex items-center px-6 py-2 text-sm font-medium transition-colors {{ request()->routeIs('admin.books*') ? 'text-white bg-brand-600' : 'text-neutral-400 hover:text-white hover:bg-neutral-800' }}">All Books</a>
+                        <a href="{{ route('admin.categories') }}" wire:navigate class="flex items-center px-6 py-2 text-sm font-medium transition-colors {{ request()->routeIs('admin.categories*') ? 'text-white bg-brand-600' : 'text-neutral-400 hover:text-white hover:bg-neutral-800' }}">Categories</a>
+                        <a href="{{ route('admin.authors') }}" wire:navigate class="flex items-center px-6 py-2 text-sm font-medium transition-colors {{ request()->routeIs('admin.authors*') ? 'text-white bg-brand-600' : 'text-neutral-400 hover:text-white hover:bg-neutral-800' }}">Authors</a>
+                    </div>
+                </div>
                 <x-admin.nav-item :href="route('admin.orders')" :active="request()->routeIs('admin.orders*')" label="Orders" />
                 <x-admin.nav-item :href="route('admin.users')" :active="request()->routeIs('admin.users*')" label="Users" />
                 <x-admin.nav-item :href="route('admin.reviews')" :active="request()->routeIs('admin.reviews*')" label="Reviews" />

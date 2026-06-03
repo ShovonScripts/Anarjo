@@ -59,6 +59,22 @@
                     <label class="block text-xs font-semibold uppercase tracking-widest mb-2">Bio</label>
                     <textarea wire:model="bio" rows="3" class="input-field"></textarea>
                 </div>
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-widest mb-2">Photo</label>
+                    @if($photo)
+                        <div class="mb-2">
+                            <img src="{{ $photo->temporaryUrl() }}" class="h-24 w-24 object-cover border border-neutral-200 rounded-full">
+                            <button type="button" wire:click="$set('photo', null)" class="text-xs text-brand-600 mt-1 block">Remove</button>
+                        </div>
+                    @elseif($existing_photo)
+                        <div class="mb-2">
+                            <img src="{{ asset('storage/' . $existing_photo) }}" class="h-24 w-24 object-cover border border-neutral-200 rounded-full">
+                            <button type="button" wire:click="$set('existing_photo', null)" class="text-xs text-brand-600 mt-1 block">Remove</button>
+                        </div>
+                    @endif
+                    <input type="file" wire:model="photo" accept="image/*" class="block w-full text-sm text-neutral-500 file:mr-4 file:py-2 file:px-4 file:border file:border-neutral-300 file:text-sm file:font-semibold file:bg-white file:text-black hover:file:bg-neutral-50">
+                    @error('photo') <span class="text-xs text-brand-600 mt-1">{{ $message }}</span> @enderror
+                </div>
                 <div class="grid grid-cols-2 gap-5">
                     <div>
                         <label class="block text-xs font-semibold uppercase tracking-widest mb-2">Facebook</label>

@@ -85,6 +85,15 @@
                         </select>
                     </div>
                     <div>
+                        <label class="block text-xs font-semibold uppercase tracking-widest mb-2">Publisher</label>
+                        <select wire:model="publisher_id" class="input-field">
+                            <option value="">Select Publisher</option>
+                            @foreach($publishers as $user)
+                                <option value="{{ $user->id }}">{{ $user->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div>
                         <label class="block text-xs font-semibold uppercase tracking-widest mb-2">Price</label>
                         <input wire:model="price" type="number" step="0.01" class="input-field">
                         @error('price') <span class="text-xs text-brand-600 mt-1">{{ $message }}</span> @enderror
@@ -124,12 +133,32 @@
                     <textarea wire:model="description" rows="3" class="input-field"></textarea>
                 </div>
 
+                <div class="grid grid-cols-2 gap-5">
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-widest mb-2">SEO Title</label>
+                        <input wire:model="seo_title" class="input-field">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-widest mb-2">SEO Description</label>
+                        <input wire:model="seo_description" class="input-field">
+                    </div>
+                </div>
+
                 <div>
                     <label class="block text-xs font-semibold uppercase tracking-widest mb-2">Cover Image</label>
                     <input wire:model="new_cover_image" type="file" accept="image/*" class="w-full text-sm">
                     @if($cover_image && !$new_cover_image)
                         <p class="text-xs text-neutral-500 mt-1">Current: {{ $cover_image }}</p>
                     @endif
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-widest mb-2">Preview PDF</label>
+                    <input wire:model="new_preview_pdf" type="file" accept=".pdf" class="w-full text-sm">
+                    @if($preview_pdf && !$new_preview_pdf)
+                        <p class="text-xs text-neutral-500 mt-1">Current: {{ $preview_pdf }}</p>
+                    @endif
+                    @error('new_preview_pdf') <span class="text-xs text-brand-600 mt-1">{{ $message }}</span> @enderror
                 </div>
 
                 <div class="flex flex-wrap gap-6">

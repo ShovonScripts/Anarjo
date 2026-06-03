@@ -41,12 +41,15 @@
                 {!! $blog->content !!}
             </div>
 
-            {{-- Share --}}
-            <div class="border-t border-neutral-200 pt-8 flex items-center gap-4">
-                <span class="text-xs font-semibold uppercase tracking-widest text-neutral-500">Share:</span>
-                <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(request()->url()) }}" target="_blank" class="text-sm font-semibold uppercase tracking-wider text-black hover:text-brand-600 transition-colors">Facebook</a>
-                <a href="https://twitter.com/intent/tweet?url={{ urlencode(request()->url()) }}&text={{ urlencode($blog->title) }}" target="_blank" class="text-sm font-semibold uppercase tracking-wider text-black hover:text-brand-600 transition-colors">Twitter</a>
-                <a href="https://www.linkedin.com/shareArticle?url={{ urlencode(request()->url()) }}" target="_blank" class="text-sm font-semibold uppercase tracking-wider text-black hover:text-brand-600 transition-colors">LinkedIn</a>
+            {{-- Share & Like --}}
+            <div class="border-t border-neutral-200 pt-8 flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <span class="text-xs font-semibold uppercase tracking-widest text-neutral-500">Share:</span>
+                    <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(request()->url()) }}" target="_blank" class="text-sm font-semibold uppercase tracking-wider text-black hover:text-brand-600 transition-colors">Facebook</a>
+                    <a href="https://twitter.com/intent/tweet?url={{ urlencode(request()->url()) }}&text={{ urlencode($blog->title) }}" target="_blank" class="text-sm font-semibold uppercase tracking-wider text-black hover:text-brand-600 transition-colors">Twitter</a>
+                    <a href="https://www.linkedin.com/shareArticle?url={{ urlencode(request()->url()) }}" target="_blank" class="text-sm font-semibold uppercase tracking-wider text-black hover:text-brand-600 transition-colors">LinkedIn</a>
+                </div>
+                <livewire:blog-like :blog-id="$blog->id" :key="'like-' . $blog->id" />
             </div>
 
             {{-- Related Posts --}}
@@ -68,6 +71,8 @@
                     </div>
                 </div>
             @endif
+            {{-- Comments --}}
+            <livewire:blog-comments :blog-id="$blog->id" :key="'comments-' . $blog->id" />
         </div>
 
         {{-- Sidebar --}}

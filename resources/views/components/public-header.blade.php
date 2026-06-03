@@ -37,7 +37,8 @@
                             </button>
                             <div x-show="open" class="absolute right-0 mt-2 w-48 bg-white border border-neutral-200 z-50">
                                 <a href="{{ route('profile') }}" class="block px-4 py-3 text-sm text-neutral-700 hover:bg-neutral-50 border-b border-neutral-200">Profile</a>
-                                <a href="{{ route('checkout') }}" class="block px-4 py-3 text-sm text-neutral-700 hover:bg-neutral-50 border-b border-neutral-200">Orders</a>
+                                <a href="{{ route('wishlist') }}" class="block px-4 py-3 text-sm text-neutral-700 hover:bg-neutral-50 border-b border-neutral-200">Wishlist</a>
+                                <a href="{{ route('orders.index') }}" class="block px-4 py-3 text-sm text-neutral-700 hover:bg-neutral-50 border-b border-neutral-200">Orders</a>
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf
                                     <button type="submit" class="w-full text-left px-4 py-3 text-sm text-brand-600 hover:bg-neutral-50">Logout</button>
@@ -58,7 +59,13 @@
             <div class="px-4 py-3 space-y-1">
                 <a href="{{ route('home') }}" class="block px-3 py-2 text-sm font-medium uppercase tracking-wider text-neutral-600 hover:text-black">Home</a>
                 <a href="{{ route('books.index') }}" class="block px-3 py-2 text-sm font-medium uppercase tracking-wider text-neutral-600 hover:text-black">Books</a>
+                <a href="{{ route('blog.index') }}" class="block px-3 py-2 text-sm font-medium uppercase tracking-wider text-neutral-600 hover:text-black">Blog</a>
+                <a href="{{ route('events.index') }}" class="block px-3 py-2 text-sm font-medium uppercase tracking-wider text-neutral-600 hover:text-black">Events</a>
                 <a href="{{ route('about') }}" class="block px-3 py-2 text-sm font-medium uppercase tracking-wider text-neutral-600 hover:text-black">About</a>
+                @auth
+                    <a href="{{ route('wishlist') }}" class="block px-3 py-2 text-sm font-medium uppercase tracking-wider text-neutral-600 hover:text-black">Wishlist</a>
+                    <a href="{{ route('orders.index') }}" class="block px-3 py-2 text-sm font-medium uppercase tracking-wider text-neutral-600 hover:text-black">Orders</a>
+                @endauth
             </div>
         </div>
     </header>

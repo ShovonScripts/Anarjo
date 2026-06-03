@@ -9,13 +9,13 @@ class EventController extends Controller
 {
     public function index()
     {
-        $events = Event::latest()->paginate(12);
+        $events = Event::where('status', 'published')->orderBy('is_major', 'desc')->latest()->paginate(12);
         return view('frontend.events.index', compact('events'));
     }
 
-    public function show($id)
+    public function show($slug)
     {
-        $event = Event::findOrFail($id);
+        $event = Event::where('slug', $slug)->where('status', 'published')->firstOrFail();
         return view('frontend.events.show', compact('event'));
     }
 }

@@ -12,17 +12,31 @@ class DatabaseSeeder extends Seeder
         $this->call(RoleSeeder::class);
         $this->call(SettingsSeeder::class);
         $this->call(BlogSeeder::class);
+        $this->call(EventSeeder::class);
 
-        $superAdmin = User::factory()->create([
-            'name' => 'Super Admin',
-            'email' => 'admin@anarjo.com',
-        ]);
+        $superAdmin = User::firstOrCreate(
+            ['email' => 'admin@anarjo.com'],
+            [
+                'name' => 'Super Admin',
+                'email' => 'admin@anarjo.com',
+                'password' => bcrypt('password'),
+                'phone' => '01' . fake()->numerify('##########'),
+                'status' => 'active',
+                'email_verified_at' => now(),
+            ]
+        );
         $superAdmin->assignRole('Super Admin');
 
-        $user = User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'user@anarjo.com',
-        ]);
-        $user->assignRole('Author');
+        User::firstOrCreate(
+            ['email' => 'user@anarjo.com'],
+            [
+                'name' => 'Test User',
+                'email' => 'user@anarjo.com',
+                'password' => bcrypt('password'),
+                'phone' => '01' . fake()->numerify('##########'),
+                'status' => 'active',
+                'email_verified_at' => now(),
+            ]
+        )->assignRole('Author');
     }
 }

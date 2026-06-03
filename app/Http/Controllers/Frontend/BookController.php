@@ -22,7 +22,7 @@ class BookController extends Controller
 
     public function show($slug)
     {
-        $book = Book::with('author', 'category', 'reviews.user')
+        $book = Book::with('author', 'category', 'reviews.user', 'comments.user', 'likes')
             ->where('slug', $slug)
             ->where('status', 'published')
             ->firstOrFail();

@@ -1,4 +1,5 @@
 <div>
+    @section('header', 'Coupons')
     @if (session('message'))
         <div class="mb-6 px-5 py-4 border border-brand-600 bg-brand-50 text-brand-700 text-sm font-medium">{{ session('message') }}</div>
     @endif

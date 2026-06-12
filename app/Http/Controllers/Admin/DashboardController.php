@@ -28,6 +28,11 @@ class DashboardController extends Controller
             'pending_orders' => Order::where('delivery_status', 'pending')->count(),
         ];
 
-        return view('admin.dashboard', compact('stats'));
+        $recentOrders = Order::withCount('items')
+            ->latest()
+            ->take(5)
+            ->get();
+
+        return view('admin.dashboard', compact('stats', 'recentOrders'));
     }
 }

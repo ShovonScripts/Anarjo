@@ -1,4 +1,5 @@
 <div>
+    @section('header', 'Orders')
     <div class="flex justify-between items-center mb-6">
         <h2 class="text-xl font-bold tracking-tight">Orders</h2>
     </div>

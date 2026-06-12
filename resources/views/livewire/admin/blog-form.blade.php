@@ -1,4 +1,5 @@
 <div>
+    @section('header', $blog_id ? 'Edit Post' : 'New Post')
     <div class="mb-6">
         <a href="{{ route('admin.blogs') }}" wire:navigate class="text-sm font-semibold uppercase tracking-wider text-neutral-500 hover:text-black transition-colors">&larr; Back to Posts</a>
     </div>
@@ -94,7 +95,7 @@
                                         if (html === '<p><br></p>' || html === '<br>') html = '';
                                         $wire.set('content', html);
                                     });
-                                    $refs.editor = quill;
+                                    window.__blogEditor = quill;
                                 "
                                 style="height: 400px;"
                             >{!! $content !!}</div>

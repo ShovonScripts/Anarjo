@@ -17,7 +17,6 @@ class AuthorFactory extends Factory
             'name' => $name,
             'slug' => Str::slug($name),
             'bio' => fake()->paragraph(),
-            'royalty_rate' => fake()->randomFloat(2, 5, 20),
             'status' => 'active',
         ];
     }

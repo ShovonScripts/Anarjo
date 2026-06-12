@@ -16,6 +16,12 @@ use App\Livewire\Admin\MediaManager;
 use App\Livewire\Admin\Orders;
 use App\Livewire\Admin\OrderDetail;
 use App\Livewire\Admin\Settings;
+use App\Livewire\Admin\HomeSettings;
+use App\Livewire\Admin\AboutSettings;
+use App\Livewire\Admin\ContactMessages;
+use App\Livewire\Admin\ContactSettings;
+use App\Livewire\Admin\PolicySettings;
+use App\Livewire\Admin\UserManagement;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.')->group(function () {
@@ -37,7 +43,8 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
 
     Route::get('/orders', Orders::class)->name('orders');
     Route::get('/orders/{order}', OrderDetail::class)->name('orders.show');
-    Route::get('/users', \App\Livewire\Admin\AdminUsers::class)->name('users');
+    Route::get('/admins', \App\Livewire\Admin\AdminUsers::class)->name('admins');
+    Route::get('/users', UserManagement::class)->name('users');
     Route::get('/reviews', \App\Livewire\Admin\Reviews::class)->name('reviews');
     Route::get('/coupons', \App\Livewire\Admin\Coupons::class)->name('coupons');
     Route::get('/events', Events::class)->name('events');
@@ -48,4 +55,9 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
     Route::get('/seo', fn () => view('admin.placeholder', ['section' => 'SEO']))->name('seo');
     Route::get('/reports', fn () => view('admin.placeholder', ['section' => 'Reports']))->name('reports');
     Route::get('/settings', Settings::class)->name('settings');
+    Route::get('/page-settings/home', HomeSettings::class)->name('page-settings.home');
+    Route::get('/page-settings/about', AboutSettings::class)->name('page-settings.about');
+    Route::get('/page-settings/contact', ContactSettings::class)->name('page-settings.contact');
+    Route::get('/page-settings/policies', PolicySettings::class)->name('page-settings.policies');
+    Route::get('/contact-messages', ContactMessages::class)->name('contact-messages');
 });

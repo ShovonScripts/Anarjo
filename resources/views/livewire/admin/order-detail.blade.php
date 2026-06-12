@@ -1,4 +1,5 @@
 <div>
+    @section('header', 'Order #' . $order->id)
     <div class="mb-6 flex items-center justify-between">
         <a href="{{ route('admin.orders') }}" wire:navigate class="text-sm font-semibold uppercase tracking-wider text-neutral-500 hover:text-black transition-colors">&larr; Back to Orders</a>
         <span class="text-xs text-neutral-400">{{ $order->created_at->format('M d, Y \a\t h:i A') }}</span>

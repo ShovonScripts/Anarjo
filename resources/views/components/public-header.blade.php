@@ -26,6 +26,14 @@
                     <a href="{{ route('events.index') }}" class="nav-link {{ request()->routeIs('events.*') ? 'nav-link-active' : '' }}">Events</a>
                     <a href="{{ route('about') }}" class="nav-link {{ request()->routeIs('about') ? 'nav-link-active' : '' }}">About</a>
                 </nav>
+                <div class="hidden md:flex items-center">
+                    <form method="GET" action="{{ route('search') }}" class="relative">
+                        <input type="text" name="q" value="{{ request('q') }}" placeholder="Search..." class="w-40 lg:w-52 border border-neutral-300 bg-neutral-50 px-3 py-2 text-sm placeholder-neutral-400 focus:border-black focus:ring-0 focus:outline-none transition-colors">
+                        <button type="submit" class="absolute right-2 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-black transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                        </button>
+                    </form>
+                </div>
                 <div class="flex items-center gap-4">
                     <livewire:cart-badge />
                     @auth
@@ -56,6 +64,14 @@
             </div>
         </div>
         <div x-show="mobileMenu" class="md:hidden border-t border-neutral-200 bg-white">
+            <div class="px-4 py-3 border-b border-neutral-200">
+                <form method="GET" action="{{ route('search') }}" class="relative">
+                    <input type="text" name="q" placeholder="Search books, authors, blogs..." class="w-full border border-neutral-300 bg-neutral-50 px-3 py-2 text-sm placeholder-neutral-400 focus:border-black focus:ring-0 focus:outline-none">
+                    <button type="submit" class="absolute right-2 top-1/2 -translate-y-1/2 text-neutral-400">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                    </button>
+                </form>
+            </div>
             <div class="px-4 py-3 space-y-1">
                 <a href="{{ route('home') }}" class="block px-3 py-2 text-sm font-medium uppercase tracking-wider text-neutral-600 hover:text-black">Home</a>
                 <a href="{{ route('books.index') }}" class="block px-3 py-2 text-sm font-medium uppercase tracking-wider text-neutral-600 hover:text-black">Books</a>

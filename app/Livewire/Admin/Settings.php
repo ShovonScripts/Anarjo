@@ -116,17 +116,17 @@ class Settings extends Component
                 'currency_code' => $this->currency_code,
             ];
         } elseif ($this->tab === 'logo') {
-            if ($this->header_logo) {
+            if ($this->header_logo && is_object($this->header_logo)) {
                 $path = $this->header_logo->store('settings', 'public');
                 $data['header_logo'] = $path;
                 Media::create(['name' => $this->header_logo->getClientOriginalName(), 'path' => $path, 'type' => $this->header_logo->getMimeType(), 'size' => $this->header_logo->getSize(), 'disk' => 'public']);
             }
-            if ($this->footer_logo) {
+            if ($this->footer_logo && is_object($this->footer_logo)) {
                 $path = $this->footer_logo->store('settings', 'public');
                 $data['footer_logo'] = $path;
                 Media::create(['name' => $this->footer_logo->getClientOriginalName(), 'path' => $path, 'type' => $this->footer_logo->getMimeType(), 'size' => $this->footer_logo->getSize(), 'disk' => 'public']);
             }
-            if ($this->favicon) {
+            if ($this->favicon && is_object($this->favicon)) {
                 $path = $this->favicon->store('settings', 'public');
                 $data['favicon'] = $path;
                 Media::create(['name' => $this->favicon->getClientOriginalName(), 'path' => $path, 'type' => $this->favicon->getMimeType(), 'size' => $this->favicon->getSize(), 'disk' => 'public']);

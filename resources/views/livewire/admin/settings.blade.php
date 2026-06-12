@@ -1,4 +1,5 @@
 <div>
+    @section('header', 'Settings')
     <div class="mb-8">
         <h1 class="text-2xl font-bold tracking-tight">Settings</h1>
         <p class="mt-1 text-sm text-neutral-500">Manage your site configuration, payment gateways, and more.</p>

@@ -1,4 +1,5 @@
 <div>
+    @section('header', 'Media Library')
     <div class="flex justify-between items-center mb-6">
         <h2 class="text-xl font-bold tracking-tight">Media Library</h2>
     </div>

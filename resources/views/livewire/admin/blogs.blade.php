@@ -1,4 +1,5 @@
 <div>
+    @section('header', 'Blog Posts')
     <div class="flex justify-between items-center mb-6">
         <h2 class="text-xl font-bold tracking-tight">Blog Posts</h2>
         <a href="{{ route('admin.blogs.create') }}" wire:navigate class="btn-primary btn-sm">+ New Post</a>

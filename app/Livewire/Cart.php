@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\Book;
 use App\Services\Cart\CartService;
 use Livewire\Component;
 
@@ -48,8 +49,17 @@ class Cart extends Component
         $freeThreshold = (int) (setting('shipping_free_threshold', '500'));
         $shipping = $subtotal >= $freeThreshold ? 0 : $flatRate;
         $total = $subtotal + $shipping;
+        $shippingProgress = min(100, $freeThreshold > 0 ? ($subtotal / $freeThreshold) * 100 : 100);
 
-        return view('livewire.cart', compact('items', 'subtotal', 'count', 'shipping', 'total', 'flatRate', 'freeThreshold'))
-            ->layout('layouts.frontend');
+        $relatedBooks = Book::with('author')
+            ->where('status', 'published')
+            ->inRandomOrder()
+            ->take(4)
+            ->get();
+
+        return view('livewire.cart', compact(
+            'items', 'subtotal', 'count', 'shipping', 'total',
+            'flatRate', 'freeThreshold', 'shippingProgress', 'relatedBooks'
+        ))->layout('layouts.frontend');
     }
 }

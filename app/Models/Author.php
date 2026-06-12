@@ -10,9 +10,7 @@ class Author extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'name', 'slug', 'photo', 'bio',
-        'facebook', 'linkedin', 'website',
-        'royalty_rate', 'status',
+        'name', 'slug', 'photo', 'bio', 'status',
     ];
 
     public function books(): HasMany

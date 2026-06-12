@@ -1,4 +1,5 @@
 <div>
+    @section('header', 'Books')
     <div class="flex justify-between items-center mb-6">
         <h2 class="text-xl font-bold tracking-tight">Books</h2>
         <button wire:click="create" class="btn-primary btn-sm">+ Add Book</button>

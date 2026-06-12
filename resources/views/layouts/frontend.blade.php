@@ -51,6 +51,15 @@
                             <li><a href="{{ route('about') }}" class="text-sm hover:text-white transition-colors">About Us</a></li>
                             <li><a href="{{ route('publication') }}" class="text-sm hover:text-white transition-colors">Publication</a></li>
                             <li><a href="{{ route('events.index') }}" class="text-sm hover:text-white transition-colors">Events</a></li>
+                            <li><a href="{{ route('contact') }}" class="text-sm hover:text-white transition-colors">Contact</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="text-white text-sm font-semibold uppercase tracking-widest mb-4">Policies</h4>
+                        <ul class="space-y-3">
+                            <li><a href="{{ route('privacy-policy') }}" class="text-sm hover:text-white transition-colors">Privacy Policy</a></li>
+                            <li><a href="{{ route('terms-conditions') }}" class="text-sm hover:text-white transition-colors">Terms &amp; Conditions</a></li>
+                            <li><a href="{{ route('return-refund') }}" class="text-sm hover:text-white transition-colors">Return &amp; Refund Policy</a></li>
                         </ul>
                     </div>
                     <div>

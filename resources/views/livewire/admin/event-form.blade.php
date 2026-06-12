@@ -1,4 +1,5 @@
 <div>
+    @section('header', $event_id ? 'Edit Event' : 'New Event')
     <div class="mb-6">
         <a href="{{ route('admin.events') }}" wire:navigate class="text-sm font-semibold uppercase tracking-wider text-neutral-500 hover:text-black transition-colors">&larr; Back to Events</a>
     </div>
@@ -107,7 +108,7 @@
                                         if (html === '<p><br></p>' || html === '<br>') html = '';
                                         $wire.set('description', html);
                                     });
-                                    $refs.editor = quill;
+                                    window.__eventEditor = quill;
                                 "
                                 style="height: 300px;"
                             >{!! $description !!}</div>

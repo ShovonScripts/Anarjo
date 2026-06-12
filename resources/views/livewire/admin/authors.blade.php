@@ -1,4 +1,5 @@
 <div>
+    @section('header', 'Authors')
     <div class="flex justify-between items-center mb-6">
         <h2 class="text-xl font-bold tracking-tight">Authors</h2>
         <button wire:click="create" class="btn-primary btn-sm">+ Add Author</button>
@@ -17,7 +18,6 @@
             <thead class="bg-neutral-100">
                 <tr>
                     <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider">Name</th>
-                    <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider">Royalty</th>
                     <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider">Status</th>
                     <th class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider">Actions</th>
                 </tr>
@@ -26,7 +26,6 @@
                 @forelse($authors as $author)
                     <tr class="hover:bg-neutral-50 transition-colors">
                         <td class="px-4 py-3 text-sm font-medium">{{ $author->name }}</td>
-                        <td class="px-4 py-3 text-sm text-neutral-600">{{ $author->royalty_rate }}%</td>
                         <td class="px-4 py-3 text-sm">
                             <span class="text-xs font-semibold uppercase tracking-wider {{ $author->status === 'active' ? 'text-brand-600' : 'text-neutral-400' }}">
                                 {{ ucfirst($author->status) }}
@@ -38,7 +37,7 @@
                         </td>
                     </tr>
                 @empty
-                    <tr><td colspan="4" class="px-4 py-8 text-center text-neutral-500">No authors found.</td></tr>
+                    <tr><td colspan="3" class="px-4 py-8 text-center text-neutral-500">No authors found.</td></tr>
                 @endforelse
             </tbody>
         </table>
@@ -75,25 +74,7 @@
                     <input type="file" wire:model="photo" accept="image/*" class="block w-full text-sm text-neutral-500 file:mr-4 file:py-2 file:px-4 file:border file:border-neutral-300 file:text-sm file:font-semibold file:bg-white file:text-black hover:file:bg-neutral-50">
                     @error('photo') <span class="text-xs text-brand-600 mt-1">{{ $message }}</span> @enderror
                 </div>
-                <div class="grid grid-cols-2 gap-5">
-                    <div>
-                        <label class="block text-xs font-semibold uppercase tracking-widest mb-2">Facebook</label>
-                        <input wire:model="facebook" class="input-field">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold uppercase tracking-widest mb-2">LinkedIn</label>
-                        <input wire:model="linkedin" class="input-field">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold uppercase tracking-widest mb-2">Website</label>
-                        <input wire:model="website" class="input-field">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold uppercase tracking-widest mb-2">Royalty Rate (%)</label>
-                        <input wire:model="royalty_rate" type="number" step="0.01" class="input-field">
-                        @error('royalty_rate') <span class="text-xs text-brand-600 mt-1">{{ $message }}</span> @enderror
-                    </div>
-                </div>
+
                 <div>
                     <label class="block text-xs font-semibold uppercase tracking-widest mb-2">Status</label>
                     <select wire:model="status" class="input-field">

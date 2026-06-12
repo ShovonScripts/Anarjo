@@ -2,6 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Swiper overrides */
+.swiper-pagination-bullet {
+    @apply bg-white/50 opacity-100 w-3 h-3;
+}
+
+.swiper-pagination-bullet-active {
+    @apply bg-white w-5 rounded-full;
+}
+
+.hero-swiper .swiper-pagination-bullet {
+    @apply bg-white/80 opacity-100 w-2.5 h-2.5;
+}
+
+.hero-swiper .swiper-pagination-bullet-active {
+    @apply bg-white w-6 rounded-full;
+}
+
 @layer base {
     html {
         scroll-behavior: smooth;
@@ -55,7 +72,17 @@
         @apply border border-neutral-200 bg-white;
     }
 
-    .card-hover {
-        @apply border border-neutral-200 bg-white hover:border-black transition-colors duration-200;
-    }
+.card-hover {
+    @apply border border-neutral-200 bg-white hover:border-black transition-colors duration-200;
+}
+
+.featured-books-swiper {
+    overflow: hidden;
+    padding: 4px;
+    margin: -4px;
+}
+
+.featured-books-swiper .swiper-slide {
+    height: auto;
+}
 }

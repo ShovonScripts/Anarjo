@@ -10,12 +10,21 @@ class BookController extends Controller
 {
     public function index()
     {
+        $search = request('search');
+
         $books = Book::with('author', 'category')
-            ->where('status', 'published')
-            ->latest()
-            ->paginate(12);
+            ->where('status', 'published');
+
+        if ($search) {
+            $books->where(function ($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
 
         $categories = Category::withCount('books')->get();
+
+        $books = $books->latest()->paginate(12);
 
         return view('frontend.books.index', compact('books', 'categories'));
     }
@@ -42,7 +51,7 @@ class BookController extends Controller
     {
         $category = Category::where('slug', $slug)->firstOrFail();
 
-        $books = Book::with('author')
+        $books = Book::with('author', 'category')
             ->where('category_id', $category->id)
             ->where('status', 'published')
             ->latest()

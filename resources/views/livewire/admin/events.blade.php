@@ -1,4 +1,5 @@
 <div>
+    @section('header', 'Events')
     <div class="flex justify-between items-center mb-6">
         <h2 class="text-xl font-bold tracking-tight">Events</h2>
         <a href="{{ route('admin.events.create') }}" wire:navigate class="btn-primary btn-sm">+ New Event</a>

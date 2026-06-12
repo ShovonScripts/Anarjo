@@ -1,4 +1,5 @@
 <div>
+    @section('header', 'Manuscripts')
     <div class="flex justify-between items-center mb-6">
         <h2 class="text-xl font-bold tracking-tight">Manuscripts</h2>
     </div>
@@ -26,7 +27,7 @@
                         <td class="px-4 py-3 text-sm font-medium">{{ $m->book_title }}</td>
                         <td class="px-4 py-3 text-sm text-neutral-600">{{ $m->genre ?? '-' }}</td>
                         <td class="px-4 py-3 text-sm">
-                            <span class="text-xs font-semibold uppercase tracking-wider {{ $m->status === 'approved' ? 'text-brand-600' : ($m->status === 'rejected' ? 'text-brand-600' : 'text-neutral-400') }}">{{ ucfirst($m->status) }}</span>
+                            <span class="text-xs font-semibold uppercase tracking-wider {{ $m->status === 'approved' ? 'text-brand-600' : ($m->status === 'rejected' ? 'text-red-600' : 'text-neutral-400') }}">{{ ucfirst($m->status) }}</span>
                         </td>
                         <td class="px-4 py-3 text-right text-sm space-x-3">
                             <button wire:click="review({{ $m->id }})" class="text-xs font-semibold uppercase tracking-wider text-black hover:text-brand-600 transition-colors">Review</button>

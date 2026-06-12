@@ -5,7 +5,10 @@ use App\Http\Controllers\Frontend\BookController;
 use App\Http\Controllers\Frontend\AuthorController;
 use App\Http\Controllers\Frontend\BlogController;
 use App\Http\Controllers\Frontend\EventController;
+use App\Http\Controllers\Frontend\SearchController;
 use App\Http\Controllers\Frontend\PaymentController;
+use App\Http\Controllers\Frontend\ContactController;
+use App\Http\Controllers\Frontend\AboutController;
 use App\Http\Controllers\Frontend\SslCommerzController;
 use App\Http\Controllers\Frontend\BkashController;
 use App\Http\Controllers\Frontend\OrderController;
@@ -17,6 +20,7 @@ Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap')
 Route::get('/robots.txt', fn() => response(view('seo.robots'))->header('Content-Type', 'text/plain'));
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/search', [SearchController::class, 'index'])->name('search');
 
 Route::prefix('books')->name('books.')->group(function () {
     Route::get('/', [BookController::class, 'index'])->name('index');
@@ -69,7 +73,13 @@ Route::post('/payment/sslcommerz/cancel', [SslCommerzController::class, 'cancel'
 Route::post('/payment/sslcommerz/fail', [SslCommerzController::class, 'fail'])->name('payment.sslcommerz.fail');
 Route::post('/payment/sslcommerz/ipn', [SslCommerzController::class, 'ipn'])->name('payment.sslcommerz.ipn');
 
-Route::view('about', 'frontend.about')->name('about');
+Route::view('privacy-policy', 'frontend.policies.privacy')->name('privacy-policy');
+Route::view('terms-conditions', 'frontend.policies.terms')->name('terms-conditions');
+Route::view('return-refund', 'frontend.policies.return-refund')->name('return-refund');
+
+Route::get('about', [AboutController::class, 'index'])->name('about');
+Route::get('contact', [ContactController::class, 'index'])->name('contact');
+Route::post('contact', [ContactController::class, 'store'])->name('contact.store');
 
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])

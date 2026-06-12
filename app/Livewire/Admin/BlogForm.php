@@ -9,6 +9,7 @@ use App\Models\BlogTag;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Str;
+use Mews\Purifier\Facades\Purifier;
 
 class BlogForm extends Component
 {
@@ -66,7 +67,7 @@ class BlogForm extends Component
         $data = [
             'title' => $this->title,
             'slug' => Str::slug($this->title),
-            'content' => $this->content,
+            'content' => Purifier::clean($this->content),
             'blog_category_id' => $this->blog_category_id ?: null,
             'author' => $this->author ?? auth()->user()->name,
             'status' => $this->status,

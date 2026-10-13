@@ -3,7 +3,7 @@
         {{-- Top Bar --}}
         <div class="bg-neutral-900 text-white text-xs uppercase tracking-widest h-8 flex items-center overflow-hidden">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center w-full whitespace-nowrap">
-                <span>শূদ্রের বীনায় বাজুক রুদ্রের সুর</span>
+                <span>শূদ্রের বীণায় বাজুক রুদ্রের সুর</span>
                     <span class="hidden sm:block">@if (setting('shipping_free_threshold')) Free Shipping on Orders Over {{ setting('currency_symbol', '৳') }}{{ number_format((int) setting('shipping_free_threshold')) }} @else Free Shipping @endif</span>
             </div>
         </div>

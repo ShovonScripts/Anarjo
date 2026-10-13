@@ -87,7 +87,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             @foreach($events as $event)
                 <a href="{{ route('events.show', $event->slug) }}" class="group border-2 border-black p-6 hover:bg-neutral-50 transition-colors">
-                    <span class="text-xs uppercase tracking-widest text-brand-600">{{ $event->event_date?->format('M d, Y') }}</span>
+                    <span class="text-xs uppercase tracking-widest text-brand-600">{{ $event->date?->format('M d, Y') }}</span>
                     <h3 class="font-bold text-lg mt-2 group-hover:text-brand-600 transition-colors">{{ $event->title }}</h3>
                     @if($event->description)
                         <p class="text-sm text-neutral-600 mt-2 leading-relaxed">{{ Str::limit(strip_tags($event->description), 150) }}</p>

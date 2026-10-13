@@ -3,18 +3,22 @@
 namespace App\Livewire\Admin;
 
 use App\Models\BlogCategory;
+use Illuminate\Support\Str;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Illuminate\Support\Str;
 
 class BlogCategories extends Component
 {
     use WithPagination;
 
     public $category_id;
+
     public $name;
+
     public $description;
+
     public $search = '';
+
     public $isOpen = false;
 
     protected function rules(): array
@@ -30,7 +34,7 @@ class BlogCategories extends Component
         $query = BlogCategory::withCount('blogs');
 
         if ($this->search) {
-            $query->where('name', 'like', '%' . $this->search . '%');
+            $query->where('name', 'like', '%'.$this->search.'%');
         }
 
         $categories = $query->latest()->paginate(10);
@@ -77,6 +81,7 @@ class BlogCategories extends Component
         $cat = BlogCategory::withCount('blogs')->find($id);
         if ($cat && $cat->blogs_count > 0) {
             session()->flash('error', 'Cannot delete category with existing posts.');
+
             return;
         }
         $cat?->delete();

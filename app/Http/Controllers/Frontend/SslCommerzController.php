@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers\Frontend;
 
+use App\Enums\PaymentStatus;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\SslCommerzCallbackRequest;
 use App\Models\Order;
 use App\Services\SslCommerzService;
-use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Gate;
 
 class SslCommerzController extends Controller
 {
@@ -13,18 +17,17 @@ class SslCommerzController extends Controller
         protected SslCommerzService $sslCommerz
     ) {}
 
-    public function initiate(Order $order)
+    public function initiate(Order $order): RedirectResponse
     {
-        if ($order->user_id !== auth()->id()) {
-            abort(403);
-        }
+        abort_unless(Gate::forUser(auth()->user())->allows('pay', $order), 403);
 
-        if ($order->payment_status !== 'pending') {
-            return redirect()->route('order.confirmation', $order);
+        if ($order->payment_status !== PaymentStatus::Pending->value) {
+            return redirect()->to($order->confirmationUrl());
         }
 
         if (! $this->sslCommerz->isConfigured()) {
-            return back()->with('error', 'SSLCommerz is not configured yet.');
+            return redirect()->to($order->paymentUrl())
+                ->with('error', 'SSLCommerz is not configured yet.');
         }
 
         $result = $this->sslCommerz->initiate($order);
@@ -34,11 +37,12 @@ class SslCommerzController extends Controller
         }
 
         $message = $result['message'] ?? 'Failed to initiate payment. Please try again.';
-        return redirect()->route('payment.process', $order)
+
+        return redirect()->to($order->paymentUrl())
             ->with('error', $message);
     }
 
-    public function success(Request $request)
+    public function success(SslCommerzCallbackRequest $request): RedirectResponse
     {
         $order = Order::where('invoice_no', $request->input('tran_id'))->first();
 
@@ -46,69 +50,105 @@ class SslCommerzController extends Controller
             return redirect()->route('home')->with('error', 'Order not found.');
         }
 
+        // The IPN may already have marked this order complete (SSLCommerz sends
+        // IPN before redirecting the customer). Never downgrade a paid order.
+        if ($order->payment_status === PaymentStatus::Completed->value) {
+            return redirect()->to($order->confirmationUrl())
+                ->with('message', 'Payment successful!');
+        }
+
+        $amount = (string) ($request->input('amount') ?? $order->total);
+        $currency = (string) ($request->input('currency') ?? setting('currency_code', 'BDT'));
+        $valId = $request->input('val_id');
+
         $isValid = $this->sslCommerz->validateTranId(
             $request->input('tran_id'),
-            $request->input('amount'),
-            $request->input('currency')
+            $amount,
+            $currency,
+            $valId
         );
 
         if ($isValid) {
             $order->update([
-                'payment_status' => 'completed',
+                'payment_status' => PaymentStatus::Completed->value,
+                'payment_id'     => $valId ?? $request->input('bank_tran_id') ?? $order->payment_id,
             ]);
 
-            return redirect()->route('order.confirmation', $order)
+            return redirect()->to($order->confirmationUrl())
                 ->with('message', 'Payment successful!');
         }
 
-        $order->update([
-            'payment_status' => 'failed',
-        ]);
+        if ($order->payment_status === PaymentStatus::Pending->value) {
+            $order->update([
+                'payment_status' => PaymentStatus::Failed->value,
+            ]);
+        }
 
-        return redirect()->route('checkout')
+        return redirect()->to($order->confirmationUrl())
             ->with('error', 'Payment validation failed.');
     }
 
-    public function cancel(Request $request)
+    public function cancel(SslCommerzCallbackRequest $request): RedirectResponse
     {
         $order = Order::where('invoice_no', $request->input('tran_id'))->first();
 
-        if ($order) {
-            $order->update(['payment_status' => 'cancelled']);
+        if ($order && $order->payment_status === PaymentStatus::Pending->value) {
+            $order->update(['payment_status' => PaymentStatus::Cancelled->value]);
         }
 
-        return redirect()->route('checkout')
-            ->with('error', 'Payment was cancelled.');
-    }
-
-    public function fail(Request $request)
-    {
-        $order = Order::where('invoice_no', $request->input('tran_id'))->first();
-
         if ($order) {
-            $order->update(['payment_status' => 'failed']);
+            return redirect()->to($order->confirmationUrl())
+                ->with('error', 'Payment was cancelled.');
         }
 
-        return redirect()->route('checkout')
-            ->with('error', 'Payment failed. Please try again.');
+        return redirect()->route('home')->with('error', 'Payment was cancelled.');
     }
 
-    public function ipn(Request $request)
+    public function fail(SslCommerzCallbackRequest $request): RedirectResponse
     {
         $order = Order::where('invoice_no', $request->input('tran_id'))->first();
 
-        if (! $order || $order->payment_status === 'completed') {
+        if ($order && $order->payment_status === PaymentStatus::Pending->value) {
+            $order->update(['payment_status' => PaymentStatus::Failed->value]);
+        }
+
+        if ($order) {
+            return redirect()->to($order->confirmationUrl())
+                ->with('error', 'Payment failed. Please try again.');
+        }
+
+        return redirect()->route('home')->with('error', 'Payment failed. Please try again.');
+    }
+
+    public function ipn(SslCommerzCallbackRequest $request): Response
+    {
+        $order = Order::where('invoice_no', $request->input('tran_id'))->first();
+
+        if (! $order || $order->payment_status === PaymentStatus::Completed->value) {
             return response('OK', 200);
         }
 
+        $amount = (string) ($request->input('amount') ?? $order->total);
+        $currency = (string) ($request->input('currency') ?? setting('currency_code', 'BDT'));
+        $valId = $request->input('val_id');
+
         $isValid = $this->sslCommerz->validateTranId(
             $request->input('tran_id'),
-            $request->input('amount'),
-            $request->input('currency')
+            $amount,
+            $currency,
+            $valId
         );
 
         if ($isValid) {
-            $order->update(['payment_status' => 'completed']);
+            $order->update([
+                'payment_status' => PaymentStatus::Completed->value,
+                'payment_id'     => $valId ?? $request->input('bank_tran_id') ?? $order->payment_id,
+            ]);
+        } else {
+            // IPN validation failed — mark as failed so stock is restored.
+            if ($order->payment_status === PaymentStatus::Pending->value) {
+                $order->update(['payment_status' => PaymentStatus::Failed->value]);
+            }
         }
 
         return response('OK', 200);

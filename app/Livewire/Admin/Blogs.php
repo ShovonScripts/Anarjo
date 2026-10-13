@@ -13,7 +13,9 @@ class Blogs extends Component
     use WithPagination;
 
     public $search = '';
+
     public $statusFilter = '';
+
     public $categoryFilter = '';
 
     public function render()
@@ -22,8 +24,8 @@ class Blogs extends Component
 
         if ($this->search) {
             $query->where(function ($q) {
-                $q->where('title', 'like', '%' . $this->search . '%')
-                  ->orWhere('content', 'like', '%' . $this->search . '%');
+                $q->where('title', 'like', '%'.$this->search.'%')
+                    ->orWhere('content', 'like', '%'.$this->search.'%');
             });
         }
 

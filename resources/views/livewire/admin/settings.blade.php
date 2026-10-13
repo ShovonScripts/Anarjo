@@ -26,9 +26,6 @@
             <button wire:click="$set('tab', 'shipping')" class="px-5 py-3 text-sm font-semibold uppercase tracking-wider border-b-2 transition-colors {{ $tab === 'shipping' ? 'border-black text-black' : 'border-transparent text-neutral-500 hover:text-black hover:border-neutral-300' }}">
                 Shipping
             </button>
-            <button wire:click="$set('tab', 'seo')" class="px-5 py-3 text-sm font-semibold uppercase tracking-wider border-b-2 transition-colors {{ $tab === 'seo' ? 'border-black text-black' : 'border-transparent text-neutral-500 hover:text-black hover:border-neutral-300' }}">
-                SEO
-            </button>
         </nav>
     </div>
 
@@ -214,11 +211,12 @@
                     </div>
                     <div>
                         <x-input-label for="mail_username" value="SMTP Username" />
-                        <x-text-input wire:model="mail_username" id="mail_username" class="mt-1 block w-full" />
+                        <x-text-input id="mail_username" class="mt-1 block w-full" disabled value="{{ config('mail.mailers.smtp.username') }}" />
                     </div>
                     <div>
                         <x-input-label for="mail_password" value="SMTP Password" />
-                        <input wire:model="mail_password" id="mail_password" type="password" class="input-field mt-1 block w-full">
+                        <input id="mail_password" type="password" class="input-field mt-1 block w-full" disabled value="********" />
+                        <p class="text-xs text-neutral-500 mt-1">Credentials are configured in <code>.env</code> and cannot be changed here.</p>
                     </div>
                     <div>
                         <x-input-label for="mail_encryption" value="Encryption" />
@@ -278,25 +276,15 @@
                 <div class="border border-neutral-200 p-6">
                     <h3 class="text-sm font-bold uppercase tracking-wider mb-1">bKash Merchant API</h3>
                     <p class="text-xs text-neutral-400 mb-4">Automatic payment processing via bKash Tokenized Checkout.</p>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl">
-                        <div>
-                            <x-input-label for="payment_bkash_app_key" value="App Key" />
-                            <x-text-input wire:model="payment_bkash_app_key" id="payment_bkash_app_key" class="mt-1 block w-full" />
-                        </div>
-                        <div>
-                            <x-input-label for="payment_bkash_app_secret" value="App Secret" />
-                            <input wire:model="payment_bkash_app_secret" id="payment_bkash_app_secret" type="password" class="input-field mt-1 block w-full">
-                        </div>
-                        <div>
-                            <x-input-label for="payment_bkash_username" value="Username" />
-                            <x-text-input wire:model="payment_bkash_username" id="payment_bkash_username" class="mt-1 block w-full" />
-                        </div>
-                        <div>
-                            <x-input-label for="payment_bkash_password" value="Password" />
-                            <input wire:model="payment_bkash_password" id="payment_bkash_password" type="password" class="input-field mt-1 block w-full">
-                        </div>
+                    <div class="bg-neutral-50 border border-neutral-200 px-4 py-3 mb-4 text-sm text-neutral-600">
+                        <strong class="text-neutral-900">Credentials are managed via environment variables.</strong>
+                        Set <code class="text-brand-700 bg-brand-50 px-1.5 py-0.5 text-xs font-mono">BKASH_APP_KEY</code>,
+                        <code class="text-brand-700 bg-brand-50 px-1.5 py-0.5 text-xs font-mono">BKASH_APP_SECRET</code>,
+                        <code class="text-brand-700 bg-brand-50 px-1.5 py-0.5 text-xs font-mono">BKASH_USERNAME</code>, and
+                        <code class="text-brand-700 bg-brand-50 px-1.5 py-0.5 text-xs font-mono">BKASH_PASSWORD</code>
+                        in your <code class="text-brand-700 bg-brand-50 px-1.5 py-0.5 text-xs font-mono">.env</code> file.
                     </div>
-                    <div class="mt-4">
+                    <div>
                         <label class="inline-flex items-center gap-3">
                             <input type="checkbox" wire:model="payment_bkash_sandbox" class="border-neutral-300 text-black focus:ring-black">
                             <span class="text-sm font-medium">Sandbox Mode (Test)</span>
@@ -308,17 +296,13 @@
                 <div class="border border-neutral-200 p-6">
                     <h3 class="text-sm font-bold uppercase tracking-wider mb-1">SSLCommerz</h3>
                     <p class="text-xs text-neutral-400 mb-4">Automatic payment processing via SSLCommerz.</p>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl">
-                        <div>
-                            <x-input-label for="payment_sslcommerz_store_id" value="Store ID" />
-                            <x-text-input wire:model="payment_sslcommerz_store_id" id="payment_sslcommerz_store_id" class="mt-1 block w-full" />
-                        </div>
-                        <div>
-                            <x-input-label for="payment_sslcommerz_store_passwd" value="Store Password" />
-                            <input wire:model="payment_sslcommerz_store_passwd" id="payment_sslcommerz_store_passwd" type="password" class="input-field mt-1 block w-full">
-                        </div>
+                    <div class="bg-neutral-50 border border-neutral-200 px-4 py-3 mb-4 text-sm text-neutral-600">
+                        <strong class="text-neutral-900">Credentials are managed via environment variables.</strong>
+                        Set <code class="text-brand-700 bg-brand-50 px-1.5 py-0.5 text-xs font-mono">SSLCOMMERZ_STORE_ID</code> and
+                        <code class="text-brand-700 bg-brand-50 px-1.5 py-0.5 text-xs font-mono">SSLCOMMERZ_STORE_PASSWD</code>
+                        in your <code class="text-brand-700 bg-brand-50 px-1.5 py-0.5 text-xs font-mono">.env</code> file.
                     </div>
-                    <div class="mt-4">
+                    <div>
                         <label class="inline-flex items-center gap-3">
                             <input type="checkbox" wire:model="payment_sslcommerz_sandbox" class="border-neutral-300 text-black focus:ring-black">
                             <span class="text-sm font-medium">Sandbox Mode (Test)</span>
@@ -363,32 +347,5 @@
             </form>
         </div>
 
-    {{-- SEO Tab --}}
-    @elseif ($tab === 'seo')
-        <div class="border border-neutral-200 bg-white">
-            <div class="px-8 py-6 border-b border-neutral-200">
-                <h2 class="text-lg font-bold tracking-tight">SEO Settings</h2>
-                <p class="mt-1 text-sm text-neutral-500">Search engine optimization and analytics.</p>
-            </div>
-            <form wire:submit="save" class="px-8 py-6 space-y-6">
-                <div>
-                    <x-input-label for="seo_meta_title" value="Default Meta Title" />
-                    <x-text-input wire:model="seo_meta_title" id="seo_meta_title" class="mt-1 block w-full" />
-                </div>
-                <div>
-                    <x-input-label for="seo_meta_description" value="Default Meta Description" />
-                    <textarea wire:model="seo_meta_description" id="seo_meta_description" rows="3" class="input-field mt-1 block w-full"></textarea>
-                </div>
-                <div>
-                    <x-input-label for="seo_google_analytics_id" value="Google Analytics ID" />
-                    <x-text-input wire:model="seo_google_analytics_id" id="seo_google_analytics_id" class="mt-1 block w-full" placeholder="G-XXXXXXXXXX" />
-                    <p class="mt-1 text-xs text-neutral-400">Your Google Analytics measurement ID.</p>
-                </div>
-                <div class="flex items-center gap-4 pt-2">
-                    <button type="submit" class="btn-primary" wire:loading.attr="disabled">Save Changes</button>
-                    <div wire:loading wire:target="save" class="text-sm text-neutral-500">Saving...</div>
-                </div>
-            </form>
-        </div>
     @endif
 </div>

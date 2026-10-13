@@ -8,8 +8,11 @@ use Livewire\Component;
 class BookReviews extends Component
 {
     public int $bookId;
+
     public int $rating = 5;
+
     public string $body = '';
+
     public ?Review $userReview = null;
 
     public function mount(): void
@@ -28,8 +31,9 @@ class BookReviews extends Component
 
     public function submit(): void
     {
-        if (!auth()->check()) {
+        if (! auth()->check()) {
             $this->dispatch('notify', message: 'Please login to review.');
+
             return;
         }
 

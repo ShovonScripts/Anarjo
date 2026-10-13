@@ -4,7 +4,8 @@
 @section('meta_description', $blog->meta_description)
 
 @section('content')
-<article class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+<x-breadcrumbs :items="array_filter([['label' => 'Blog', 'url' => route('blog.index')], $blog->category ? ['label' => $blog->category->name, 'url' => route('blog.index', ['category' => $blog->category->slug])] : null, ['label' => $blog->title]])" />
+<article class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <div class="grid grid-cols-1 lg:grid-cols-4 gap-12">
         {{-- Main Content --}}
         <div class="lg:col-span-3">
@@ -45,9 +46,9 @@
             <div class="border-t border-neutral-200 pt-8 flex items-center justify-between">
                 <div class="flex items-center gap-4">
                     <span class="text-xs font-semibold uppercase tracking-widest text-neutral-500">Share:</span>
-                    <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(request()->url()) }}" target="_blank" class="text-sm font-semibold uppercase tracking-wider text-black hover:text-brand-600 transition-colors">Facebook</a>
-                    <a href="https://twitter.com/intent/tweet?url={{ urlencode(request()->url()) }}&text={{ urlencode($blog->title) }}" target="_blank" class="text-sm font-semibold uppercase tracking-wider text-black hover:text-brand-600 transition-colors">Twitter</a>
-                    <a href="https://www.linkedin.com/shareArticle?url={{ urlencode(request()->url()) }}" target="_blank" class="text-sm font-semibold uppercase tracking-wider text-black hover:text-brand-600 transition-colors">LinkedIn</a>
+                    <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(request()->url()) }}" target="_blank" aria-label="Share on Facebook" class="text-sm font-semibold uppercase tracking-wider text-black hover:text-brand-600 transition-colors">Facebook</a>
+                    <a href="https://twitter.com/intent/tweet?url={{ urlencode(request()->url()) }}&text={{ urlencode($blog->title) }}" target="_blank" aria-label="Share on Twitter" class="text-sm font-semibold uppercase tracking-wider text-black hover:text-brand-600 transition-colors">Twitter</a>
+                    <a href="https://www.linkedin.com/shareArticle?url={{ urlencode(request()->url()) }}" target="_blank" aria-label="Share on LinkedIn" class="text-sm font-semibold uppercase tracking-wider text-black hover:text-brand-600 transition-colors">LinkedIn</a>
                 </div>
                 <livewire:blog-like :blog-id="$blog->id" :key="'like-' . $blog->id" />
             </div>

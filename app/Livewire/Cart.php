@@ -8,6 +8,10 @@ use Livewire\Component;
 
 class Cart extends Component
 {
+    public bool $confirmClear = false;
+
+    public string $removingKey = '';
+
     protected CartService $cartService;
 
     public function boot(CartService $cartService): void
@@ -15,29 +19,60 @@ class Cart extends Component
         $this->cartService = $cartService;
     }
 
-    public function addToCart(int $bookId, int $qty = 1): void
+    public function addToCart(int $itemId, int $qty = 1, string $type = 'book'): void
     {
-        $this->cartService->add($bookId, $qty);
+        $this->cartService->add($itemId, $qty, $type);
         $this->dispatch('cart-updated');
-        $this->dispatch('notify', message: 'Book added to cart!');
+        $this->dispatch('notify', message: 'Item added to cart!');
     }
 
-    public function updateQty(int $bookId, int $qty): void
+    public function updateQty(string $key, int $qty): void
     {
-        $this->cartService->update($bookId, $qty);
+        $qty = max(1, min(99, $qty));
+        $this->cartService->update($key, $qty);
         $this->dispatch('cart-updated');
     }
 
-    public function remove(int $bookId): void
+    public function decrement(string $key): void
     {
-        $this->cartService->remove($bookId);
+        $item = $this->cartService->get()[$key] ?? null;
+        if (! $item) {
+            return;
+        }
+        if ($item['qty'] <= 1) {
+            $this->cartService->remove($key);
+        } else {
+            $this->cartService->update($key, $item['qty'] - 1);
+        }
         $this->dispatch('cart-updated');
+    }
+
+    public function remove(string $key): void
+    {
+        $this->removingKey = $key;
+        $item = $this->cartService->get()[$key] ?? null;
+        $this->cartService->remove($key);
+        $this->dispatch('cart-updated');
+        $this->dispatch('notify', message: $item ? "'{$item['title']}' removed from cart." : 'Item removed.');
+        $this->removingKey = '';
+    }
+
+    public function confirmClear(): void
+    {
+        $this->confirmClear = true;
     }
 
     public function clear(): void
     {
         $this->cartService->clear();
+        $this->confirmClear = false;
         $this->dispatch('cart-updated');
+        $this->dispatch('notify', message: 'Cart cleared.');
+    }
+
+    public function cancelClear(): void
+    {
+        $this->confirmClear = false;
     }
 
     public function render()
@@ -45,11 +80,13 @@ class Cart extends Component
         $items = $this->cartService->get();
         $subtotal = $this->cartService->subtotal();
         $count = $this->cartService->count();
-        $flatRate = (int) (setting('shipping_flat_rate_outside', '100'));
+        $insideDhakaRate = (int) (setting('shipping_flat_rate_inside', '60'));
+        $outsideDhakaRate = (int) (setting('shipping_flat_rate_outside', '100'));
         $freeThreshold = (int) (setting('shipping_free_threshold', '500'));
-        $shipping = $subtotal >= $freeThreshold ? 0 : $flatRate;
+        $shipping = $subtotal >= $freeThreshold ? 0 : $outsideDhakaRate;
         $total = $subtotal + $shipping;
-        $shippingProgress = min(100, $freeThreshold > 0 ? ($subtotal / $freeThreshold) * 100 : 100);
+        $shippingProgress = $freeThreshold > 0 ? min(100, ($subtotal / $freeThreshold) * 100) : 100;
+        $amountToFree = max(0, $freeThreshold - $subtotal);
 
         $relatedBooks = Book::with('author')
             ->where('status', 'published')
@@ -59,7 +96,7 @@ class Cart extends Component
 
         return view('livewire.cart', compact(
             'items', 'subtotal', 'count', 'shipping', 'total',
-            'flatRate', 'freeThreshold', 'shippingProgress', 'relatedBooks'
+            'freeThreshold', 'shippingProgress', 'amountToFree', 'relatedBooks'
         ))->layout('layouts.frontend');
     }
 }

@@ -2,29 +2,39 @@
 
 namespace App\Livewire\Admin;
 
+use App\Livewire\Concerns\UploadsMedia;
 use App\Models\Blog;
 use App\Models\BlogCategory;
-use App\Models\Media;
 use App\Models\BlogTag;
+use Illuminate\Support\Str;
 use Livewire\Component;
 use Livewire\WithFileUploads;
-use Illuminate\Support\Str;
 use Mews\Purifier\Facades\Purifier;
 
 class BlogForm extends Component
 {
-    use WithFileUploads;
+    use UploadsMedia, WithFileUploads;
 
     public $blog_id;
+
     public $title;
+
     public $content;
+
     public $featured_image;
+
     public $existing_featured_image;
+
     public $blog_category_id = '';
+
     public $tags = [];
+
     public $author;
+
     public $status = 'draft';
+
     public $meta_title;
+
     public $meta_description;
 
     protected function rules(): array
@@ -73,22 +83,14 @@ class BlogForm extends Component
             'status' => $this->status,
             'meta_title' => $this->meta_title,
             'meta_description' => $this->meta_description,
-            'published_at' => $this->status === 'published' && !$this->blog_id
+            'published_at' => $this->status === 'published' && ! $this->blog_id
                 ? now()
                 : ($this->status === 'published' ? Blog::find($this->blog_id)?->published_at ?? now() : null),
         ];
 
         if ($this->featured_image) {
-            $path = $this->featured_image->store('blog-images', 'public');
-            $data['featured_image'] = $path;
-            Media::create([
-                'name' => $this->featured_image->getClientOriginalName(),
-                'path' => $path,
-                'type' => $this->featured_image->getMimeType(),
-                'size' => $this->featured_image->getSize(),
-                'disk' => 'public',
-            ]);
-        } elseif ($this->blog_id && !$this->existing_featured_image) {
+            $data['featured_image'] = $this->storeMedia($this->featured_image, 'blog-images');
+        } elseif ($this->blog_id && ! $this->existing_featured_image) {
             $data['featured_image'] = null;
         }
 

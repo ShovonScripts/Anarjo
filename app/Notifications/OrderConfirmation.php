@@ -25,12 +25,12 @@ class OrderConfirmation extends Notification
         $name = $notifiable->name ?? $this->order->address?->name ?? 'Valued Customer';
 
         return (new MailMessage)
-            ->subject('Order Confirmation - ' . $this->order->invoice_no)
-            ->greeting('Dear ' . $name . ',')
+            ->subject('Order Confirmation - '.$this->order->invoice_no)
+            ->greeting('Dear '.$name.',')
             ->line('Your order has been placed successfully.')
-            ->line('Invoice: ' . $this->order->invoice_no)
-            ->line('Total: ৳' . number_format($this->order->total))
-            ->action('View Order', route('order.confirmation', $this->order))
+            ->line('Invoice: '.$this->order->invoice_no)
+            ->line('Total: ৳'.number_format($this->order->total))
+            ->action('View Order', $this->order->confirmationUrl())
             ->line('Thank you for shopping with Anarjo Publications!');
     }
 

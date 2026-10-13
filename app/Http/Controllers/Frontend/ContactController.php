@@ -3,26 +3,21 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ContactFormRequest;
 use App\Models\ContactMessage;
-use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 
 class ContactController extends Controller
 {
-    public function index()
+    public function index(): View
     {
         return view('frontend.contact');
     }
 
-    public function store(Request $request)
+    public function store(ContactFormRequest $request): RedirectResponse
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'subject' => 'nullable|string|max:255',
-            'message' => 'required|string',
-        ]);
-
-        ContactMessage::create($validated);
+        ContactMessage::create($request->validated());
 
         return back()->with('success', 'Your message has been sent. We will get back to you shortly.');
     }

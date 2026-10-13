@@ -3,7 +3,8 @@
 @section('title', 'Events - ' . config('app.name'))
 
 @section('content')
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+<x-breadcrumbs :items="[['label' => 'Events']]" />
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <h1 class="section-heading mb-12">Events & Media</h1>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         @forelse($events as $event)

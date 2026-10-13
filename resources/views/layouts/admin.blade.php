@@ -7,9 +7,11 @@
     <title>@yield('title', config('app.name', 'Anarjo')) - Admin</title>
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700,800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.maateen.me/solaiman-lipi/font.css" rel="stylesheet" />
     @if (setting('favicon'))
         <link rel="icon" type="image/png" href="{{ asset('storage/' . setting('favicon')) }}">
     @endif
+    @livewireStyles
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link href="https://cdn.jsdelivr.net/npm/quill@2/dist/quill.snow.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/quill@2/dist/quill.min.js"></script>
@@ -55,7 +57,7 @@
                     </div>
                     <div class="space-y-0.5">
                         {{-- Books Dropdown --}}
-                        @php $booksActive = request()->routeIs('admin.books*') || request()->routeIs('admin.categories*') || request()->routeIs('admin.authors*'); @endphp
+                        @php $booksActive = request()->routeIs('admin.books*') || request()->routeIs('admin.categories*') || request()->routeIs('admin.authors*') || request()->routeIs('admin.book-fair-editions*'); @endphp
                         <div x-data="{ open: @json($booksActive) }">
                             <button @click="open = !open" class="flex items-center justify-between w-full px-4 py-2 text-sm font-medium border-l-2 transition-all duration-150 {{ $booksActive ? 'text-white bg-white/[0.07] border-brand-500' : 'text-neutral-400 hover:text-white hover:bg-white/[0.04] border-transparent' }}">
                                 <span class="flex items-center gap-3 min-w-0">
@@ -68,6 +70,23 @@
                                 <x-admin.nav-item :href="route('admin.books')" :active="request()->routeIs('admin.books')" label="All Books" />
                                 <x-admin.nav-item :href="route('admin.categories')" :active="request()->routeIs('admin.categories*')" label="Categories" />
                                 <x-admin.nav-item :href="route('admin.authors')" :active="request()->routeIs('admin.authors*')" label="Authors" />
+                                <x-admin.nav-item :href="route('admin.book-fair-editions')" :active="request()->routeIs('admin.book-fair-editions*')" label="Book Fair Editions" />
+                            </div>
+                        </div>
+
+                        {{-- Stationery Dropdown --}}
+                        @php $stationeryActive = request()->routeIs('admin.stationeries*') || request()->routeIs('admin.brands*'); @endphp
+                        <div x-data="{ open: @json($stationeryActive) }">
+                            <button @click="open = !open" class="flex items-center justify-between w-full px-4 py-2 text-sm font-medium border-l-2 transition-all duration-150 {{ $stationeryActive ? 'text-white bg-white/[0.07] border-brand-500' : 'text-neutral-400 hover:text-white hover:bg-white/[0.04] border-transparent' }}">
+                                <span class="flex items-center gap-3 min-w-0">
+                                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                                    <span class="truncate">Stationery</span>
+                                </span>
+                                <svg class="w-3 h-3 shrink-0 transition-transform duration-200" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                            </button>
+                            <div x-show="open" x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0 -translate-y-1" x-transition:enter-end="opacity-100 translate-y-0" class="mt-0.5 space-y-0.5 pl-11">
+                                <x-admin.nav-item :href="route('admin.stationeries')" :active="request()->routeIs('admin.stationeries')" label="All Items" />
+                                <x-admin.nav-item :href="route('admin.brands')" :active="request()->routeIs('admin.brands*')" label="Brands" />
                             </div>
                         </div>
 
@@ -140,6 +159,10 @@
 
                         <x-admin.nav-item :href="route('admin.reviews')" :active="request()->routeIs('admin.reviews*')" label="Reviews">
                             <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/></svg>
+                        </x-admin.nav-item>
+
+                        <x-admin.nav-item :href="route('admin.comments')" :active="request()->routeIs('admin.comments*')" label="Comments">
+                            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
                         </x-admin.nav-item>
                     </div>
                 </div>
@@ -235,6 +258,7 @@
             </div>
         </main>
     </div>
+    @livewireScripts
     @stack('js')
 </body>
 </html>

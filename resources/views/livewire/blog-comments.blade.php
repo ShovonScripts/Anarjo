@@ -29,6 +29,7 @@
             <div class="flex justify-end">
                 <button type="submit" class="btn-primary btn-sm text-xs tracking-wider uppercase">Post Comment</button>
             </div>
+            <p class="text-xs text-neutral-400">Your comment will appear once approved by a moderator.</p>
         </form>
     @else
         <p class="text-sm text-neutral-500">

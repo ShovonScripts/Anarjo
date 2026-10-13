@@ -1,0 +1,8 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule \.(php|php[0-9]?|phtml)$ - [F]
+</IfModule>
+
+<IfModule mod_php.c>
+    php_flag engine off
+</IfModule>

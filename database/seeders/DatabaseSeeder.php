@@ -13,6 +13,10 @@ class DatabaseSeeder extends Seeder
         $this->call(SettingsSeeder::class);
         $this->call(BlogSeeder::class);
         $this->call(EventSeeder::class);
+        $this->call(BookFairEditionSeeder::class);
+        $this->call(StationerySeeder::class);
+        $this->call(AuthorSeeder::class);
+        $this->call(BookCatalogSeeder::class);
 
         $superAdmin = User::firstOrCreate(
             ['email' => 'admin@anarjo.com'],
@@ -20,7 +24,7 @@ class DatabaseSeeder extends Seeder
                 'name' => 'Super Admin',
                 'email' => 'admin@anarjo.com',
                 'password' => bcrypt('password'),
-                'phone' => '01' . fake()->numerify('##########'),
+                'phone' => '01'.fake()->numerify('##########'),
                 'status' => 'active',
                 'email_verified_at' => now(),
             ]
@@ -33,7 +37,7 @@ class DatabaseSeeder extends Seeder
                 'name' => 'Test User',
                 'email' => 'user@anarjo.com',
                 'password' => bcrypt('password'),
-                'phone' => '01' . fake()->numerify('##########'),
+                'phone' => '01'.fake()->numerify('##########'),
                 'status' => 'active',
                 'email_verified_at' => now(),
             ]

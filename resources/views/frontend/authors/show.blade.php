@@ -3,7 +3,8 @@
 @section('title', $author->name . ' - ' . config('app.name'))
 
 @section('content')
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+<x-breadcrumbs :items="[['label' => $author->name]]" />
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <div class="flex flex-col md:flex-row items-center md:items-start gap-10 md:gap-16 mb-20">
         <div class="w-48 h-48 md:w-56 md:h-56 flex-shrink-0 overflow-hidden rounded-2xl border-2 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
             @if($author->photo)

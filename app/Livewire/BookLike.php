@@ -9,7 +9,9 @@ use Livewire\Component;
 class BookLike extends Component
 {
     public int $bookId;
+
     public bool $liked = false;
+
     public int $count = 0;
 
     public function mount(): void
@@ -28,8 +30,9 @@ class BookLike extends Component
 
     public function toggle(): void
     {
-        if (!auth()->check()) {
+        if (! auth()->check()) {
             $this->dispatch('notify', message: 'Please login to like.');
+
             return;
         }
 

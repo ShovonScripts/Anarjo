@@ -2,7 +2,10 @@
 
 namespace App\Livewire\Admin;
 
+use App\Enums\DeliveryStatus;
+use App\Enums\PaymentStatus;
 use App\Models\Order;
+use Illuminate\Validation\Rule;
 use Livewire\Component;
 
 class OrderDetail extends Component
@@ -10,7 +13,9 @@ class OrderDetail extends Component
     public Order $order;
 
     public string $payment_status = '';
+
     public string $delivery_status = '';
+
     public string $notes = '';
 
     public function mount(): void
@@ -23,8 +28,8 @@ class OrderDetail extends Component
     public function updateStatus()
     {
         $this->validate([
-            'payment_status' => 'required|in:pending,completed,cancelled,failed',
-            'delivery_status' => 'required|in:pending,processing,shipped,delivered,cancelled',
+            'payment_status' => ['required', Rule::enum(PaymentStatus::class)],
+            'delivery_status' => ['required', Rule::enum(DeliveryStatus::class)],
         ]);
 
         $this->order->update([

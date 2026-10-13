@@ -2,24 +2,31 @@
 
 namespace App\Livewire\Admin;
 
+use App\Livewire\Concerns\UploadsMedia;
 use App\Models\Author;
-use App\Models\Media;
-use Livewire\Component;
-use Livewire\WithPagination;
-use Livewire\WithFileUploads;
 use Illuminate\Support\Str;
+use Livewire\Component;
+use Livewire\WithFileUploads;
+use Livewire\WithPagination;
 
 class Authors extends Component
 {
-    use WithPagination, WithFileUploads;
+    use UploadsMedia, WithFileUploads, WithPagination;
 
     public $author_id;
+
     public $name;
+
     public $bio;
+
     public $status = 'active';
+
     public $photo;
+
     public $existing_photo;
+
     public $search = '';
+
     public $isOpen = false;
 
     protected function rules(): array
@@ -34,7 +41,7 @@ class Authors extends Component
 
     public function render()
     {
-        $authors = Author::where('name', 'like', '%' . $this->search . '%')
+        $authors = Author::where('name', 'like', '%'.$this->search.'%')
             ->latest()
             ->paginate(10);
 
@@ -71,16 +78,8 @@ class Authors extends Component
         ];
 
         if ($this->photo) {
-            $path = $this->photo->store('authors', 'public');
-            $data['photo'] = $path;
-            Media::create([
-                'name' => $this->photo->getClientOriginalName(),
-                'path' => $path,
-                'type' => $this->photo->getMimeType(),
-                'size' => $this->photo->getSize(),
-                'disk' => 'public',
-            ]);
-        } elseif ($this->author_id && !$this->existing_photo) {
+            $data['photo'] = $this->storeMedia($this->photo, 'authors');
+        } elseif ($this->author_id && ! $this->existing_photo) {
             $data['photo'] = null;
         }
 

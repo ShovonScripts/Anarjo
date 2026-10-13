@@ -6,10 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Models\Author;
 use App\Models\Book;
 use App\Models\Category;
+use App\Models\HeroSlide;
+use Illuminate\View\View;
 
 class AboutController extends Controller
 {
-    public function index()
+    public function index(): View
     {
         $stats = [
             'books' => Book::where('status', 'published')->count(),
@@ -17,6 +19,11 @@ class AboutController extends Controller
             'categories' => Category::count(),
         ];
 
-        return view('frontend.about', compact('stats'));
+        $aboutSlides = HeroSlide::where('page', 'about')
+            ->where('status', true)
+            ->orderBy('sort_order')
+            ->get();
+
+        return view('frontend.about', compact('stats', 'aboutSlides'));
     }
 }

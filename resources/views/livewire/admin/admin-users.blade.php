@@ -1,5 +1,8 @@
 <div>
     @section('header', 'Admin Management')
+    @if(!auth()->user()->hasRole('Super Admin'))
+        <div class="mb-6 px-5 py-4 border border-amber-300 bg-amber-50 text-amber-800 text-sm font-medium">You have limited access. Only Super Admins can manage other Super Admin accounts.</div>
+    @endif
     @if (session('message'))
         <div class="mb-6 px-5 py-4 border border-brand-600 bg-brand-50 text-brand-700 text-sm font-medium">{{ session('message') }}</div>
     @endif
@@ -43,9 +46,11 @@
                             <span class="text-xs font-semibold uppercase tracking-wider {{ ($user->status ?? 'active') === 'active' ? 'text-brand-600' : 'text-neutral-400' }}">{{ $user->status ?? 'active' }}</span>
                         </td>
                         <td class="px-5 py-4 text-right space-x-3">
-                            <button wire:click="edit({{ $user->id }})" class="text-xs font-semibold uppercase tracking-wider text-neutral-600 hover:text-black transition-colors">Edit</button>
-                            @if($user->id !== auth()->id())
-                            <button wire:click="confirmDelete({{ $user->id }})" class="text-xs font-semibold uppercase tracking-wider text-brand-600 hover:text-brand-700 transition-colors">Delete</button>
+                            @if(!$user->hasRole('Super Admin') || auth()->user()->hasRole('Super Admin'))
+                                <button wire:click="edit({{ $user->id }})" class="text-xs font-semibold uppercase tracking-wider text-neutral-600 hover:text-black transition-colors">Edit</button>
+                                @if($user->id !== auth()->id())
+                                <button wire:click="confirmDelete({{ $user->id }})" class="text-xs font-semibold uppercase tracking-wider text-brand-600 hover:text-brand-700 transition-colors">Delete</button>
+                                @endif
                             @endif
                         </td>
                     </tr>
@@ -88,6 +93,7 @@
                     <div>
                         <label class="block text-xs font-semibold uppercase tracking-widest mb-2">Confirm Password</label>
                         <input type="password" wire:model="password_confirmation" class="w-full px-4 py-2.5 border border-neutral-300 text-sm focus:outline-none focus:border-black transition-colors">
+                        @error('password_confirmation') <span class="text-xs text-brand-600 mt-1">{{ $message }}</span> @enderror
                     </div>
                     <div>
                         <label class="block text-xs font-semibold uppercase tracking-widest mb-2">Status</label>
@@ -98,7 +104,13 @@
                     </div>
                     <div class="flex justify-end gap-3 pt-4 border-t border-neutral-200">
                         <button type="button" wire:click="$set('isOpen', false)" class="px-5 py-2.5 text-sm font-semibold text-neutral-600 hover:text-black transition-colors">Cancel</button>
-                        <button type="submit" class="px-5 py-2.5 text-sm font-semibold bg-black text-white hover:bg-neutral-800 transition-colors">{{ $user_id ? 'Update' : 'Create' }}</button>
+                        <button type="submit" wire:loading.attr="disabled" class="px-5 py-2.5 text-sm font-semibold bg-black text-white hover:bg-neutral-800 transition-colors disabled:opacity-50">
+                            <span wire:loading.remove wire:target="store">{{ $user_id ? 'Update' : 'Create' }}</span>
+                            <span wire:loading wire:target="store" class="inline-flex items-center gap-2">
+                                <svg class="animate-spin w-3.5 h-3.5" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
+                                Saving…
+                            </span>
+                        </button>
                     </div>
                 </form>
             </div>

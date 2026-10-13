@@ -4,22 +4,24 @@ namespace App\Livewire\Admin;
 
 use App\Mail\ContactReply;
 use App\Models\ContactMessage;
+use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Illuminate\Support\Facades\Mail;
 
 class ContactMessages extends Component
 {
     use WithPagination;
 
     public $selectedMessage;
+
     public string $reply = '';
+
     public bool $replyModal = false;
 
     public function view($id): void
     {
         $this->selectedMessage = ContactMessage::findOrFail($id);
-        if (!$this->selectedMessage->read_at) {
+        if (! $this->selectedMessage->read_at) {
             $this->selectedMessage->update(['read_at' => now()]);
         }
         $this->reply = '';
@@ -66,6 +68,7 @@ class ContactMessages extends Component
     public function render()
     {
         $messages = ContactMessage::latest()->paginate(20);
+
         return view('livewire.admin.contact-messages', compact('messages'))
             ->layout('layouts.admin');
     }

@@ -3,7 +3,7 @@
 namespace App\Jobs;
 
 use App\Models\Order;
-use App\Services\Cache\CacheService;
+use App\Services\InvoiceService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 
@@ -17,18 +17,12 @@ class ProcessOrderJob implements ShouldQueue
 
     public function handle(): void
     {
-        // Reduce inventory
-        foreach ($this->order->items as $item) {
-            if ($item->book) {
-                $item->book->decrement('stock', $item->qty);
-            }
-        }
+        // Inventory is reserved atomically during checkout (see Checkout::placeOrder).
 
-        // Clear relevant caches
-        CacheService::flushBooks();
+        // Generate invoice PDF
+        $invoice = app(InvoiceService::class);
+        $invoice->generatePdf($this->order);
 
-        // TODO: Send email notification
-        // TODO: Generate invoice PDF
         // TODO: Send SMS notification
     }
 }

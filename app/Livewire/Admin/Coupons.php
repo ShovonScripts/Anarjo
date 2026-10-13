@@ -11,23 +11,40 @@ class Coupons extends Component
     use WithPagination;
 
     public $coupon_id;
+
     public $code;
+
     public $type = 'fixed';
+
     public $value;
+
     public $min_amount;
+
     public $start_date;
+
     public $end_date;
+
     public $usage_limit;
+
     public $status = 'active';
+
     public $search = '';
+
     public $isOpen = false;
 
     protected function rules(): array
     {
         return [
-            'code' => 'required|string|max:50|unique:coupons,code,' . $this->coupon_id,
+            'code' => 'required|string|max:50|unique:coupons,code,'.$this->coupon_id,
             'type' => 'required|in:fixed,percent',
-            'value' => 'required|numeric|min:0',
+            'value' => [
+                'required', 'numeric', 'min:0',
+                function ($attribute, $value, $fail) {
+                    if ($this->type === 'percent' && $value > 100) {
+                        $fail('Percent value cannot exceed 100.');
+                    }
+                },
+            ],
             'min_amount' => 'nullable|numeric|min:0',
             'start_date' => 'required|date',
             'end_date' => 'nullable|date|after_or_equal:start_date',
@@ -38,7 +55,7 @@ class Coupons extends Component
 
     public function render()
     {
-        $coupons = Coupon::where('code', 'like', '%' . $this->search . '%')
+        $coupons = Coupon::where('code', 'like', '%'.$this->search.'%')
             ->latest()
             ->paginate(10);
 

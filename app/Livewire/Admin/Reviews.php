@@ -11,14 +11,17 @@ class Reviews extends Component
     use WithPagination;
 
     public string $filter = '';
+
     public string $search = '';
 
     public function render()
     {
         $reviews = Review::with('user', 'book')
-            ->when($this->filter, fn($q) => $q->where('status', $this->filter))
-            ->when($this->search, fn($q) => $q->whereHas('book', fn($b) => $b->where('title', 'like', "%{$this->search}%"))
-                ->orWhereHas('user', fn($u) => $u->where('name', 'like', "%{$this->search}%")))
+            ->when($this->filter, fn ($q) => $q->where('status', $this->filter))
+            ->when($this->search, fn ($q) => $q->where(function ($q) {
+                $q->whereHas('book', fn ($b) => $b->where('title', 'like', "%{$this->search}%"))
+                    ->orWhereHas('user', fn ($u) => $u->where('name', 'like', "%{$this->search}%"));
+            }))
             ->latest()
             ->paginate(15);
 

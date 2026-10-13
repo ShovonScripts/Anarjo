@@ -4,10 +4,15 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
 use App\Models\Order;
+use App\Services\InvoiceService;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\View\View;
 
 class OrderController extends Controller
 {
-    public function index()
+    public function index(): View
     {
         $orders = Order::with('items')
             ->where('user_id', auth()->id())
@@ -17,12 +22,24 @@ class OrderController extends Controller
         return view('frontend.orders.index', compact('orders'));
     }
 
-    public function confirmation(Order $order)
+    public function confirmation(Order $order, Request $request): View
     {
-        if ($order->user_id && $order->user_id !== auth()->id()) {
-            abort(403);
-        }
+        abort_unless(Gate::forUser(auth()->user())->allows('view', $order), 404);
 
         return view('frontend.orders.confirmation', compact('order'));
+    }
+
+    public function invoice(Order $order, InvoiceService $invoice): Response
+    {
+        abort_unless(Gate::forUser(auth()->user())->allows('view', $order), 404);
+
+        return $invoice->download($order);
+    }
+
+    public function invoicePreview(Order $order, InvoiceService $invoice): Response
+    {
+        abort_unless(Gate::forUser(auth()->user())->allows('view', $order), 404);
+
+        return $invoice->stream($order);
     }
 }

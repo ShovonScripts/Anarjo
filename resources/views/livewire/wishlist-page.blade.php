@@ -1,7 +1,8 @@
 <div>
     @section('title', 'My Wishlist - ' . config('app.name'))
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <x-breadcrumbs :items="[['label' => 'Wishlist']]" />
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <h1 class="section-heading mb-12">My Wishlist</h1>
 
         @if($items->count())
@@ -26,7 +27,7 @@
                                 @endif
                             </div>
                         </a>
-                        <button wire:click="remove({{ $item->id }})" class="absolute top-2 right-2 bg-white border border-neutral-200 p-1.5 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-neutral-50">
+                        <button wire:click="remove({{ $item->id }})" class="absolute top-2 right-2 bg-white border border-neutral-200 p-1.5 md:opacity-0 md:group-hover:opacity-100 transition-opacity hover:bg-neutral-50" aria-label="Remove from wishlist">
                             <svg class="w-4 h-4 text-brand-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                         </button>
                     </div>

@@ -8,13 +8,21 @@ use Livewire\Component;
 class ContactSettings extends Component
 {
     public string $contact_label = '';
+
     public string $contact_hero_title = '';
+
     public string $contact_subtitle = '';
+
     public array $faqs = [];
+
     public string $new_question = '';
+
     public string $new_answer = '';
+
     public $editIndex = null;
+
     public string $edit_question = '';
+
     public string $edit_answer = '';
 
     protected SettingsService $settings;
@@ -43,7 +51,7 @@ class ContactSettings extends Component
 
         $this->settings->setMultiple($data);
 
-        if (!empty($this->faqs)) {
+        if (! empty($this->faqs)) {
             $this->settings->set('contact_faqs', json_encode($this->faqs));
         }
 

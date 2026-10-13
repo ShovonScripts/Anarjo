@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Author;
 use App\Models\Book;
 use App\Models\Category;
+use App\Models\Order;
 use App\Models\User;
 use App\Models\Wishlist;
 use App\Notifications\OrderConfirmation;
@@ -76,14 +77,55 @@ class UserFlowTest extends TestCase
         $category = Category::factory()->create(['name' => 'Fiction', 'slug' => 'fiction']);
         $book = Book::factory()->create([
             'author_id' => $author->id,
-            'category_id' => $category->id,
             'status' => 'published',
         ]);
+        $book->categories()->attach($category->id);
 
         $response = $this->get(route('category.books', $category->slug));
 
         $response->assertStatus(200);
         $response->assertSee($book->title);
+    }
+
+    public function test_guest_can_subscribe_to_newsletter(): void
+    {
+        $response = $this->post(route('newsletter.subscribe'), ['email' => 'reader@example.com']);
+
+        $response->assertSessionHas('success');
+        $this->assertDatabaseHas('newsletter_subscribers', ['email' => 'reader@example.com']);
+    }
+
+    public function test_newsletter_rejects_invalid_email(): void
+    {
+        $response = $this->post(route('newsletter.subscribe'), ['email' => 'not-an-email']);
+
+        $response->assertSessionHasErrors('email');
+        $this->assertDatabaseCount('newsletter_subscribers', 0);
+    }
+
+    public function test_guest_order_confirmation_requires_valid_token(): void
+    {
+        $order = Order::factory()->create(['user_id' => null]);
+
+        $this->get(route('order.confirmation', $order))
+            ->assertNotFound();
+
+        $this->get(route('order.confirmation', ['order' => $order, 'token' => 'wrong-token']))
+            ->assertNotFound();
+
+        $this->get($order->confirmationUrl())
+            ->assertStatus(200);
+    }
+
+    public function test_user_cannot_view_another_users_order_confirmation(): void
+    {
+        $owner = User::factory()->create();
+        $other = User::factory()->create();
+        $order = Order::factory()->create(['user_id' => $owner->id]);
+
+        $this->actingAs($other)
+            ->get(route('order.confirmation', $order))
+            ->assertNotFound();
     }
 
     public function test_guest_can_view_blog_page(): void
@@ -161,12 +203,12 @@ class UserFlowTest extends TestCase
             'status' => 'published',
         ]);
 
-        $cart = new CartService();
+        $cart = new CartService;
         $cart->add($book->id);
 
         $this->assertEquals(1, $cart->count());
         $items = $cart->get();
-        $this->assertArrayHasKey($book->id, $items);
+        $this->assertArrayHasKey($cart->key($book->id), $items);
     }
 
     public function test_authenticated_user_can_access_checkout_with_cart_items(): void
@@ -180,7 +222,7 @@ class UserFlowTest extends TestCase
             'status' => 'published',
         ]);
 
-        $cart = new CartService();
+        $cart = new CartService;
         $cart->add($book->id);
 
         $response = $this->actingAs($user)->get(route('checkout'));
@@ -201,7 +243,7 @@ class UserFlowTest extends TestCase
             'status' => 'published',
         ]);
 
-        $cart = new CartService();
+        $cart = new CartService;
         $cart->add($book->id, 2);
 
         $this->actingAs($user);

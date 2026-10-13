@@ -2,28 +2,46 @@
 
 namespace App\Livewire\Admin;
 
+use App\Livewire\Concerns\UploadsMedia;
 use App\Models\HeroSlide;
-use App\Models\Media;
 use Livewire\Component;
-use Livewire\WithPagination;
 use Livewire\WithFileUploads;
+use Livewire\WithPagination;
 
 class HeroSlides extends Component
 {
-    use WithPagination, WithFileUploads;
+    use UploadsMedia, WithFileUploads, WithPagination;
 
     public $slide_id;
+
+    public $title;
+
+    public $subtitle;
+
+    public $description;
+
     public $link;
+
+    public $link_text;
+
     public $sort_order = 0;
+
     public $status = true;
+
     public $image;
+
     public $new_image;
+
     public $isOpen = false;
 
     protected function rules(): array
     {
         return [
+            'title' => 'nullable|string|max:255',
+            'subtitle' => 'nullable|string|max:255',
+            'description' => 'nullable|string|max:500',
             'link' => 'nullable|string|max:255',
+            'link_text' => 'nullable|string|max:100',
             'sort_order' => 'required|integer|min:0',
             'status' => 'boolean',
             'new_image' => 'nullable|image|max:3072',
@@ -33,6 +51,7 @@ class HeroSlides extends Component
     public function render()
     {
         $slides = HeroSlide::orderBy('sort_order')->orderBy('created_at', 'desc')->paginate(10);
+
         return view('livewire.admin.hero-slides', compact('slides'))
             ->layout('layouts.admin');
     }
@@ -47,7 +66,11 @@ class HeroSlides extends Component
     {
         $slide = HeroSlide::findOrFail($id);
         $this->slide_id = $slide->id;
+        $this->title = $slide->title;
+        $this->subtitle = $slide->subtitle;
+        $this->description = $slide->description;
         $this->link = $slide->link;
+        $this->link_text = $slide->link_text;
         $this->sort_order = $slide->sort_order;
         $this->status = $slide->status;
         $this->image = $slide->image;
@@ -59,21 +82,17 @@ class HeroSlides extends Component
         $this->validate();
 
         $data = [
+            'title' => $this->title,
+            'subtitle' => $this->subtitle,
+            'description' => $this->description,
             'link' => $this->link,
+            'link_text' => $this->link_text,
             'sort_order' => $this->sort_order,
             'status' => $this->status,
         ];
 
         if ($this->new_image) {
-            $path = $this->new_image->store('hero', 'public');
-            $data['image'] = $path;
-            Media::create([
-                'name' => $this->new_image->getClientOriginalName(),
-                'path' => $path,
-                'type' => $this->new_image->getMimeType(),
-                'size' => $this->new_image->getSize(),
-                'disk' => 'public',
-            ]);
+            $data['image'] = $this->storeMedia($this->new_image, 'hero');
         }
 
         HeroSlide::updateOrCreate(['id' => $this->slide_id], $data);
@@ -93,14 +112,18 @@ class HeroSlides extends Component
     {
         $slide = HeroSlide::find($id);
         if ($slide) {
-            $slide->update(['status' => !$slide->status]);
+            $slide->update(['status' => ! $slide->status]);
         }
     }
 
     private function resetInputFields()
     {
         $this->slide_id = null;
+        $this->title = '';
+        $this->subtitle = '';
+        $this->description = '';
         $this->link = '';
+        $this->link_text = '';
         $this->sort_order = 0;
         $this->status = true;
         $this->image = null;

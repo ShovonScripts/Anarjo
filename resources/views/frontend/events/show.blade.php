@@ -4,11 +4,8 @@
 @section('meta_description', Str::limit($event->description, 160))
 
 @section('content')
-<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-    <a href="{{ route('events.index') }}" class="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-neutral-500 hover:text-black transition-colors mb-8">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
-        Back to Events
-    </a>
+<x-breadcrumbs :items="[['label' => 'Events', 'url' => route('events.index')], ['label' => $event->title]]" />
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
     @if($event->image)
         <div class="mb-10">

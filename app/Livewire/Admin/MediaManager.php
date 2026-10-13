@@ -3,24 +3,26 @@
 namespace App\Livewire\Admin;
 
 use App\Models\Media;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
-use Illuminate\Support\Str;
 
 class MediaManager extends Component
 {
     use WithFileUploads, WithPagination;
 
     public $upload = [];
+
     public $search = '';
+
     public $typeFilter = '';
 
     protected function rules(): array
     {
         return [
             'upload' => 'required|array',
-            'upload.*' => 'file|mimes:jpeg,png,jpg,gif,webp,svg,pdf,doc,docx,xls,xlsx,zip|max:10240',
+            'upload.*' => 'file|mimes:jpeg,png,jpg,gif,webp,pdf,doc,docx,xls,xlsx,zip|max:10240',
         ];
     }
 
@@ -34,7 +36,7 @@ class MediaManager extends Component
         $query = Media::query();
 
         if ($this->search) {
-            $query->where('name', 'like', '%' . $this->search . '%');
+            $query->where('name', 'like', '%'.$this->search.'%');
         }
 
         if ($this->typeFilter === 'image') {
@@ -42,7 +44,7 @@ class MediaManager extends Component
         } elseif ($this->typeFilter === 'document') {
             $query->where(function ($q) {
                 $q->where('type', 'like', 'application/%')
-                  ->orWhere('type', 'like', 'text/%');
+                    ->orWhere('type', 'like', 'text/%');
             });
         }
 
@@ -75,7 +77,7 @@ class MediaManager extends Component
     public function delete($id)
     {
         $media = Media::findOrFail($id);
-        \Illuminate\Support\Facades\Storage::disk($media->disk)->delete($media->path);
+        Storage::disk($media->disk)->delete($media->path);
         $media->delete();
         session()->flash('message', 'File deleted.');
     }

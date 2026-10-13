@@ -2,8 +2,8 @@
 
 namespace Tests\Unit;
 
-use App\Models\Book;
 use App\Models\Author;
+use App\Models\Book;
 use App\Services\Cart\CartService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -17,7 +17,7 @@ class CartServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->cart = new CartService();
+        $this->cart = new CartService;
         session()->forget('cart');
     }
 
@@ -46,7 +46,7 @@ class CartServiceTest extends TestCase
         $book = Book::factory()->create(['author_id' => $author->id, 'price' => 50]);
 
         $this->cart->add($book->id, 1);
-        $this->cart->update($book->id, 3);
+        $this->cart->update($this->cart->key($book->id), 3);
 
         $this->assertEquals(3, $this->cart->count());
         $this->assertEquals(150, $this->cart->subtotal());
@@ -58,7 +58,7 @@ class CartServiceTest extends TestCase
         $book = Book::factory()->create(['author_id' => $author->id, 'price' => 50]);
 
         $this->cart->add($book->id, 1);
-        $this->cart->update($book->id, 0);
+        $this->cart->update($this->cart->key($book->id), 0);
 
         $this->assertTrue($this->cart->isEmpty());
     }
@@ -69,7 +69,7 @@ class CartServiceTest extends TestCase
         $book = Book::factory()->create(['author_id' => $author->id, 'price' => 75]);
 
         $this->cart->add($book->id);
-        $this->cart->remove($book->id);
+        $this->cart->remove($this->cart->key($book->id));
 
         $this->assertTrue($this->cart->isEmpty());
     }

@@ -2,21 +2,27 @@
 
 namespace App\Livewire;
 
+use App\Livewire\Concerns\UploadsMedia;
 use App\Models\Manuscript;
-use App\Models\Media;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
 class ManuscriptForm extends Component
 {
-    use WithFileUploads;
+    use UploadsMedia, WithFileUploads;
 
     public $author_name;
+
     public $email;
+
     public $phone;
+
     public $book_title;
+
     public $genre;
+
     public $file;
+
     public $submitted = false;
 
     protected function rules(): array
@@ -44,15 +50,7 @@ class ManuscriptForm extends Component
         ];
 
         if ($this->file) {
-            $path = $this->file->store('manuscripts', 'public');
-            $data['file'] = $path;
-            Media::create([
-                'name' => $this->file->getClientOriginalName(),
-                'path' => $path,
-                'type' => $this->file->getMimeType(),
-                'size' => $this->file->getSize(),
-                'disk' => 'public',
-            ]);
+            $data['file'] = $this->storeMedia($this->file, 'manuscripts');
         }
 
         Manuscript::create($data);

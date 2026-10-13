@@ -33,6 +33,7 @@
 - Book form: preview PDF upload, publisher select, SEO title/description fields added
 - Admin Users management: edit name/email/phone/status, search
 - All 6 placeholder admin routes replaced with real components
+- `BookCatalogSeeder`: full book catalog (295 books / 165 authors / 6 categories) — প্রবন্ধ ও গবেষণা (89), গল্প/উপন্যাস/ভ্রমণ (75), নাটক (14), কবিতা (82), অনুবাদ (29), স্বাস্থ্য (6); Bengali→Latin transliteration for readable unique slugs; author de-duplication via name normalization (honorifics/diacritics); editor/translator credit stored in `excerpt`
 
 ### In Progress
 - (none)
@@ -84,3 +85,4 @@
 - `resources/views/livewire/book-reviews.blade.php`: star rating + form + list
 - `resources/views/frontend/orders/index.blade.php`: order history with items preview
 - `resources/views/livewire/wishlist-page.blade.php`: wishlist grid with remove button
+- `database/seeders/BookCatalogSeeder.php`: production book catalog with categories/authors (uses `Book::updateOrCreate`, `categories()->syncWithoutDetaching`, custom Bengali transliteration for slugs)

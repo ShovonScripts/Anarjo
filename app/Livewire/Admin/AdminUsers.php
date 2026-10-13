@@ -12,22 +12,33 @@ class AdminUsers extends Component
     use WithPagination;
 
     public $user_id;
+
     public $name;
+
     public $email;
+
     public $phone;
+
     public $password;
+
     public $password_confirmation;
+
     public $status = 'active';
+
     public $search = '';
+
     public $isOpen = false;
+
     public $deleteId = null;
 
     protected function rules(): array
     {
         $rules = [
             'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:users,email,' . $this->user_id,
+            'email' => 'required|email|max:255|unique:users,email,'.$this->user_id,
             'phone' => 'nullable|string|max:20',
+            'password' => '',
+            'password_confirmation' => 'required_with:password|same:password',
             'status' => 'required|in:active,inactive',
         ];
 
@@ -44,8 +55,8 @@ class AdminUsers extends Component
     {
         $users = User::role(['Super Admin', 'Admin'])
             ->where(function ($q) {
-                $q->where('name', 'like', '%' . $this->search . '%')
-                  ->orWhere('email', 'like', '%' . $this->search . '%');
+                $q->where('name', 'like', '%'.$this->search.'%')
+                    ->orWhere('email', 'like', '%'.$this->search.'%');
             })
             ->latest()
             ->paginate(15);
@@ -63,6 +74,11 @@ class AdminUsers extends Component
     public function edit($id): void
     {
         $user = User::findOrFail($id);
+        if ($user->hasRole('Super Admin') && ! auth()->user()->hasRole('Super Admin')) {
+            session()->flash('message', 'Only Super Admins can edit other Super Admins.');
+
+            return;
+        }
         $this->user_id = $user->id;
         $this->name = $user->name;
         $this->email = $user->email;
@@ -89,7 +105,13 @@ class AdminUsers extends Component
         }
 
         if ($this->user_id) {
-            User::where('id', $this->user_id)->update($data);
+            $user = User::findOrFail($this->user_id);
+            if ($user->hasRole('Super Admin') && ! auth()->user()->hasRole('Super Admin')) {
+                session()->flash('message', 'Only Super Admins can update other Super Admins.');
+
+                return;
+            }
+            $user->update($data);
             session()->flash('message', 'Admin updated successfully.');
         } else {
             $user = User::create($data);
@@ -109,11 +131,20 @@ class AdminUsers extends Component
     public function delete(): void
     {
         $user = User::find($this->deleteId);
-        if ($user && $user->id !== auth()->id()) {
-            $user->removeRole('Admin');
-            $user->delete();
-            session()->flash('message', 'Admin deleted successfully.');
+        if (! $user || $user->id === auth()->id()) {
+            $this->deleteId = null;
+
+            return;
         }
+        if ($user->hasRole('Super Admin') && ! auth()->user()->hasRole('Super Admin')) {
+            session()->flash('message', 'Only Super Admins can delete other Super Admins.');
+            $this->deleteId = null;
+
+            return;
+        }
+        $user->removeRole('Admin');
+        $user->delete();
+        session()->flash('message', 'Admin deleted successfully.');
         $this->deleteId = null;
     }
 

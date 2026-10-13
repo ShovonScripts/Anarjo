@@ -77,6 +77,48 @@
         </form>
     </div>
 
+    {{-- Branding Boxes Section --}}
+    <div class="border border-neutral-200 bg-white mb-8">
+        <div class="px-8 py-6 border-b border-neutral-200">
+            <h2 class="text-lg font-bold tracking-tight">Branding Boxes</h2>
+            <p class="mt-1 text-sm text-neutral-500">Four ad images shown side by side on desktop and as a scrolling marquee on mobile. Upload images and optional links.</p>
+        </div>
+        <form wire:submit="save" class="px-8 py-6 space-y-8">
+            @foreach([1, 2, 3, 4] as $i)
+            <div class="border border-neutral-200 p-6 {{ $i > 1 ? 'border-t' : '' }}">
+                <h3 class="text-sm font-semibold uppercase tracking-widest mb-4">Box {{ $i }}</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div>
+                        <x-input-label for="boxes.{{ $i }}.title" value="Title (optional)" />
+                        <x-text-input wire:model="boxes.{{ $i }}.title" id="boxes.{{ $i }}.title" class="mt-1 block w-full" placeholder="e.g. New Arrivals" />
+                    </div>
+                    <div>
+                        <x-input-label for="boxes.{{ $i }}.link" value="Link (optional)" />
+                        <x-text-input wire:model="boxes.{{ $i }}.link" id="boxes.{{ $i }}.link" class="mt-1 block w-full" placeholder="https://... or /books" />
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <x-input-label for="boxes.{{ $i }}.image" value="Image" />
+                    <p class="text-xs text-neutral-400 mb-3">Recommended: 600x400px.</p>
+                    @if ($boxes[$i]['image_path'])
+                        <div class="flex items-center gap-4 mb-4">
+                            <img src="{{ asset('storage/' . $boxes[$i]['image_path']) }}" class="h-24 border border-neutral-200">
+                            <button type="button" wire:click="removeBoxImage({{ $i }})" class="text-sm text-brand-600 hover:text-brand-700">Remove</button>
+                        </div>
+                    @endif
+                    <input type="file" wire:model="boxes.{{ $i }}.image" accept="image/jpeg,image/png,image/webp" class="block w-full text-sm text-neutral-500 file:mr-4 file:py-2 file:px-4 file:border file:border-neutral-300 file:text-sm file:font-semibold file:bg-white file:text-black hover:file:bg-neutral-50">
+                    @error("boxes.{$i}.image") <span class="text-xs text-brand-600 mt-1">{{ $message }}</span> @enderror
+                </div>
+            </div>
+            @endforeach
+
+            <div class="flex items-center gap-4 pt-2">
+                <button type="submit" class="btn-primary" wire:loading.attr="disabled">Save Changes</button>
+                <div wire:loading wire:target="save" class="text-sm text-neutral-500">Saving...</div>
+            </div>
+        </form>
+    </div>
+
     {{-- Hero Slider Section --}}
     <div class="border border-neutral-200 bg-white" x-data="{ notification: false }" x-on:slide-saved.window="notification = true; setTimeout(() => notification = false, 3000)">
         <div class="px-8 py-6 border-b border-neutral-200 flex items-center justify-between">

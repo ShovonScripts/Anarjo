@@ -14,6 +14,7 @@
             <thead class="bg-neutral-100">
                 <tr>
                     <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider">Image</th>
+                    <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider">Title</th>
                     <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider">Link</th>
                     <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider">Order</th>
                     <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider">Status</th>
@@ -30,6 +31,7 @@
                                 <span class="text-xs text-neutral-400">No image</span>
                             @endif
                         </td>
+                        <td class="px-4 py-3 text-sm max-w-[200px] truncate font-medium">{{ $slide->title ?: '—' }}</td>
                         <td class="px-4 py-3 text-sm text-neutral-500 max-w-[200px] truncate">{{ $slide->link ?: '—' }}</td>
                         <td class="px-4 py-3 text-sm">{{ $slide->sort_order }}</td>
                         <td class="px-4 py-3">
@@ -43,7 +45,7 @@
                         </td>
                     </tr>
                 @empty
-                    <tr><td colspan="5" class="px-4 py-8 text-center text-neutral-500">No slides yet. Add one!</td></tr>
+                    <tr><td colspan="6" class="px-4 py-8 text-center text-neutral-500">No slides yet. Add one!</td></tr>
                 @endforelse
             </tbody>
         </table>
@@ -69,9 +71,29 @@
                 </div>
 
                 <div>
+                    <label class="block text-xs font-semibold uppercase tracking-widest mb-2">Title (displayed on hero)</label>
+                    <input wire:model="title" class="input-field" placeholder="e.g. Discover Your Next Read">
+                    @error('title') <span class="text-xs text-brand-600 mt-1">{{ $message }}</span> @enderror
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-widest mb-2">Subtitle</label>
+                    <input wire:model="subtitle" class="input-field" placeholder="A short supporting line">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-widest mb-2">Description</label>
+                    <textarea wire:model="description" rows="2" class="input-field" placeholder="Optional description text"></textarea>
+                </div>
+
+                <div>
                     <label class="block text-xs font-semibold uppercase tracking-widest mb-2">Link (optional)</label>
                     <input wire:model="link" class="input-field" placeholder="https://... or /books">
-                    <p class="mt-1 text-xs text-neutral-400">The full image will be clickable. Leave empty for no link.</p>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-widest mb-2">Link Button Text</label>
+                    <input wire:model="link_text" class="input-field" placeholder="e.g. Shop Now, Learn More">
                 </div>
 
                 <div class="grid grid-cols-2 gap-5">

@@ -7,8 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 class HeroSlide extends Model
 {
     protected $fillable = [
+        'title',
+        'subtitle',
+        'description',
         'image',
         'link',
+        'link_text',
         'sort_order',
         'status',
         'page',

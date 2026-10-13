@@ -3,17 +3,20 @@
 namespace App\Livewire\Admin;
 
 use App\Models\BlogTag;
+use Illuminate\Support\Str;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Illuminate\Support\Str;
 
 class BlogTags extends Component
 {
     use WithPagination;
 
     public $tag_id;
+
     public $name;
+
     public $search = '';
+
     public $isOpen = false;
 
     protected function rules(): array
@@ -28,7 +31,7 @@ class BlogTags extends Component
         $query = BlogTag::withCount('blogs');
 
         if ($this->search) {
-            $query->where('name', 'like', '%' . $this->search . '%');
+            $query->where('name', 'like', '%'.$this->search.'%');
         }
 
         $tags = $query->latest()->paginate(10);
@@ -73,6 +76,7 @@ class BlogTags extends Component
         $tag = BlogTag::withCount('blogs')->find($id);
         if ($tag && $tag->blogs_count > 0) {
             session()->flash('error', 'Cannot delete tag with existing posts.');
+
             return;
         }
         $tag?->delete();

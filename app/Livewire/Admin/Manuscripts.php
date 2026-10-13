@@ -11,19 +11,23 @@ class Manuscripts extends Component
     use WithPagination;
 
     public $manuscript_id;
+
     public $status = 'pending';
+
     public $remarks;
+
     public $search = '';
+
     public $isOpen = false;
 
     public function render()
     {
         $manuscripts = Manuscript::where(function ($q) {
-            $q->where('author_name', 'like', '%' . $this->search . '%')
-              ->orWhere('book_title', 'like', '%' . $this->search . '%');
+            $q->where('author_name', 'like', '%'.$this->search.'%')
+                ->orWhere('book_title', 'like', '%'.$this->search.'%');
         })
-        ->latest()
-        ->paginate(10);
+            ->latest()
+            ->paginate(10);
 
         return view('livewire.admin.manuscripts', compact('manuscripts'))
             ->layout('layouts.admin');

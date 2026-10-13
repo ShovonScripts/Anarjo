@@ -2,8 +2,8 @@
 
 namespace Tests\Feature;
 
-use App\Models\Book;
 use App\Models\Author;
+use App\Models\Book;
 use App\Models\Category;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -64,10 +64,10 @@ class BookSearchTest extends TestCase
         $category = Category::factory()->create(['name' => 'Fiction']);
         $book = Book::factory()->create([
             'author_id' => $author->id,
-            'category_id' => $category->id,
             'status' => 'published',
             'title' => 'Fiction Book',
         ]);
+        $book->categories()->attach($category->id);
 
         $response = $this->get(route('category.books', $category->slug));
 

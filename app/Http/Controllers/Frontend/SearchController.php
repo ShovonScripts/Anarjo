@@ -7,23 +7,22 @@ use App\Models\Author;
 use App\Models\Blog;
 use App\Models\Book;
 use App\Models\Event;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 
 class SearchController extends Controller
 {
-    public function index()
+    public function index(): RedirectResponse|View
     {
         $query = request('q');
 
-        if (!$query || strlen(trim($query)) < 1) {
-            return redirect()->back()->with('error', 'Please enter a search term.');
+        if (! $query || strlen(trim($query)) < 1) {
+            return redirect()->route('home')->with('error', 'Please enter a search term.');
         }
 
         $books = Book::with('author')
             ->where('status', 'published')
-            ->where(function ($q) use ($query) {
-                $q->where('title', 'like', "%{$query}%")
-                  ->orWhere('description', 'like', "%{$query}%");
-            })
+            ->search($query)
             ->latest()
             ->take(8)
             ->get();
@@ -31,7 +30,7 @@ class SearchController extends Controller
         $authors = Author::where('status', 'active')
             ->where(function ($q) use ($query) {
                 $q->where('name', 'like', "%{$query}%")
-                  ->orWhere('bio', 'like', "%{$query}%");
+                    ->orWhere('bio', 'like', "%{$query}%");
             })
             ->latest()
             ->take(4)
@@ -39,10 +38,7 @@ class SearchController extends Controller
 
         $blogs = Blog::with('category')
             ->where('status', 'published')
-            ->where(function ($q) use ($query) {
-                $q->where('title', 'like', "%{$query}%")
-                  ->orWhere('content', 'like', "%{$query}%");
-            })
+            ->search($query)
             ->latest()
             ->take(4)
             ->get();
@@ -50,7 +46,7 @@ class SearchController extends Controller
         $events = Event::where('status', 'published')
             ->where(function ($q) use ($query) {
                 $q->where('title', 'like', "%{$query}%")
-                  ->orWhere('description', 'like', "%{$query}%");
+                    ->orWhere('description', 'like', "%{$query}%");
             })
             ->latest()
             ->take(4)

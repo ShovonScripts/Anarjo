@@ -5,17 +5,18 @@ namespace App\Http\Controllers\Frontend;
 use App\Http\Controllers\Controller;
 use App\Models\Blog;
 use App\Models\BlogCategory;
+use Illuminate\View\View;
 
 class BlogController extends Controller
 {
-    public function index()
+    public function index(): View
     {
         $query = Blog::with('category')->where('status', 'published');
 
         if ($search = request('search')) {
             $query->where(function ($q) use ($search) {
                 $q->where('title', 'like', "%{$search}%")
-                  ->orWhere('content', 'like', "%{$search}%");
+                    ->orWhere('content', 'like', "%{$search}%");
             });
         }
 
@@ -32,7 +33,7 @@ class BlogController extends Controller
         return view('frontend.blogs.index', compact('blogs', 'categories', 'recentPosts'));
     }
 
-    public function show($slug)
+    public function show($slug): View
     {
         $blog = Blog::with(['category', 'tags', 'comments.user', 'likes'])->where('slug', $slug)->where('status', 'published')->firstOrFail();
 

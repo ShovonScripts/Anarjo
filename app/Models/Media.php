@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Storage;
 
 class Media extends Model
 {
@@ -13,7 +12,7 @@ class Media extends Model
 
     public function url(): string
     {
-        return asset('storage/' . $this->path);
+        return asset('storage/'.$this->path);
     }
 
     public function thumbnail(): string
@@ -26,11 +25,14 @@ class Media extends Model
     public function sizeForHumans(): string
     {
         $bytes = $this->size;
-        $units = ['B', 'KB', 'MB', 'GB'];
-        for ($i = 0; $bytes > 1024; $i++) {
+        $units = ['B', 'KB', 'MB', 'GB', 'TB'];
+        $i = 0;
+        while ($bytes > 1024 && $i < count($units) - 1) {
             $bytes /= 1024;
+            $i++;
         }
-        return round($bytes, 1) . ' ' . $units[$i];
+
+        return round($bytes, 1).' '.$units[$i];
     }
 
     public function isImage(): bool

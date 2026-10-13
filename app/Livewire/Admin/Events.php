@@ -11,6 +11,7 @@ class Events extends Component
     use WithPagination;
 
     public $search = '';
+
     public $statusFilter = '';
 
     public function render()
@@ -19,8 +20,8 @@ class Events extends Component
 
         if ($this->search) {
             $query->where(function ($q) {
-                $q->where('title', 'like', '%' . $this->search . '%')
-                  ->orWhere('venue', 'like', '%' . $this->search . '%');
+                $q->where('title', 'like', '%'.$this->search.'%')
+                    ->orWhere('venue', 'like', '%'.$this->search.'%');
             });
         }
 
@@ -38,7 +39,7 @@ class Events extends Component
     {
         $event = Event::find($id);
         if ($event) {
-            $event->update(['is_major' => !$event->is_major]);
+            $event->update(['is_major' => ! $event->is_major]);
             session()->flash('message', $event->is_major ? 'Event marked as major.' : 'Event unmarked as major.');
         }
     }

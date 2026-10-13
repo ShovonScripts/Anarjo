@@ -8,6 +8,7 @@ use Livewire\Component;
 class BookWishlist extends Component
 {
     public int $bookId;
+
     public bool $wishlisted = false;
 
     public function mount(): void
@@ -21,8 +22,9 @@ class BookWishlist extends Component
 
     public function toggle(): void
     {
-        if (!auth()->check()) {
+        if (! auth()->check()) {
             $this->dispatch('notify', message: 'Please login to add to wishlist.');
+
             return;
         }
 

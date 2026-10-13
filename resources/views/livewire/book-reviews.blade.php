@@ -25,7 +25,13 @@
                         <textarea wire:model="body" rows="4" class="input-field" placeholder="Share your thoughts about this book..."></textarea>
                         @error('body') <span class="text-xs text-brand-600 mt-1">{{ $message }}</span> @enderror
                     </div>
-                    <button type="submit" class="btn-primary btn-sm">Submit Review</button>
+                    <button type="submit" wire:loading.attr="disabled" class="btn-primary btn-sm">
+                        <span wire:loading.remove wire:target="submit">Submit Review</span>
+                        <span wire:loading wire:target="submit" class="inline-flex items-center gap-2">
+                            <svg class="animate-spin w-3.5 h-3.5" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
+                            Submitting…
+                        </span>
+                    </button>
                 </form>
             </div>
         @elseif($userReview && $userReview->status === 'pending')

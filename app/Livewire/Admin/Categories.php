@@ -2,23 +2,29 @@
 
 namespace App\Livewire\Admin;
 
+use App\Livewire\Concerns\UploadsMedia;
 use App\Models\Category;
-use App\Models\Media;
-use Livewire\Component;
-use Livewire\WithPagination;
-use Livewire\WithFileUploads;
 use Illuminate\Support\Str;
+use Livewire\Component;
+use Livewire\WithFileUploads;
+use Livewire\WithPagination;
 
 class Categories extends Component
 {
-    use WithPagination, WithFileUploads;
+    use UploadsMedia, WithFileUploads, WithPagination;
 
     public $category_id;
+
     public $name;
+
     public $parent_id;
+
     public $image;
+
     public $existing_image;
+
     public $search = '';
+
     public $isOpen = false;
 
     protected function rules(): array
@@ -33,7 +39,7 @@ class Categories extends Component
     public function render()
     {
         $categories = Category::with('parent')
-            ->where('name', 'like', '%' . $this->search . '%')
+            ->where('name', 'like', '%'.$this->search.'%')
             ->latest()
             ->paginate(10);
 
@@ -70,16 +76,8 @@ class Categories extends Component
         ];
 
         if ($this->image) {
-            $path = $this->image->store('categories', 'public');
-            $data['image'] = $path;
-            Media::create([
-                'name' => $this->image->getClientOriginalName(),
-                'path' => $path,
-                'type' => $this->image->getMimeType(),
-                'size' => $this->image->getSize(),
-                'disk' => 'public',
-            ]);
-        } elseif ($this->category_id && !$this->existing_image) {
+            $data['image'] = $this->storeMedia($this->image, 'categories');
+        } elseif ($this->category_id && ! $this->existing_image) {
             $data['image'] = null;
         }
 

@@ -11,7 +11,9 @@ class Orders extends Component
     use WithPagination;
 
     public $search = '';
+
     public $paymentFilter = '';
+
     public $deliveryFilter = '';
 
     public function render()
@@ -20,9 +22,9 @@ class Orders extends Component
 
         if ($this->search) {
             $query->where(function ($q) {
-                $q->where('invoice_no', 'like', '%' . $this->search . '%')
-                  ->orWhereHas('user', fn ($u) => $u->where('name', 'like', "%{$this->search}%")
-                      ->orWhere('email', 'like', "%{$this->search}%"));
+                $q->where('invoice_no', 'like', '%'.$this->search.'%')
+                    ->orWhereHas('user', fn ($u) => $u->where('name', 'like', "%{$this->search}%")
+                        ->orWhere('email', 'like', "%{$this->search}%"));
             });
         }
 

@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers\Frontend;
 
+use App\Enums\PaymentStatus;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\BkashCallbackRequest;
 use App\Models\Order;
 use App\Services\BkashService;
-use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Gate;
 
 class BkashController extends Controller
 {
@@ -13,18 +16,17 @@ class BkashController extends Controller
         protected BkashService $bkash
     ) {}
 
-    public function initiate(Order $order)
+    public function initiate(Order $order): RedirectResponse
     {
-        if ($order->user_id !== auth()->id()) {
-            abort(403);
-        }
+        abort_unless(Gate::forUser(auth()->user())->allows('pay', $order), 403);
 
-        if ($order->payment_status !== 'pending') {
-            return redirect()->route('order.confirmation', $order);
+        if ($order->payment_status !== PaymentStatus::Pending->value) {
+            return redirect()->to($order->confirmationUrl());
         }
 
         if (! $this->bkash->isConfigured()) {
-            return back()->with('error', 'bKash is not configured yet.');
+            return redirect()->to($order->paymentUrl())
+                ->with('error', 'bKash is not configured yet.');
         }
 
         try {
@@ -34,15 +36,15 @@ class BkashController extends Controller
                 return redirect()->away($result['bkashURL']);
             }
 
-            return redirect()->route('payment.process', $order)
+            return redirect()->to($order->paymentUrl())
                 ->with('error', $result['message'] ?? 'Failed to initiate bKash payment.');
         } catch (\Exception $e) {
-            return redirect()->route('payment.process', $order)
+            return redirect()->to($order->paymentUrl())
                 ->with('error', $e->getMessage());
         }
     }
 
-    public function callback(Request $request)
+    public function callback(BkashCallbackRequest $request): RedirectResponse
     {
         $paymentID = $request->input('paymentID');
         $status = $request->input('status');
@@ -51,41 +53,54 @@ class BkashController extends Controller
             return redirect()->route('home')->with('error', 'Invalid payment response.');
         }
 
+        // Look up order by the bKash paymentID we stored during createPayment.
+        $order = Order::where('payment_id', $paymentID)->first();
+
+        if (! $order) {
+            return redirect()->route('home')->with('error', 'Order not found for this payment.');
+        }
+
         try {
             if ($status === 'success') {
                 $result = $this->bkash->executePayment($paymentID);
 
-                $order = Order::where('invoice_no', $result['merchantInvoiceNumber'] ?? '')->first();
-
-                if ($order && ($result['transactionStatus'] ?? '') === 'Completed') {
-                    $order->update(['payment_status' => 'completed']);
-
-                    return redirect()->route('order.confirmation', $order)
+                if ($order->payment_status === PaymentStatus::Completed->value) {
+                    return redirect()->to($order->confirmationUrl())
                         ->with('message', 'Payment successful!');
                 }
 
-                if ($order) {
-                    $order->update(['payment_status' => 'failed']);
+                $transactionStatus = $result['transactionStatus'] ?? '';
+                $amount = (float) ($result['amount'] ?? 0);
+
+                if ($transactionStatus === 'Completed' && $amount === (float) $order->total) {
+                    $order->update([
+                        'payment_status' => PaymentStatus::Completed->value,
+                        'payment_id'     => $result['trxID'] ?? $paymentID,
+                    ]);
+
+                    return redirect()->to($order->confirmationUrl())
+                        ->with('message', 'Payment successful!');
                 }
 
-                return redirect()->route('checkout')
-                    ->with('error', 'Payment execution failed.');
-            }
-
-            if ($paymentID) {
-                $result = $this->bkash->queryPayment($paymentID);
-                $order = Order::where('invoice_no', $result['merchantInvoiceNumber'] ?? '')->first();
-
-                if ($order) {
-                    $order->update(['payment_status' => 'cancelled']);
+                // Payment was attempted but didn't complete successfully.
+                if ($order->payment_status === PaymentStatus::Pending->value) {
+                    $order->update(['payment_status' => PaymentStatus::Failed->value]);
                 }
+
+                return redirect()->to($order->confirmationUrl())
+                    ->with('error', 'Payment verification failed. Please try again.');
             }
 
-            return redirect()->route('checkout')
+            // status is not 'success' — user cancelled or something went wrong.
+            if ($order->payment_status === PaymentStatus::Pending->value) {
+                $order->update(['payment_status' => PaymentStatus::Cancelled->value]);
+            }
+
+            return redirect()->to($order->confirmationUrl())
                 ->with('error', 'Payment was cancelled.');
         } catch (\Exception $e) {
-            return redirect()->route('checkout')
-                ->with('error', $e->getMessage());
+            return redirect()->to($order->confirmationUrl())
+                ->with('error', 'Payment error: '.$e->getMessage());
         }
     }
 }

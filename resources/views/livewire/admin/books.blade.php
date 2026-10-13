@@ -77,15 +77,6 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold uppercase tracking-widest mb-2">Category</label>
-                        <select wire:model="category_id" class="input-field">
-                            <option value="">Select Category</option>
-                            @foreach($categories as $cat)
-                                <option value="{{ $cat->id }}">{{ $cat->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div>
                         <label class="block text-xs font-semibold uppercase tracking-widest mb-2">Publisher</label>
                         <select wire:model="publisher_id" class="input-field">
                             <option value="">Select Publisher</option>
@@ -128,6 +119,38 @@
                         <input wire:model="weight" type="number" step="0.01" class="input-field">
                     </div>
                 </div>
+
+                {{-- Categories (multi-select) --}}
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-widest mb-2">Categories</label>
+                    @error('selectedCategories') <span class="text-xs text-brand-600 mt-1 block">{{ $message }}</span> @enderror
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-2 max-h-48 overflow-y-auto border border-neutral-200 p-3">
+                        @forelse($categories as $cat)
+                            <label class="flex items-center gap-2 text-sm cursor-pointer hover:bg-neutral-50 px-2 py-1">
+                                <input wire:model="selectedCategories" type="checkbox" value="{{ $cat->id }}" class="border-neutral-300 text-black focus:ring-black">
+                                <span>{{ $cat->name }}</span>
+                            </label>
+                        @empty
+                            <p class="text-sm text-neutral-500 col-span-3">No categories available.</p>
+                        @endforelse
+                    </div>
+                </div>
+
+                {{-- Book Fair Editions --}}
+                @if($fairEditions->count())
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-widest mb-2">Book Fair Editions</label>
+                    @error('selectedFairEditions') <span class="text-xs text-brand-600 mt-1 block">{{ $message }}</span> @enderror
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-2 border border-neutral-200 p-3">
+                        @foreach($fairEditions as $fe)
+                            <label class="flex items-center gap-2 text-sm cursor-pointer hover:bg-neutral-50 px-2 py-1">
+                                <input wire:model="selectedFairEditions" type="checkbox" value="{{ $fe->id }}" class="border-neutral-300 text-black focus:ring-black">
+                                <span>{{ $fe->title }}</span>
+                            </label>
+                        @endforeach
+                    </div>
+                </div>
+                @endif
 
                 <div>
                     <label class="block text-xs font-semibold uppercase tracking-widest mb-2">Description</label>

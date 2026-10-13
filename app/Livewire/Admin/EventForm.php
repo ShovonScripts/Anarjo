@@ -2,24 +2,33 @@
 
 namespace App\Livewire\Admin;
 
+use App\Livewire\Concerns\UploadsMedia;
 use App\Models\Event;
-use App\Models\Media;
+use Illuminate\Support\Str;
 use Livewire\Component;
 use Livewire\WithFileUploads;
-use Illuminate\Support\Str;
+use Mews\Purifier\Facades\Purifier;
 
 class EventForm extends Component
 {
-    use WithFileUploads;
+    use UploadsMedia, WithFileUploads;
 
     public $event_id;
+
     public $title;
+
     public $date;
+
     public $venue;
+
     public $description;
+
     public $image;
+
     public $existing_image;
+
     public $status = 'draft';
+
     public $is_major = false;
 
     protected function rules(): array
@@ -58,22 +67,14 @@ class EventForm extends Component
             'slug' => Str::slug($this->title),
             'date' => $this->date,
             'venue' => $this->venue,
-            'description' => $this->description,
+            'description' => Purifier::clean($this->description),
             'status' => $this->status,
             'is_major' => $this->is_major,
         ];
 
         if ($this->image) {
-            $path = $this->image->store('events', 'public');
-            $data['image'] = $path;
-            Media::create([
-                'name' => $this->image->getClientOriginalName(),
-                'path' => $path,
-                'type' => $this->image->getMimeType(),
-                'size' => $this->image->getSize(),
-                'disk' => 'public',
-            ]);
-        } elseif ($this->event_id && !$this->existing_image) {
+            $data['image'] = $this->storeMedia($this->image, 'events');
+        } elseif ($this->event_id && ! $this->existing_image) {
             $data['image'] = null;
         }
 

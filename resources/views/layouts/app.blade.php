@@ -7,6 +7,7 @@
         <title>{{ config('app.name', 'Anarjo') }}</title>
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700,800&display=swap" rel="stylesheet" />
+        <link href="https://fonts.maateen.me/solaiman-lipi/font.css" rel="stylesheet" />
         @if (setting('favicon'))
             <link rel="icon" type="image/png" href="{{ asset('storage/' . setting('favicon')) }}">
         @endif
@@ -15,6 +16,7 @@
     <body class="font-sans antialiased">
         <div class="min-h-screen flex flex-col bg-neutral-50">
             <x-public-header />
+            <div class="h-24" aria-hidden="true"></div>
 
             @if (isset($header))
                 <header class="bg-white border-b border-neutral-200">

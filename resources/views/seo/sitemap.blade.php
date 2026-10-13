@@ -33,7 +33,7 @@
     @foreach($books as $book)
         <url>
             <loc>{{ route('books.show', $book->slug) }}</loc>
-            <lastmod>{{ $book->updated_at->tz('UTC')->toW3cString() }}</lastmod>
+            @if($book->updated_at)<lastmod>{{ $book->updated_at->tz('UTC')->toW3cString() }}</lastmod>@endif
             <priority>0.8</priority>
             <changefreq>weekly</changefreq>
         </url>
@@ -41,7 +41,7 @@
     @foreach($blogs as $blog)
         <url>
             <loc>{{ route('blog.show', $blog->slug) }}</loc>
-            <lastmod>{{ $blog->updated_at->tz('UTC')->toW3cString() }}</lastmod>
+            @if($blog->updated_at)<lastmod>{{ $blog->updated_at->tz('UTC')->toW3cString() }}</lastmod>@endif
             <priority>0.7</priority>
             <changefreq>monthly</changefreq>
         </url>
@@ -49,7 +49,7 @@
     @foreach($authors as $author)
         <url>
             <loc>{{ route('author.show', $author->slug) }}</loc>
-            <lastmod>{{ $author->updated_at->tz('UTC')->toW3cString() }}</lastmod>
+            @if($author->updated_at)<lastmod>{{ $author->updated_at->tz('UTC')->toW3cString() }}</lastmod>@endif
             <priority>0.6</priority>
             <changefreq>monthly</changefreq>
         </url>

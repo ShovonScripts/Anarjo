@@ -9,7 +9,9 @@ use Mews\Purifier\Facades\Purifier;
 class PolicySettings extends Component
 {
     public string $privacy_policy = '';
+
     public string $terms_conditions = '';
+
     public string $return_refund = '';
 
     protected SettingsService $settings;

@@ -78,7 +78,7 @@ class Brands extends Component
         ];
 
         if ($this->logo) {
-            $data['logo'] = $this->storeMedia($this->logo, 'brands');
+            $data['logo'] = $this->replaceMedia($this->logo, 'brands', $this->existing_logo);
         } elseif ($this->brand_id && ! $this->existing_logo) {
             $data['logo'] = null;
         }

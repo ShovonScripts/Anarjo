@@ -71,7 +71,7 @@ class SslCommerzController extends Controller
         if ($isValid) {
             $order->update([
                 'payment_status' => PaymentStatus::Completed->value,
-                'payment_id'     => $valId ?? $request->input('bank_tran_id') ?? $order->payment_id,
+                'payment_id' => $valId ?? $request->input('bank_tran_id') ?? $order->payment_id,
             ]);
 
             return redirect()->to($order->confirmationUrl())
@@ -142,7 +142,7 @@ class SslCommerzController extends Controller
         if ($isValid) {
             $order->update([
                 'payment_status' => PaymentStatus::Completed->value,
-                'payment_id'     => $valId ?? $request->input('bank_tran_id') ?? $order->payment_id,
+                'payment_id' => $valId ?? $request->input('bank_tran_id') ?? $order->payment_id,
             ]);
         } else {
             // IPN validation failed — mark as failed so stock is restored.

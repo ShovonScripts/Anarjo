@@ -47,9 +47,9 @@
             @foreach($reviews as $review)
                 <div class="py-6 first:pt-0">
                     <div class="flex items-center gap-3 mb-2">
-                        <span class="w-8 h-8 bg-neutral-200 flex items-center justify-center text-xs font-bold">{{ substr($review->user->name, 0, 1) }}</span>
+                        <span class="w-8 h-8 bg-neutral-200 flex items-center justify-center text-xs font-bold">{{ substr($review->user?->name ?? 'Deleted user', 0, 1) }}</span>
                         <div>
-                            <p class="text-sm font-semibold">{{ $review->user->name }}</p>
+                            <p class="text-sm font-semibold">{{ $review->user?->name ?? 'Deleted user' }}</p>
                             <div class="flex gap-0.5">
                                 @for($i = 1; $i <= 5; $i++)
                                     <svg class="w-3.5 h-3.5 {{ $i <= $review->rating ? 'text-black' : 'text-neutral-300' }}" viewBox="0 0 24 24" fill="currentColor">

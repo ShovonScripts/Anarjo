@@ -7,10 +7,10 @@
                 <div class="border border-neutral-200 p-6">
                     <div class="flex items-center gap-3 mb-3">
                         <div class="w-8 h-8 rounded-full bg-neutral-200 flex items-center justify-center text-xs font-bold uppercase">
-                            {{ substr($comment->user->name, 0, 1) }}
+                            {{ substr($comment->user?->name ?? 'Deleted user', 0, 1) }}
                         </div>
                         <div>
-                            <p class="text-sm font-semibold">{{ $comment->user->name }}</p>
+                            <p class="text-sm font-semibold">{{ $comment->user?->name ?? 'Deleted user' }}</p>
                             <p class="text-xs text-neutral-400">{{ $comment->created_at->diffForHumans() }}</p>
                         </div>
                     </div>

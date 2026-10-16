@@ -33,7 +33,6 @@ Route::get('/search', [SearchController::class, 'index'])->name('search');
 
 Route::prefix('books')->name('books.')->group(function () {
     Route::get('/', [BookController::class, 'index'])->name('index');
-    Route::get('/author/{slug}', [BookController::class, 'byAuthor'])->name('author');
     Route::get('/{slug}', [BookController::class, 'show'])->name('show');
 });
 

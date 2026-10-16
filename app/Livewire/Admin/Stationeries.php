@@ -101,7 +101,7 @@ class Stationeries extends Component
         ]);
 
         if ($this->new_image) {
-            $data['image'] = $this->storeMedia($this->new_image, 'stationeries');
+            $data['image'] = $this->replaceMedia($this->new_image, 'stationeries', $this->image);
         }
 
         $slug = Str::slug($this->title);

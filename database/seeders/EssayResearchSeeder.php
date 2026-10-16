@@ -106,7 +106,7 @@ class EssayResearchSeeder extends Seeder
             ['title' => 'স্রষ্টার সন্ধানে', 'author' => 'অধ্যক্ষ (অব.) আল মামুন জাহাঙ্গীরি', 'price' => 250],
             ['title' => "Youth's Quest for The Truth", 'author' => 'Md. Al Mamun Jahangiri', 'price' => 250],
             ['title' => 'শিক্ষায় প্রযুক্তি', 'author' => 'সবুজ চৌধুরী', 'price' => 600],
-            ['title' => "Navigating Teenage Mental Health / Mindscape: Adolescence", 'author' => "JOSEPHITE WRITERS' FORUM", 'price' => 800],
+            ['title' => 'Navigating Teenage Mental Health / Mindscape: Adolescence', 'author' => "JOSEPHITE WRITERS' FORUM", 'price' => 800],
         ];
 
         foreach ($books as $book) {
@@ -134,6 +134,6 @@ class EssayResearchSeeder extends Seeder
             $bookRecord->categories()->syncWithoutDetaching([$category->id]);
         }
 
-        $this->command->info('Seeded ' . count($books) . ' books with authors in "প্রবন্ধ ও গবেষণা" category.');
+        $this->command->info('Seeded '.count($books).' books with authors in "প্রবন্ধ ও গবেষণা" category.');
     }
 }

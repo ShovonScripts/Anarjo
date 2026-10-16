@@ -38,10 +38,20 @@
         </select>
     </div>
 
+    @if(count($selected))
+        <div class="flex items-center justify-between border border-black bg-neutral-50 px-4 py-2 mb-4 text-sm">
+            <span class="font-medium">{{ count($selected) }} selected</span>
+            <button wire:click="deleteMultiple" wire:confirm="Delete the selected files?" class="text-xs font-semibold text-brand-600 hover:text-brand-700 transition-colors">Delete Selected</button>
+        </div>
+    @endif
+
     {{-- Grid --}}
     <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
         @forelse($allMedia as $media)
             <div class="group border border-neutral-200 bg-white hover:border-black transition-colors relative">
+                <label class="absolute top-2 left-2 z-10 flex items-center justify-center w-5 h-5 bg-white border border-neutral-300 cursor-pointer">
+                    <input type="checkbox" wire:model.live="selected" value="{{ $media->id }}" class="w-3.5 h-3.5 text-black focus:ring-black border-neutral-300 rounded-none">
+                </label>
                 <div class="aspect-square overflow-hidden bg-neutral-100 flex items-center justify-center">
                     @if($media->isImage())
                         <img src="{{ $media->url() }}" alt="{{ $media->name }}" class="w-full h-full object-cover">

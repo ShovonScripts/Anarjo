@@ -140,6 +140,31 @@
                             <span>{{ $currency }}{{ number_format($total) }}</span>
                         </div>
                     </div>
+
+                    {{-- Mobile Coupon --}}
+                    <div class="border-t border-neutral-200 pt-4 mb-6">
+                        @if($appliedCoupon)
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center gap-2">
+                                    <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                    <span class="font-semibold text-green-700 text-sm uppercase">{{ $appliedCoupon->code }}</span>
+                                </div>
+                                <button wire:click="removeCoupon" type="button" class="text-xs text-red-600 hover:text-red-700 font-semibold transition-colors">Remove</button>
+                            </div>
+                        @else
+                            <div class="flex gap-2">
+                                <input type="text" wire:model="coupon_code" placeholder="Coupon code" class="flex-1 px-3 py-2 border border-neutral-300 text-sm focus:outline-none focus:border-black transition-colors uppercase">
+                                <button type="button" wire:click="applyCoupon" wire:loading.attr="disabled" class="px-4 py-2 text-sm font-semibold bg-black text-white hover:bg-neutral-800 transition-colors disabled:opacity-50">
+                                    <span wire:loading.remove wire:target="applyCoupon">Apply</span>
+                                    <span wire:loading wire:target="applyCoupon">
+                                        <svg class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
+                                    </span>
+                                </button>
+                            </div>
+                            @error('coupon_code') <span class="text-xs text-red-600 mt-2 block">{{ $message }}</span> @enderror
+                        @endif
+                    </div>
+
                     <button type="submit" wire:loading.attr="disabled" class="btn-primary w-full text-center">
                         <span wire:loading.remove wire:target="placeOrder">Place Order — {{ $currency }}{{ number_format($total) }}</span>
                         <span wire:loading wire:target="placeOrder" class="inline-flex items-center gap-2">

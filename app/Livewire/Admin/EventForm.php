@@ -73,7 +73,7 @@ class EventForm extends Component
         ];
 
         if ($this->image) {
-            $data['image'] = $this->storeMedia($this->image, 'events');
+            $data['image'] = $this->replaceMedia($this->image, 'events', $this->existing_image);
         } elseif ($this->event_id && ! $this->existing_image) {
             $data['image'] = null;
         }

@@ -137,6 +137,6 @@ class EventSeeder extends Seeder
         // Mark the 3 most recent events as major
         Event::where('status', 'published')->latest()->take(3)->update(['is_major' => true]);
 
-        $this->command->info('Seeded ' . count($events) . ' demo events.');
+        $this->command->info('Seeded '.count($events).' demo events.');
     }
 }

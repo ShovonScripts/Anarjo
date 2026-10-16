@@ -112,19 +112,4 @@ class BkashService
 
         return $result;
     }
-
-    public function queryPayment(string $paymentID): array
-    {
-        $token = $this->token ?? $this->grantToken();
-
-        $response = Http::withHeaders([
-            'Content-Type' => 'application/json',
-            'Authorization' => 'Bearer '.$token,
-            'X-APP-Key' => $this->appKey,
-        ])->get($this->baseUrl.'/tokenized/checkout/status', [
-            'paymentID' => $paymentID,
-        ]);
-
-        return $response->json() ?? [];
-    }
 }

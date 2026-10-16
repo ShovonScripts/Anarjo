@@ -76,7 +76,7 @@ class Categories extends Component
         ];
 
         if ($this->image) {
-            $data['image'] = $this->storeMedia($this->image, 'categories');
+            $data['image'] = $this->replaceMedia($this->image, 'categories', $this->existing_image);
         } elseif ($this->category_id && ! $this->existing_image) {
             $data['image'] = null;
         }

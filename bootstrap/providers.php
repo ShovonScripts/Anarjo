@@ -1,7 +1,11 @@
 <?php
 
+use App\Providers\AppServiceProvider;
+use App\Providers\VoltServiceProvider;
+use Mews\Purifier\PurifierServiceProvider;
+
 return [
-    App\Providers\AppServiceProvider::class,
-    App\Providers\VoltServiceProvider::class,
-    Mews\Purifier\PurifierServiceProvider::class,
+    AppServiceProvider::class,
+    VoltServiceProvider::class,
+    PurifierServiceProvider::class,
 ];

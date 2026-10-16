@@ -14,9 +14,9 @@ class SslCommerzCallbackRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'tran_id'  => ['required', 'string'],
-            'val_id'   => ['nullable', 'string'],
-            'amount'   => ['nullable', 'numeric'],
+            'tran_id' => ['required', 'string'],
+            'val_id' => ['nullable', 'string'],
+            'amount' => ['nullable', 'numeric'],
             'currency' => ['nullable', 'string'],
         ];
     }

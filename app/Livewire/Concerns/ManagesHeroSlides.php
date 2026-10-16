@@ -56,7 +56,7 @@ trait ManagesHeroSlides
         ];
 
         if ($this->slide_new_image && is_object($this->slide_new_image)) {
-            $data['image'] = $this->storeMedia($this->slide_new_image, 'hero');
+            $data['image'] = $this->replaceMedia($this->slide_new_image, 'hero', $this->slide_image);
         }
 
         HeroSlide::updateOrCreate(['id' => $this->slide_id], $data);

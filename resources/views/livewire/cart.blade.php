@@ -71,6 +71,17 @@
                 </div>
             @endif
 
+            {{-- Stock Warning --}}
+            @if($unavailable)
+                <div class="mb-8 border border-amber-300 bg-amber-50 px-6 py-4 flex items-start gap-3">
+                    <svg class="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
+                    <div class="text-sm">
+                        <p class="font-semibold text-amber-800">Some items are no longer available in the requested quantity.</p>
+                        <p class="text-amber-700 mt-1">Please adjust the quantities below before checking out.</p>
+                    </div>
+                </div>
+            @endif
+
             {{-- Cart Grid --}}
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
 
@@ -100,6 +111,15 @@
                                         <p class="text-xs text-neutral-500 mt-1 uppercase tracking-wider">
                                             Unit Price: {{ setting('currency_symbol', '৳') }}{{ number_format($item['price']) }}
                                         </p>
+                                        @if($stock[$key]['tracked'] && $item['qty'] > $stock[$key]['available'])
+                                            <p class="text-xs font-semibold text-amber-600 mt-1">
+                                                {{ $stock[$key]['available'] > 0 ? 'Only '.$stock[$key]['available'].' in stock' : 'Out of stock' }}
+                                            </p>
+                                        @elseif($stock[$key]['tracked'] && $stock[$key]['available'] <= 5)
+                                            <p class="text-xs font-medium text-amber-600 mt-1">
+                                                Only {{ $stock[$key]['available'] }} left
+                                            </p>
+                                        @endif
                                     </div>
                                     <p class="hidden sm:block font-bold text-lg flex-shrink-0">
                                         {{ setting('currency_symbol', '৳') }}{{ number_format($item['price'] * $item['qty']) }}
@@ -116,7 +136,8 @@
                                         <span wire:loading.class="opacity-50" class="w-10 h-10 flex items-center justify-center text-sm font-medium border-x border-neutral-300 transition-opacity">{{ $item['qty'] }}</span>
                                         <button wire:click="updateQty('{{ $key }}', {{ $item['qty'] + 1 }})"
                                                 wire:loading.attr="disabled"
-                                                class="w-10 h-10 flex items-center justify-center text-sm hover:bg-black hover:text-white transition-colors disabled:opacity-40">
+                                                @disabled($stock[$key]['tracked'] && $item['qty'] >= $stock[$key]['available'])
+                                                class="w-10 h-10 flex items-center justify-center text-sm hover:bg-black hover:text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
                                             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                                         </button>
                                     </div>
@@ -174,10 +195,17 @@
                             </div>
                         </div>
 
-                        <a href="{{ route('checkout') }}" class="btn-primary w-full text-center mt-8">
-                            Proceed to Checkout
-                            <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" d="M5 12h14m-7-7l7 7-7 7"/></svg>
-                        </a>
+                        @if($unavailable)
+                            <button type="button" disabled class="btn-primary w-full text-center mt-8 opacity-50 cursor-not-allowed">
+                                Proceed to Checkout
+                            </button>
+                            <p class="text-xs text-amber-600 text-center mt-3 font-medium">Resolve stock issues to continue.</p>
+                        @else
+                            <a href="{{ route('checkout') }}" class="btn-primary w-full text-center mt-8">
+                                Proceed to Checkout
+                                <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" d="M5 12h14m-7-7l7 7-7 7"/></svg>
+                            </a>
+                        @endif
                     </div>
                 </div>
 

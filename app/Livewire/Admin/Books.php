@@ -176,12 +176,14 @@ class Books extends Component
             'isOpen', 'search', 'selectedCategories', 'selectedFairEditions',
         ]);
 
+        $current = $this->book_id ? Book::find($this->book_id) : null;
+
         if ($this->new_cover_image) {
-            $data['cover_image'] = $this->storeMedia($this->new_cover_image, 'books');
+            $data['cover_image'] = $this->replaceMedia($this->new_cover_image, 'books', $current?->cover_image);
         }
 
         if ($this->new_preview_pdf) {
-            $data['preview_pdf'] = $this->storeMedia($this->new_preview_pdf, 'books/pdfs');
+            $data['preview_pdf'] = $this->replaceMedia($this->new_preview_pdf, 'books/pdfs', $current?->preview_pdf);
         }
 
         $slug = Str::slug($this->title);

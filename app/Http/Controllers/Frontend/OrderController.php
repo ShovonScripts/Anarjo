@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Frontend;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Services\InvoiceService;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
@@ -22,7 +21,7 @@ class OrderController extends Controller
         return view('frontend.orders.index', compact('orders'));
     }
 
-    public function confirmation(Order $order, Request $request): View
+    public function confirmation(Order $order): View
     {
         abort_unless(Gate::forUser(auth()->user())->allows('view', $order), 404);
 

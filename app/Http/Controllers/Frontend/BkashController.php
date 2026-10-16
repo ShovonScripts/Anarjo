@@ -75,7 +75,7 @@ class BkashController extends Controller
                 if ($transactionStatus === 'Completed' && $amount === (float) $order->total) {
                     $order->update([
                         'payment_status' => PaymentStatus::Completed->value,
-                        'payment_id'     => $result['trxID'] ?? $paymentID,
+                        'payment_id' => $result['trxID'] ?? $paymentID,
                     ]);
 
                     return redirect()->to($order->confirmationUrl())

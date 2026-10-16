@@ -21,7 +21,7 @@ class ContactReply extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Re: ' . ($this->message->subject ?? 'Your Inquiry'),
+            subject: 'Re: '.($this->message->subject ?? 'Your Inquiry'),
         );
     }
 

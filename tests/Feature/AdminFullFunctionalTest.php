@@ -2,14 +2,11 @@
 
 namespace Tests\Feature;
 
-use App\Models\Author;
-use App\Models\Book;
 use App\Models\User;
-use App\Models\Category;
-use App\Models\Blog;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\PermissionRegistrar;
 use Tests\TestCase;
 
 class AdminFullFunctionalTest extends TestCase
@@ -19,7 +16,7 @@ class AdminFullFunctionalTest extends TestCase
     public function test_admin_books_page_renders(): void
     {
         // Minimal setup like RouteDebugTest
-        app()->make(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
+        app()->make(PermissionRegistrar::class)->forgetCachedPermissions();
         Permission::firstOrCreate(['name' => 'view-dashboard']);
         $role = Role::firstOrCreate(['name' => 'Super Admin']);
         $role->givePermissionTo(Permission::all());

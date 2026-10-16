@@ -101,7 +101,7 @@ class BookFairEditions extends Component
         ];
 
         if ($this->image) {
-            $data['image'] = $this->storeMedia($this->image, 'book-fair-editions');
+            $data['image'] = $this->replaceMedia($this->image, 'book-fair-editions', $this->existing_image);
         } elseif ($this->edition_id && ! $this->existing_image) {
             $data['image'] = null;
         }

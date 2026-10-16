@@ -4,9 +4,9 @@ namespace App\Services;
 
 use App\Models\Order;
 use Illuminate\Http\Response;
-use Mpdf\Mpdf;
 use Mpdf\Config\ConfigVariables;
 use Mpdf\Config\FontVariables;
+use Mpdf\Mpdf;
 
 class InvoiceService
 {
@@ -16,31 +16,37 @@ class InvoiceService
 
         $fontPath = resource_path('fonts');
 
-        $defaultConfig   = (new ConfigVariables())->getDefaults();
-        $fontDirs        = $defaultConfig['fontDir'];
+        $defaultConfig = (new ConfigVariables)->getDefaults();
+        $fontDirs = $defaultConfig['fontDir'];
 
-        $defaultFontConfig = (new FontVariables())->getDefaults();
-        $fontData          = $defaultFontConfig['fontdata'];
+        $defaultFontConfig = (new FontVariables)->getDefaults();
+        $fontData = $defaultFontConfig['fontdata'];
+
+        $tempDir = storage_path('mpdf');
+
+        if (! is_dir($tempDir)) {
+            @mkdir($tempDir, 0775, true);
+        }
 
         $mpdf = new Mpdf([
-            'mode'              => 'utf-8',
-            'format'            => 'A4',
-            'margin_top'        => 25,
-            'margin_bottom'     => 25,
-            'margin_left'       => 20,
-            'margin_right'      => 20,
-            'fontDir'           => array_merge($fontDirs, [$fontPath]),
-            'fontdata'          => $fontData + [
+            'mode' => 'utf-8',
+            'format' => 'A4',
+            'margin_top' => 25,
+            'margin_bottom' => 25,
+            'margin_left' => 20,
+            'margin_right' => 20,
+            'fontDir' => array_merge($fontDirs, [$fontPath]),
+            'fontdata' => $fontData + [
                 'solaimanlipi' => [
-                    'R'          => 'SolaimanLipi.ttf',
-                    'useOTL'     => 0xFF,
+                    'R' => 'SolaimanLipi.ttf',
+                    'useOTL' => 0xFF,
                     'useKashida' => 75,
                 ],
             ],
-            'default_font'      => 'solaimanlipi',
-            'autoScriptToLang'  => true,
-            'autoLangToFont'    => true,
-            'tempDir'           => storage_path('mpdf'),
+            'default_font' => 'solaimanlipi',
+            'autoScriptToLang' => true,
+            'autoLangToFont' => true,
+            'tempDir' => $tempDir,
         ]);
 
         $html = view('invoices.order', ['order' => $order])->render();
@@ -54,8 +60,8 @@ class InvoiceService
         $mpdf = $this->generatePdf($order);
 
         return response($mpdf->Output("invoice-{$order->invoice_no}.pdf", 'S'), 200, [
-            'Content-Type'        => 'application/pdf',
-            'Content-Disposition' => 'attachment; filename="invoice-' . $order->invoice_no . '.pdf"',
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="invoice-'.$order->invoice_no.'.pdf"',
         ]);
     }
 
@@ -64,8 +70,8 @@ class InvoiceService
         $mpdf = $this->generatePdf($order);
 
         return response($mpdf->Output("invoice-{$order->invoice_no}.pdf", 'S'), 200, [
-            'Content-Type'        => 'application/pdf',
-            'Content-Disposition' => 'inline; filename="invoice-' . $order->invoice_no . '.pdf"',
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="invoice-'.$order->invoice_no.'.pdf"',
         ]);
     }
 }

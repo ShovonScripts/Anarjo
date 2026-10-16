@@ -25,7 +25,7 @@ class SettingsSeeder extends Seeder
             ['key' => 'mail_from_address', 'value' => 'noreply@anarjo.com'],
             ['key' => 'mail_from_name', 'value' => 'Anarjo'],
             ['key' => 'seo_meta_title', 'value' => 'Anarjo Publications - Bangladesh\'s Premier Book Publisher'],
-            ['key' => 'seo_meta_description', 'value' => 'Discover a world of knowledge with Anarjo Publications. Explore books, meet authors, and stay updated with literary events.' ],
+            ['key' => 'seo_meta_description', 'value' => 'Discover a world of knowledge with Anarjo Publications. Explore books, meet authors, and stay updated with literary events.'],
         ];
 
         foreach ($settings as $setting) {

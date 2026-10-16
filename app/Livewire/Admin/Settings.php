@@ -139,13 +139,13 @@ class Settings extends Component
             ]);
 
             if ($this->header_logo && is_object($this->header_logo)) {
-                $data['header_logo'] = $this->storeMedia($this->header_logo, 'settings');
+                $data['header_logo'] = $this->replaceMedia($this->header_logo, 'settings', $this->header_logo_path);
             }
             if ($this->footer_logo && is_object($this->footer_logo)) {
-                $data['footer_logo'] = $this->storeMedia($this->footer_logo, 'settings');
+                $data['footer_logo'] = $this->replaceMedia($this->footer_logo, 'settings', $this->footer_logo_path);
             }
             if ($this->favicon && is_object($this->favicon)) {
-                $data['favicon'] = $this->storeMedia($this->favicon, 'settings');
+                $data['favicon'] = $this->replaceMedia($this->favicon, 'settings', $this->favicon_path);
             }
         } elseif ($this->tab === 'contact') {
             $data = [

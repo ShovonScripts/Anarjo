@@ -6,6 +6,7 @@ use App\Enums\PaymentStatus;
 use App\Models\Author;
 use App\Models\Book;
 use App\Models\Order;
+use App\Models\OrderItem;
 use App\Models\User;
 use App\Services\Cart\CartService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -178,7 +179,7 @@ class PaymentSecurityTest extends TestCase
             'payment_status' => PaymentStatus::Pending->value,
         ]);
 
-        \App\Models\OrderItem::create([
+        OrderItem::create([
             'order_id' => $order->id,
             'book_id' => $book->id,
             'item_type' => 'book',
@@ -217,7 +218,7 @@ class PaymentSecurityTest extends TestCase
             'payment_status' => PaymentStatus::Pending->value,
         ]);
 
-        \App\Models\OrderItem::create([
+        OrderItem::create([
             'order_id' => $order->id,
             'book_id' => $book->id,
             'item_type' => 'book',
@@ -373,16 +374,15 @@ class PaymentSecurityTest extends TestCase
 
         $this->post(route('payment.sslcommerz.success'), [
             'tran_id' => $order->invoice_no,
-            'val_id'  => 'val_12345678',
-            'amount'  => '500',
-            'currency'=> 'BDT',
+            'val_id' => 'val_12345678',
+            'amount' => '500',
+            'currency' => 'BDT',
         ])->assertRedirect();
 
         $this->assertDatabaseHas('orders', [
             'id' => $order->id,
             'payment_status' => PaymentStatus::Completed->value,
-            'payment_id'     => 'val_12345678',
+            'payment_id' => 'val_12345678',
         ]);
     }
 }
-

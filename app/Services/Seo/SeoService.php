@@ -19,14 +19,14 @@ class SeoService
             'meta_description' => $description,
             'og:title' => $title,
             'og:description' => $description,
-            'og:image' => $image ? asset('storage/' . $image) : '',
+            'og:image' => $image ? asset('storage/'.$image) : '',
             'og:url' => $url,
             'og:type' => $type,
             'og:site_name' => $appName,
             'twitter:card' => 'summary_large_image',
             'twitter:title' => $title,
             'twitter:description' => $description,
-            'twitter:image' => $image ? asset('storage/' . $image) : '',
+            'twitter:image' => $image ? asset('storage/'.$image) : '',
             'canonical' => $url,
         ];
     }
@@ -42,7 +42,7 @@ class SeoService
             'datePublished' => $book['publish_date'] ?? null,
             'inLanguage' => $book['language'] ?? 'Bengali',
             'numberOfPages' => $book['pages'] ?? null,
-            'image' => $book['cover_image'] ? asset('storage/' . $book['cover_image']) : null,
+            'image' => $book['cover_image'] ? asset('storage/'.$book['cover_image']) : null,
             'offers' => [
                 '@type' => 'Offer',
                 'price' => $book['sale_price'] ?? $book['price'],

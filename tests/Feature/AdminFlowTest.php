@@ -2,12 +2,14 @@
 
 namespace Tests\Feature;
 
-use App\Models\Book;
 use App\Models\Author;
+use App\Models\Book;
+use App\Models\Order;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\PermissionRegistrar;
 use Tests\TestCase;
 
 class AdminFlowTest extends TestCase
@@ -23,7 +25,7 @@ class AdminFlowTest extends TestCase
 
     private function seedRolesAndPermissions(): void
     {
-        app()->make(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
+        app()->make(PermissionRegistrar::class)->forgetCachedPermissions();
 
         $permissions = [
             'view-dashboard', 'manage-books', 'manage-categories', 'manage-authors',
@@ -260,7 +262,7 @@ class AdminFlowTest extends TestCase
             'status' => 'published',
         ]);
         $user = User::factory()->create();
-        $order = \App\Models\Order::create([
+        $order = Order::create([
             'user_id' => $user->id,
             'invoice_no' => 'INV-TEST-001',
             'subtotal' => 100,

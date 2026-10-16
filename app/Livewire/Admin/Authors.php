@@ -78,7 +78,7 @@ class Authors extends Component
         ];
 
         if ($this->photo) {
-            $data['photo'] = $this->storeMedia($this->photo, 'authors');
+            $data['photo'] = $this->replaceMedia($this->photo, 'authors', $this->existing_photo);
         } elseif ($this->author_id && ! $this->existing_photo) {
             $data['photo'] = null;
         }

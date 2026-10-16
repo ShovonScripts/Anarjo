@@ -2,11 +2,11 @@
 
 namespace Tests\Unit;
 
+use App\Models\Author;
+use App\Models\Book;
 use App\Models\Order;
 use App\Models\OrderItem;
-use App\Models\Book;
 use App\Models\User;
-use App\Models\Address;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -49,7 +49,7 @@ class OrderTest extends TestCase
     public function test_order_has_items(): void
     {
         $user = User::factory()->create();
-        $author = \App\Models\Author::factory()->create();
+        $author = Author::factory()->create();
         $book = Book::factory()->create(['author_id' => $author->id, 'price' => 150]);
 
         $order = Order::create([

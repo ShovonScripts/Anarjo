@@ -44,7 +44,7 @@
                             <ul class="space-y-0.5 max-h-60 overflow-y-auto">
                                 @foreach($authors as $auth)
                                     <li x-show="!authSearch || '{{ strtolower($auth->name) }}'.includes(authSearch.toLowerCase())">
-                                        <a href="{{ route('books.author', $auth->slug) }}"
+                                        <a href="{{ route('author.show', $auth->slug) }}"
                                            class="block px-3 py-2 text-sm {{ isset($author) && $author->id === $auth->id ? 'bg-neutral-900 text-white' : 'text-neutral-600 hover:bg-neutral-100' }} transition-colors">
                                             {{ $auth->name }}
                                             <span class="text-xs opacity-60">({{ $auth->books_count }})</span>
@@ -88,7 +88,7 @@
                         <ul class="space-y-1 max-h-72 overflow-y-auto">
                             @foreach($authors as $auth)
                                 <li x-show="!authSearch || '{{ strtolower($auth->name) }}'.includes(authSearch.toLowerCase())">
-                                    <a href="{{ route('books.author', $auth->slug) }}"
+                                    <a href="{{ route('author.show', $auth->slug) }}"
                                        class="block px-3 py-2 text-sm {{ isset($author) && $author->id === $auth->id ? 'bg-neutral-900 text-white' : 'text-neutral-600 hover:bg-neutral-100' }} transition-colors">
                                         {{ $auth->name }}
                                         <span class="text-xs opacity-60">({{ $auth->books_count }})</span>

@@ -66,7 +66,7 @@ class HomeSettings extends Component
             $data["branding_box_{$i}_image"] = $box['image_path'];
 
             if (! empty($box['image']) && is_object($box['image'])) {
-                $path = $this->storeMedia($box['image'], 'branding');
+                $path = $this->replaceMedia($box['image'], 'branding', $box['image_path']);
                 $data["branding_box_{$i}_image"] = $path;
                 $this->boxes[$i]['image_path'] = $path;
                 $this->boxes[$i]['image'] = null;
@@ -74,7 +74,7 @@ class HomeSettings extends Component
         }
 
         if ($this->home_about_image && is_object($this->home_about_image)) {
-            $path = $this->storeMedia($this->home_about_image, 'settings');
+            $path = $this->replaceMedia($this->home_about_image, 'settings', $this->home_about_image_path);
             $data['home_about_image'] = $path;
             $this->home_about_image_path = $path;
             $this->home_about_image = null;

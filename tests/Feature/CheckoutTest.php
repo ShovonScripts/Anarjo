@@ -2,8 +2,8 @@
 
 namespace Tests\Feature;
 
-use App\Models\Book;
 use App\Models\Author;
+use App\Models\Book;
 use App\Models\User;
 use App\Services\Cart\CartService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -19,7 +19,7 @@ class CheckoutTest extends TestCase
         $author = Author::factory()->create();
         $book = Book::factory()->create(['author_id' => $author->id, 'price' => 100]);
 
-        $cart = new CartService();
+        $cart = new CartService;
         $cart->add($book->id);
 
         $response = $this->get(route('checkout'));
@@ -32,7 +32,7 @@ class CheckoutTest extends TestCase
         $author = Author::factory()->create();
         $book = Book::factory()->create(['author_id' => $author->id, 'price' => 100]);
 
-        $cart = new CartService();
+        $cart = new CartService;
         $cart->add($book->id);
 
         $response = $this->actingAs($user)->get(route('checkout'));
@@ -50,7 +50,7 @@ class CheckoutTest extends TestCase
             'status' => 'published',
         ]);
 
-        $cart = new CartService();
+        $cart = new CartService;
         $cart->add($book->id);
 
         $response = $this->actingAs($user)->get(route('checkout'));
@@ -67,7 +67,7 @@ class CheckoutTest extends TestCase
             'status' => 'published',
         ]);
 
-        $cart = new CartService();
+        $cart = new CartService;
         $cart->add($book->id, 2);
 
         $response = Livewire::test('checkout')

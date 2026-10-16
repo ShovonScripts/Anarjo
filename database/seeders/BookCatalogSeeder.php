@@ -436,11 +436,13 @@ class BookCatalogSeeder extends Seeder
             if ($ch === ' ' || preg_match('/[A-Za-z0-9]/u', $ch)) {
                 $out .= $ch;
                 $i++;
+
                 continue;
             }
 
             if ($ch === '্') {
                 $i++;
+
                 continue;
             }
 
@@ -458,12 +460,14 @@ class BookCatalogSeeder extends Seeder
                             $i++;
                         }
                     }
+
                     continue;
                 }
 
                 if (isset($chars[$i + 1]) && isset($vowelSigns[$chars[$i + 1]])) {
                     $out .= $cval.$vowelSigns[$chars[$i + 1]];
                     $i += 2;
+
                     continue;
                 }
 
@@ -474,12 +478,14 @@ class BookCatalogSeeder extends Seeder
                     $out .= $cval.'a';
                 }
                 $i++;
+
                 continue;
             }
 
             if (isset($vowels[$ch])) {
                 $out .= $vowels[$ch];
                 $i++;
+
                 continue;
             }
 

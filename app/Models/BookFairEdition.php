@@ -26,9 +26,28 @@ class BookFairEdition extends Model
     {
         static::creating(function (BookFairEdition $edition) {
             if (! $edition->slug) {
-                $edition->slug = Str::slug($edition->title);
+                $edition->slug = static::uniqueSlug($edition->title, $edition->id);
             }
         });
+
+        static::updating(function (BookFairEdition $edition) {
+            if ($edition->isDirty('title') && ! $edition->isDirty('slug')) {
+                $edition->slug = static::uniqueSlug($edition->title, $edition->id);
+            }
+        });
+    }
+
+    protected static function uniqueSlug(string $title, ?int $ignoreId = null): string
+    {
+        $base = Str::slug($title) ?: 'edition';
+        $slug = $base;
+        $i = 1;
+
+        while (static::where('slug', $slug)->when($ignoreId, fn ($q) => $q->where('id', '!=', $ignoreId))->exists()) {
+            $slug = $base.'-'.$i++;
+        }
+
+        return $slug;
     }
 
     public function getRouteKeyName(): string

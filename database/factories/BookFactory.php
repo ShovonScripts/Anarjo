@@ -13,6 +13,7 @@ class BookFactory extends Factory
     public function definition(): array
     {
         $title = fake()->unique()->sentence(4);
+
         return [
             'title' => $title,
             'slug' => Str::slug($title),

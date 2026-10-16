@@ -10,11 +10,7 @@ class OrderPolicy
     public function view(?User $user, Order $order): bool
     {
         if ($order->user_id === null) {
-            $token = request()->query('token');
-
-            return is_string($token)
-                && $order->confirmation_token !== null
-                && hash_equals($order->confirmation_token, $token);
+            return $this->guestTokenMatches($order);
         }
 
         return $user !== null && $order->user_id === $user->id;
@@ -23,13 +19,18 @@ class OrderPolicy
     public function pay(?User $user, Order $order): bool
     {
         if ($order->user_id === null) {
-            $token = request()->query('token') ?? request()->input('token');
-
-            return is_string($token)
-                && $order->confirmation_token !== null
-                && hash_equals($order->confirmation_token, $token);
+            return $this->guestTokenMatches($order);
         }
 
         return $user !== null && $order->user_id === $user->id;
+    }
+
+    private function guestTokenMatches(Order $order): bool
+    {
+        $token = request()->query('token') ?? request()->input('token');
+
+        return is_string($token)
+            && $order->confirmation_token !== null
+            && hash_equals($order->confirmation_token, $token);
     }
 }

@@ -4,6 +4,7 @@ namespace App\Livewire\Admin;
 
 use App\Models\Media;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
@@ -17,6 +18,8 @@ class MediaManager extends Component
     public $search = '';
 
     public $typeFilter = '';
+
+    public array $selected = [];
 
     protected function rules(): array
     {
@@ -82,8 +85,22 @@ class MediaManager extends Component
         session()->flash('message', 'File deleted.');
     }
 
-    public function deleteMultiple()
+    public function deleteMultiple(): void
     {
-        // placeholder for future batch delete
+        if (empty($this->selected)) {
+            return;
+        }
+
+        $media = Media::whereIn('id', $this->selected)->get();
+
+        foreach ($media as $item) {
+            Storage::disk($item->disk)->delete($item->path);
+            $item->delete();
+        }
+
+        $count = $media->count();
+        $this->selected = [];
+
+        session()->flash('message', $count.' '.Str::plural('file', $count).' deleted.');
     }
 }

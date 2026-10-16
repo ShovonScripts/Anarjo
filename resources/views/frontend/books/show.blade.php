@@ -101,7 +101,7 @@
                 @if($book->author)
                     <div class="flex items-center gap-2.5 mt-3 text-sm">
                         <span class="text-neutral-500 font-medium">By</span>
-                        <a href="{{ route('books.author', $book->author->slug) }}" class="font-bold text-neutral-900 hover:text-brand-600 underline underline-offset-4 transition-colors">
+                        <a href="{{ route('author.show', $book->author->slug) }}" class="font-bold text-neutral-900 hover:text-brand-600 underline underline-offset-4 transition-colors">
                             {{ $book->author->name }}
                         </a>
                     </div>
@@ -269,7 +269,7 @@
                         @if($book->author->bio)
                             <p class="text-xs text-neutral-400 mt-1.5 line-clamp-2 leading-relaxed">{{ $book->author->bio }}</p>
                         @endif
-                        <a href="{{ route('books.author', $book->author->slug) }}" class="inline-flex items-center gap-1.5 mt-3 text-xs font-semibold text-white hover:text-brand-400 underline underline-offset-4 transition-colors">
+                        <a href="{{ route('author.show', $book->author->slug) }}" class="inline-flex items-center gap-1.5 mt-3 text-xs font-semibold text-white hover:text-brand-400 underline underline-offset-4 transition-colors">
                             Explore all books by {{ $book->author->name }} &rarr;
                         </a>
                     </div>

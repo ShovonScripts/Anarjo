@@ -89,7 +89,7 @@ class BlogForm extends Component
         ];
 
         if ($this->featured_image) {
-            $data['featured_image'] = $this->storeMedia($this->featured_image, 'blog-images');
+            $data['featured_image'] = $this->replaceMedia($this->featured_image, 'blog-images', $this->existing_featured_image);
         } elseif ($this->blog_id && ! $this->existing_featured_image) {
             $data['featured_image'] = null;
         }

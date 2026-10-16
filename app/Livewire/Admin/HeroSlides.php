@@ -92,7 +92,7 @@ class HeroSlides extends Component
         ];
 
         if ($this->new_image) {
-            $data['image'] = $this->storeMedia($this->new_image, 'hero');
+            $data['image'] = $this->replaceMedia($this->new_image, 'hero', $this->image);
         }
 
         HeroSlide::updateOrCreate(['id' => $this->slide_id], $data);

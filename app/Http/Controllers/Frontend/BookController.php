@@ -73,23 +73,4 @@ class BookController extends Controller
 
         return view('frontend.books.index', compact('books', 'categories', 'category', 'authors', 'sort'));
     }
-
-    public function byAuthor($slug): View
-    {
-        $author = Author::where('slug', $slug)->where('status', 'active')->firstOrFail();
-        $sort = request('sort', 'most-visited');
-
-        $books = Book::with('author', 'categories')
-            ->where('author_id', $author->id)
-            ->where('status', 'published');
-
-        Sorting::apply($books, $sort);
-
-        $categories = Category::withCount('books')->get();
-        $authors = Author::where('status', 'active')->withCount('books')->whereHas('books')->orderBy('books_count', 'desc')->get();
-
-        $books = $books->paginate(12);
-
-        return view('frontend.books.index', compact('books', 'categories', 'authors', 'author', 'sort'));
-    }
 }

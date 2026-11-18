@@ -1,0 +1,38 @@
+[30-Aug-2026 17:00:30 UTC] PHP Warning:  require(/home/anarjo/anarjo/vendor/composer/../thecodingmachine/safe/lib/special_cases.php): Failed to open stream: No such file or directory in /home/anarjo/anarjo/vendor/composer/autoload_real.php on line 41
+[30-Aug-2026 17:00:30 UTC] PHP Warning:  require(/home/anarjo/anarjo/vendor/composer/../thecodingmachine/safe/lib/special_cases.php): Failed to open stream: No such file or directory in /home/anarjo/anarjo/vendor/composer/autoload_real.php on line 41
+[30-Aug-2026 17:00:30 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/anarjo/anarjo/vendor/composer/../thecodingmachine/safe/lib/special_cases.php' (include_path='.:/opt/cpanel/ea-php82/root/usr/share/pear') in /home/anarjo/anarjo/vendor/composer/autoload_real.php:41
+Stack trace:
+#0 /home/anarjo/anarjo/vendor/composer/autoload_real.php(45): {closure}('72243e5536b63e2...', '/home/anarjo/an...')
+#1 /home/anarjo/anarjo/vendor/autoload.php(22): ComposerAutoloaderInit53b5d56b3b7e3cbac1713e68c8850f6c::getLoader()
+#2 /home/anarjo/public_html/artisan-run.php(50): require('/home/anarjo/an...')
+#3 {main}
+  thrown in /home/anarjo/anarjo/vendor/composer/autoload_real.php on line 41
+[30-Aug-2026 17:00:36 UTC] PHP Warning:  require(/home/anarjo/anarjo/vendor/composer/../thecodingmachine/safe/lib/special_cases.php): Failed to open stream: No such file or directory in /home/anarjo/anarjo/vendor/composer/autoload_real.php on line 41
+[30-Aug-2026 17:00:36 UTC] PHP Warning:  require(/home/anarjo/anarjo/vendor/composer/../thecodingmachine/safe/lib/special_cases.php): Failed to open stream: No such file or directory in /home/anarjo/anarjo/vendor/composer/autoload_real.php on line 41
+[30-Aug-2026 17:00:36 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/anarjo/anarjo/vendor/composer/../thecodingmachine/safe/lib/special_cases.php' (include_path='.:/opt/cpanel/ea-php82/root/usr/share/pear') in /home/anarjo/anarjo/vendor/composer/autoload_real.php:41
+Stack trace:
+#0 /home/anarjo/anarjo/vendor/composer/autoload_real.php(45): {closure}('72243e5536b63e2...', '/home/anarjo/an...')
+#1 /home/anarjo/anarjo/vendor/autoload.php(22): ComposerAutoloaderInit53b5d56b3b7e3cbac1713e68c8850f6c::getLoader()
+#2 /home/anarjo/public_html/artisan-run.php(50): require('/home/anarjo/an...')
+#3 {main}
+  thrown in /home/anarjo/anarjo/vendor/composer/autoload_real.php on line 41
+[30-Aug-2026 17:00:37 UTC] PHP Warning:  require(/home/anarjo/anarjo/vendor/composer/../thecodingmachine/safe/lib/special_cases.php): Failed to open stream: No such file or directory in /home/anarjo/anarjo/vendor/composer/autoload_real.php on line 41
+[30-Aug-2026 17:00:37 UTC] PHP Warning:  require(/home/anarjo/anarjo/vendor/composer/../thecodingmachine/safe/lib/special_cases.php): Failed to open stream: No such file or directory in /home/anarjo/anarjo/vendor/composer/autoload_real.php on line 41
+[30-Aug-2026 17:00:37 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/anarjo/anarjo/vendor/composer/../thecodingmachine/safe/lib/special_cases.php' (include_path='.:/opt/cpanel/ea-php82/root/usr/share/pear') in /home/anarjo/anarjo/vendor/composer/autoload_real.php:41
+Stack trace:
+#0 /home/anarjo/anarjo/vendor/composer/autoload_real.php(45): {closure}('72243e5536b63e2...', '/home/anarjo/an...')
+#1 /home/anarjo/anarjo/vendor/autoload.php(22): ComposerAutoloaderInit53b5d56b3b7e3cbac1713e68c8850f6c::getLoader()
+#2 /home/anarjo/public_html/artisan-run.php(50): require('/home/anarjo/an...')
+#3 {main}
+  thrown in /home/anarjo/anarjo/vendor/composer/autoload_real.php on line 41
+[30-Aug-2026 17:00:52 UTC] PHP Warning:  require(/home/anarjo/anarjo/vendor/composer/../thecodingmachine/safe/lib/special_cases.php): Failed to open stream: No such file or directory in /home/anarjo/anarjo/vendor/composer/autoload_real.php on line 41
+[30-Aug-2026 17:00:52 UTC] PHP Warning:  require(/home/anarjo/anarjo/vendor/composer/../thecodingmachine/safe/lib/special_cases.php): Failed to open stream: No such file or directory in /home/anarjo/anarjo/vendor/composer/autoload_real.php on line 41
+[30-Aug-2026 17:00:52 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/anarjo/anarjo/vendor/composer/../thecodingmachine/safe/lib/special_cases.php' (include_path='.:/opt/cpanel/ea-php82/root/usr/share/pear') in /home/anarjo/anarjo/vendor/composer/autoload_real.php:41
+Stack trace:
+#0 /home/anarjo/anarjo/vendor/composer/autoload_real.php(45): {closure}('72243e5536b63e2...', '/home/anarjo/an...')
+#1 /home/anarjo/anarjo/vendor/autoload.php(22): ComposerAutoloaderInit53b5d56b3b7e3cbac1713e68c8850f6c::getLoader()
+#2 /home/anarjo/public_html/artisan-run.php(50): require('/home/anarjo/an...')
+#3 {main}
+  thrown in /home/anarjo/anarjo/vendor/composer/autoload_real.php on line 41
+[30-Aug-2026 17:02:04 UTC] PHP Warning:  require(/home/anarjo/anarjo/vendor/composer/../thecodingmachine/safe/lib/special_cases.php): Failed to open stream: No such file or directory in /home/anarjo/anarjo/vendor/composer/autoload_real.php on line 41
+[30-Aug-2026 17:02:04 UTC] PHP Warning:  require(/home/anarjo/anarjo/vendor/composer/../thecodingmachine/safe/lib/special_cases.php): Failed to open stream: No such file or directory in /home/anarjo/anarjo/vendor/composer/autoload_real.php on line 41

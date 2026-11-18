@@ -1414,16 +1414,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v12.64.0",
+            "version": "v12.73.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "727a8ea2949c23ca8b5316b86a00984b6017b7a0"
+                "reference": "d091054fca4761e109b477bdca364dc93c7fd6df"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/727a8ea2949c23ca8b5316b86a00984b6017b7a0",
-                "reference": "727a8ea2949c23ca8b5316b86a00984b6017b7a0",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/d091054fca4761e109b477bdca364dc93c7fd6df",
+                "reference": "d091054fca4761e109b477bdca364dc93c7fd6df",
                 "shasum": ""
             },
             "require": {
@@ -1536,10 +1536,10 @@
                 "league/flysystem-sftp-v3": "^3.25.1",
                 "mockery/mockery": "^1.6.10",
                 "opis/json-schema": "^2.4.1",
-                "orchestra/testbench-core": "^10.9.0",
+                "orchestra/testbench-core": "^10.15.0",
                 "pda/pheanstalk": "^5.0.6|^7.0.0",
                 "php-http/discovery": "^1.15",
-                "phpstan/phpstan": "^2.1.41",
+                "phpstan/phpstan": "2.2.13",
                 "phpunit/phpunit": "^10.5.35|^11.5.3|^12.0.1",
                 "predis/predis": "^2.3|^3.0",
                 "resend/resend-php": "^0.10.0|^1.0",
@@ -1632,7 +1632,7 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
-            "time": "2026-07-14T14:25:37+00:00"
+            "time": "2026-11-17T14:54:52+00:00"
         },
         {
             "name": "laravel/prompts",
@@ -1822,16 +1822,16 @@
         },
         {
             "name": "league/commonmark",
-            "version": "2.8.3",
+            "version": "2.10.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/commonmark.git",
-                "reference": "1902f60f984235023acbe03db6ad614a37b3c3e7"
+                "reference": "8eb53e906fd60c67038d22f1f1cab420ed58b8be"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/commonmark/zipball/1902f60f984235023acbe03db6ad614a37b3c3e7",
-                "reference": "1902f60f984235023acbe03db6ad614a37b3c3e7",
+                "url": "https://api.github.com/repos/thephpleague/commonmark/zipball/8eb53e906fd60c67038d22f1f1cab420ed58b8be",
+                "reference": "8eb53e906fd60c67038d22f1f1cab420ed58b8be",
                 "shasum": ""
             },
             "require": {
@@ -1868,7 +1868,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-main": "2.9-dev"
+                    "dev-main": "2.11-dev"
                 }
             },
             "autoload": {
@@ -1925,7 +1925,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-07-12T15:29:16+00:00"
+            "time": "2026-10-31T13:35:37+00:00"
         },
         {
             "name": "league/config",
@@ -2381,16 +2381,16 @@
         },
         {
             "name": "livewire/livewire",
-            "version": "v3.8.0",
+            "version": "v3.8.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/livewire/livewire.git",
-                "reference": "d81d269243c3f18d302663c0ce5672990df08ca1"
+                "reference": "faee62c6a55e87befd24231bbdadca2aeca1cae5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/livewire/livewire/zipball/d81d269243c3f18d302663c0ce5672990df08ca1",
-                "reference": "d81d269243c3f18d302663c0ce5672990df08ca1",
+                "url": "https://api.github.com/repos/livewire/livewire/zipball/faee62c6a55e87befd24231bbdadca2aeca1cae5",
+                "reference": "faee62c6a55e87befd24231bbdadca2aeca1cae5",
                 "shasum": ""
             },
             "require": {
@@ -2445,7 +2445,7 @@
             "description": "A front-end framework for Laravel.",
             "support": {
                 "issues": "https://github.com/livewire/livewire/issues",
-                "source": "https://github.com/livewire/livewire/tree/v3.8.0"
+                "source": "https://github.com/livewire/livewire/tree/v3.8.11"
             },
             "funding": [
                 {
@@ -2453,7 +2453,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-04-30T23:56:43+00:00"
+            "time": "2026-10-21T01:43:35+00:00"
         },
         {
             "name": "livewire/volt",
@@ -9657,5 +9657,5 @@
         "php": "^8.2"
     },
     "platform-dev": {},
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.9.0"
 }

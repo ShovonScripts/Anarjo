@@ -1,4 +1,4 @@
-<div x-data="{ mobileMenu: false }">
+<div x-data="{ mobileMenu: false, dropdowns: { books: false, stationery: false, blog: false, more: false } }">
     <div class="fixed top-0 left-0 right-0 z-40">
         {{-- Top Bar --}}
         <div class="bg-neutral-900 text-white text-xs uppercase tracking-widest h-8 flex items-center overflow-hidden">
@@ -19,25 +19,188 @@
                             <span class="text-2xl font-extrabold tracking-tight text-neutral-900 hover:text-brand-600 transition-colors">{{ setting('site_name', config('app.name', 'Anarjo')) }}</span>
                         @endif
                     </a>
-                    <nav class="hidden md:flex items-center space-x-7 lg:space-x-8">
-                        <a href="{{ route('home') }}" class="nav-link {{ request()->routeIs('home') ? 'nav-link-active' : '' }}">Home</a>
-                        <a href="{{ route('books.index') }}" class="nav-link {{ request()->routeIs('books.*') ? 'nav-link-active' : '' }}">Books</a>
-                        <a href="{{ route('stationeries.index') }}" class="nav-link {{ request()->routeIs('stationeries.*') ? 'nav-link-active' : '' }}">Stationery</a>
-                        <a href="{{ route('blog.index') }}" class="nav-link {{ request()->routeIs('blog.*') ? 'nav-link-active' : '' }}">Blog</a>
-                        <a href="{{ route('publication') }}" class="nav-link {{ request()->routeIs('publication*') ? 'nav-link-active' : '' }}">Publication</a>
-                        <a href="{{ route('events.index') }}" class="nav-link {{ request()->routeIs('events.*') ? 'nav-link-active' : '' }}">Events</a>
-                        <a href="{{ route('about') }}" class="nav-link {{ request()->routeIs('about') ? 'nav-link-active' : '' }}">About</a>
+
+                    {{-- Desktop Navigation with Dropdowns --}}
+                    <nav class="hidden md:flex items-center space-x-1" x-data="dropdownNavigation()">
+                        <a href="{{ route('home') }}" class="nav-link {{ request()->routeIs('home') ? 'nav-link-active' : '' }} px-3 py-2 rounded-md">Home</a>
+
+                        {{-- Books Dropdown --}}
+                        <div class="relative" @mouseenter="openDropdown('books')" @mouseleave="closeDropdown('books')">
+                            <button
+                                type="button"
+                                class="nav-link px-3 py-2 rounded-md flex items-center gap-1 {{ request()->routeIs('books.*') || request()->routeIs('author.*') || request()->routeIs('category.*') ? 'nav-link-active' : '' }}"
+                                aria-haspopup="true"
+                                aria-expanded="false"
+                                x-ref="booksBtn"
+                            >
+                                Books
+                                <x-icon name="chevron-down" class="w-4 h-4" x-bind:class="{ 'rotate-180': dropdowns.books }" />
+                            </button>
+
+                            <div
+                                x-show="dropdowns.books"
+                                x-transition:enter="transition ease-out duration-150"
+                                x-transition:enter-start="opacity-0 transform -translate-y-1"
+                                x-transition:enter-end="opacity-100 transform translate-y-0"
+                                x-transition:leave="transition ease-in duration-100"
+                                x-transition:leave-start="opacity-100 transform translate-y-0"
+                                x-transition:leave-end="opacity-0 transform -translate-y-1"
+                                class="absolute left-0 top-full mt-2 w-64 bg-white border border-neutral-200 rounded-lg shadow-lg z-50 py-2"
+                                @mouseenter="openDropdown('books')"
+                                @mouseleave="closeDropdown('books')"
+                                style="display: none;"
+                            >
+                                <a href="{{ route('books.index') }}" class="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900 {{ request()->routeIs('books.index') ? 'bg-neutral-50 text-neutral-900 font-medium' : '' }}">All Books</a>
+                                <a href="{{ route('books.index') }}?sort=newest" class="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900">New Arrivals</a>
+                                <a href="{{ route('books.index') }}?sort=most-visited" class="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900">Most Popular</a>
+                                <hr class="my-2 border-neutral-200">
+                                <a href="{{ route('books.index') }}?sort=low-high" class="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900">Price: Low to High</a>
+                                <a href="{{ route('books.index') }}?sort=high-low" class="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900">Price: High to Low</a>
+                                <hr class="my-2 border-neutral-200">
+                                <a href="{{ route('books.index') }}?category=probandho-o-gobeshona" class="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900">প্রবন্ধ ও গবেষণা</a>
+                                <a href="{{ route('books.index') }}?category=golpo-uponnas-bhraman" class="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900">গল্প/উপন্যাস/ভ্রমণ</a>
+                                <a href="{{ route('books.index') }}?category=natok" class="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900">নাটক</a>
+                                <a href="{{ route('books.index') }}?category=kobita" class="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900">কবিতা</a>
+                                <a href="{{ route('books.index') }}?category=anubad" class="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900">অনুবাদ</a>
+                                <a href="{{ route('books.index') }}?category=sastho" class="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900">স্বাস্থ্য</a>
+                                <hr class="my-2 border-neutral-200">
+                                <a href="{{ route('books.index') }}" class="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900">All Categories</a>
+                                <a href="{{ route('books.index') }}" class="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900">All Authors</a>
+                                <a href="{{ route('book-fair.index') }}" class="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900">Book Fair Editions</a>
+                            </div>
+                        </div>
+
+                        {{-- Stationery Dropdown --}}
+                        <div class="relative" @mouseenter="openDropdown('stationery')" @mouseleave="closeDropdown('stationery')">
+                            <button
+                                type="button"
+                                class="nav-link px-3 py-2 rounded-md flex items-center gap-1 {{ request()->routeIs('stationeries.*') ? 'nav-link-active' : '' }}"
+                                aria-haspopup="true"
+                                aria-expanded="false"
+                                x-ref="stationeryBtn"
+                            >
+                                Stationery
+                                <x-icon name="chevron-down" class="w-4 h-4" x-bind:class="{ 'rotate-180': dropdowns.stationery }" />
+                            </button>
+
+                            <div
+                                x-show="dropdowns.stationery"
+                                x-transition:enter="transition ease-out duration-150"
+                                x-transition:enter-start="opacity-0 transform -translate-y-1"
+                                x-transition:enter-end="opacity-100 transform translate-y-0"
+                                x-transition:leave="transition ease-in duration-100"
+                                x-transition:leave-start="opacity-100 transform translate-y-0"
+                                x-transition:leave-end="opacity-0 transform -translate-y-1"
+                                class="absolute left-0 top-full mt-2 w-56 bg-white border border-neutral-200 rounded-lg shadow-lg z-50 py-2"
+                                @mouseenter="openDropdown('stationery')"
+                                @mouseleave="closeDropdown('stationery')"
+                                style="display: none;"
+                            >
+                                <a href="{{ route('stationeries.index') }}" class="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900 {{ request()->routeIs('stationeries.index') ? 'bg-neutral-50 text-neutral-900 font-medium' : '' }}">All Stationery</a>
+                                <a href="{{ route('stationeries.index') }}?sort=newest" class="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900">New Arrivals</a>
+                                <hr class="my-2 border-neutral-200">
+                                <a href="{{ route('stationeries.index') }}?sort=low-high" class="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900">Price: Low to High</a>
+                                <a href="{{ route('stationeries.index') }}?sort=high-low" class="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900">Price: High to Low</a>
+                                <hr class="my-2 border-neutral-200">
+                                <a href="{{ route('stationeries.brand', 'matador') }}" class="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900">Matador</a>
+                                <a href="{{ route('stationeries.brand', 'mango') }}" class="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900">Mango</a>
+                                <a href="{{ route('stationeries.brand', 'deli') }}" class="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900">Deli</a>
+                                <a href="{{ route('stationeries.brand', 'signature') }}" class="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900">Signature</a>
+                                <hr class="my-2 border-neutral-200">
+                                <a href="{{ route('stationeries.index') }}" class="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900">All Brands</a>
+                            </div>
+                        </div>
+
+                        {{-- Blog Dropdown --}}
+                        <div class="relative" @mouseenter="openDropdown('blog')" @mouseleave="closeDropdown('blog')">
+                            <button
+                                type="button"
+                                class="nav-link px-3 py-2 rounded-md flex items-center gap-1 {{ request()->routeIs('blog.*') ? 'nav-link-active' : '' }}"
+                                aria-haspopup="true"
+                                aria-expanded="false"
+                                x-ref="blogBtn"
+                            >
+                                Blog
+                                <x-icon name="chevron-down" class="w-4 h-4" x-bind:class="{ 'rotate-180': dropdowns.blog }" />
+                            </button>
+
+                            <div
+                                x-show="dropdowns.blog"
+                                x-transition:enter="transition ease-out duration-150"
+                                x-transition:enter-start="opacity-0 transform -translate-y-1"
+                                x-transition:enter-end="opacity-100 transform translate-y-0"
+                                x-transition:leave="transition ease-in duration-100"
+                                x-transition:leave-start="opacity-100 transform translate-y-0"
+                                x-transition:leave-end="opacity-0 transform -translate-y-1"
+                                class="absolute left-0 top-full mt-2 w-56 bg-white border border-neutral-200 rounded-lg shadow-lg z-50 py-2"
+                                @mouseenter="openDropdown('blog')"
+                                @mouseleave="closeDropdown('blog')"
+                                style="display: none;"
+                            >
+                                <a href="{{ route('blog.index') }}" class="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900 {{ request()->routeIs('blog.index') ? 'bg-neutral-50 text-neutral-900 font-medium' : '' }}">All Posts</a>
+                                <hr class="my-2 border-neutral-200">
+                                <a href="{{ route('blog.index') }}?category=book-reviews" class="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900">Book Reviews</a>
+                                <a href="{{ route('blog.index') }}?category=author-interviews" class="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900">Author Interviews</a>
+                                <a href="{{ route('blog.index') }}?category=literary-news" class="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900">Literary News</a>
+                                <a href="{{ route('blog.index') }}?category=reading-tips" class="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900">Reading Tips</a>
+                                <hr class="my-2 border-neutral-200">
+                                <a href="{{ route('blog.index') }}?category=all" class="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900">All Categories</a>
+                                <a href="{{ route('blog.index') }}?tag=all" class="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900">All Tags</a>
+                            </div>
+                        </div>
+
+                        {{-- More Dropdown --}}
+                        <div class="relative" @mouseenter="openDropdown('more')" @mouseleave="closeDropdown('more')">
+                            <button
+                                type="button"
+                                class="nav-link px-3 py-2 rounded-md flex items-center gap-1 {{ request()->routeIs('events.*') || request()->routeIs('publication*') || request()->routeIs('about') || request()->routeIs('book-fair.*') ? 'nav-link-active' : '' }}"
+                                aria-haspopup="true"
+                                aria-expanded="false"
+                                x-ref="moreBtn"
+                            >
+                                More
+                                <x-icon name="chevron-down" class="w-4 h-4" x-bind:class="{ 'rotate-180': dropdowns.more }" />
+                            </button>
+
+                            <div
+                                x-show="dropdowns.more"
+                                x-transition:enter="transition ease-out duration-150"
+                                x-transition:enter-start="opacity-0 transform -translate-y-1"
+                                x-transition:enter-end="opacity-100 transform translate-y-0"
+                                x-transition:leave="transition ease-in duration-100"
+                                x-transition:leave-start="opacity-100 transform translate-y-0"
+                                x-transition:leave-end="opacity-0 transform -translate-y-1"
+                                class="absolute right-0 top-full mt-2 w-64 bg-white border border-neutral-200 rounded-lg shadow-lg z-50 py-2"
+                                @mouseenter="openDropdown('more')"
+                                @mouseleave="closeDropdown('more')"
+                                style="display: none;"
+                            >
+                                <a href="{{ route('events.index') }}" class="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900 {{ request()->routeIs('events.*') ? 'bg-neutral-50 text-neutral-900 font-medium' : '' }}">Events</a>
+                                <a href="{{ route('book-fair.index') }}" class="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900 {{ request()->routeIs('book-fair.*') ? 'bg-neutral-50 text-neutral-900 font-medium' : '' }}">Book Fair</a>
+                                <hr class="my-2 border-neutral-200">
+                                <a href="{{ route('publication') }}" class="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900 {{ request()->routeIs('publication*') ? 'bg-neutral-50 text-neutral-900 font-medium' : '' }}">Submit Manuscript</a>
+                                <hr class="my-2 border-neutral-200">
+                                <a href="{{ route('about') }}" class="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900 {{ request()->routeIs('about') ? 'bg-neutral-50 text-neutral-900 font-medium' : '' }}">About Us</a>
+                                <a href="{{ route('contact') }}" class="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900 {{ request()->routeIs('contact') ? 'bg-neutral-50 text-neutral-900 font-medium' : '' }}">Contact</a>
+                                <hr class="my-2 border-neutral-200">
+                                <a href="{{ route('privacy-policy') }}" class="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900">Privacy Policy</a>
+                                <a href="{{ route('terms-conditions') }}" class="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900">Terms & Conditions</a>
+                                <a href="{{ route('return-refund') }}" class="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900">Return & Refund</a>
+                            </div>
+                        </div>
                     </nav>
-                    <div class="hidden md:flex items-center">
+
+                    {{-- Search & Actions --}}
+                    <div class="hidden md:flex items-center gap-4">
                         <form method="GET" action="{{ route('search') }}" class="relative group">
                             <input type="text" name="q" value="{{ request('q') }}" placeholder="Search..." class="w-36 lg:w-52 border border-neutral-300 bg-neutral-50/80 px-3 py-1.5 text-sm placeholder-neutral-400 focus:w-56 focus:border-neutral-900 focus:bg-white focus:ring-0 focus:outline-none transition-all duration-300">
                             <button type="submit" aria-label="Search" class="absolute right-2 top-1/2 -translate-y-1/2 text-neutral-400 group-hover:text-neutral-900 transition-colors">
                                 <x-icon name="search" class="w-4 h-4" />
                             </button>
                         </form>
-                    </div>
-                    <div class="flex items-center gap-4">
+
                         <livewire:cart-badge />
+
                         @auth
                             <div x-data="{ open: false }" class="relative">
                                 <button @click="open = !open" @click.outside="open = false" class="flex items-center gap-2 text-sm font-medium text-neutral-700 hover:text-neutral-900 transition-colors">
@@ -61,6 +224,7 @@
                                 <a href="{{ route('register') }}" class="btn-primary btn-sm">Register</a>
                             </div>
                         @endauth
+
                         <button @click="mobileMenu = !mobileMenu" class="md:hidden p-2 hover:bg-neutral-100 transition-colors" aria-label="Toggle navigation menu" :aria-expanded="mobileMenu">
                             <x-icon name="menu" class="w-6 h-6" />
                         </button>
@@ -95,35 +259,118 @@
                     </button>
                 </form>
             </div>
-            <div class="px-4 py-4 space-y-1">
+            <nav class="px-4 py-4 space-y-1">
+                {{-- Home --}}
                 <a href="{{ route('home') }}" class="flex items-center gap-3 px-3 py-3 text-sm font-medium text-neutral-700 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg transition-colors {{ request()->routeIs('home') ? 'bg-neutral-50 text-neutral-900 font-semibold' : '' }}">
                     <x-icon name="home" class="w-5 h-5 text-neutral-400" />
                     Home
                 </a>
-                <a href="{{ route('books.index') }}" class="flex items-center gap-3 px-3 py-3 text-sm font-medium text-neutral-700 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg transition-colors {{ request()->routeIs('books.*') ? 'bg-neutral-50 text-neutral-900 font-semibold' : '' }}">
-                    <x-icon name="book" class="w-5 h-5 text-neutral-400" />
-                    Books
-                </a>
-                <a href="{{ route('stationeries.index') }}" class="flex items-center gap-3 px-3 py-3 text-sm font-medium text-neutral-700 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg transition-colors {{ request()->routeIs('stationeries.*') ? 'bg-neutral-50 text-neutral-900 font-semibold' : '' }}">
-                    <x-icon name="cog" class="w-5 h-5 text-neutral-400" />
-                    Stationery
-                </a>
-                <a href="{{ route('blog.index') }}" class="flex items-center gap-3 px-3 py-3 text-sm font-medium text-neutral-700 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg transition-colors {{ request()->routeIs('blog.*') ? 'bg-neutral-50 text-neutral-900 font-semibold' : '' }}">
-                    <x-icon name="document" class="w-5 h-5 text-neutral-400" />
-                    Blog
-                </a>
-                <a href="{{ route('publication') }}" class="flex items-center gap-3 px-3 py-3 text-sm font-medium text-neutral-700 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg transition-colors {{ request()->routeIs('publication*') ? 'bg-neutral-50 text-neutral-900 font-semibold' : '' }}">
-                    <x-icon name="book" class="w-5 h-5 text-neutral-400" />
-                    Publication
-                </a>
-                <a href="{{ route('events.index') }}" class="flex items-center gap-3 px-3 py-3 text-sm font-medium text-neutral-700 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg transition-colors {{ request()->routeIs('events.*') ? 'bg-neutral-50 text-neutral-900 font-semibold' : '' }}">
-                    <x-icon name="calendar" class="w-5 h-5 text-neutral-400" />
-                    Events
-                </a>
-                <a href="{{ route('about') }}" class="flex items-center gap-3 px-3 py-3 text-sm font-medium text-neutral-700 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg transition-colors {{ request()->routeIs('about') ? 'bg-neutral-50 text-neutral-900 font-semibold' : '' }}">
-                    <x-icon name="info" class="w-5 h-5 text-neutral-400" />
-                    About
-                </a>
+
+                {{-- Books Dropdown (Mobile) --}}
+                <div x-data="{ open: false }" class="space-y-1">
+                    <button @click="open = !open" class="flex items-center justify-between w-full px-3 py-3 text-sm font-medium text-neutral-700 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg transition-colors">
+                        <span class="flex items-center gap-3">
+                            <x-icon name="book" class="w-5 h-5 text-neutral-400" />
+                            Books
+                        </span>
+                        <x-icon name="chevron-down" class="w-5 h-5 text-neutral-400" x-bind:class="{ 'rotate-180': open }" />
+                    </button>
+                    <div x-show="open" x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0 -translate-y-1" x-transition:enter-end="opacity-100 translate-y-0" class="pl-8 space-y-1 border-l border-neutral-200 ml-2 pt-2">
+                        <a href="{{ route('books.index') }}" class="block px-3 py-2 text-sm text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded transition-colors">All Books</a>
+                        <a href="{{ route('books.index') }}?sort=newest" class="block px-3 py-2 text-sm text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded transition-colors">New Arrivals</a>
+                        <a href="{{ route('books.index') }}?sort=most-visited" class="block px-3 py-2 text-sm text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded transition-colors">Most Popular</a>
+                        <hr class="my-2 border-neutral-200">
+                        <a href="{{ route('books.index') }}?category=probandho-o-gobeshona" class="block px-3 py-2 text-sm text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded transition-colors">প্রবন্ধ ও গবেষণা</a>
+                        <a href="{{ route('books.index') }}?category=golpo-uponnas-bhraman" class="block px-3 py-2 text-sm text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded transition-colors">গল্প/উপন্যাস/ভ্রমণ</a>
+                        <a href="{{ route('books.index') }}?category=natok" class="block px-3 py-2 text-sm text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded transition-colors">নাটক</a>
+                        <a href="{{ route('books.index') }}?category=kobita" class="block px-3 py-2 text-sm text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded transition-colors">কবিতা</a>
+                        <a href="{{ route('books.index') }}?category=anubad" class="block px-3 py-2 text-sm text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded transition-colors">অনুবাদ</a>
+                        <a href="{{ route('books.index') }}?category=sastho" class="block px-3 py-2 text-sm text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded transition-colors">স্বাস্থ্য</a>
+                        <hr class="my-2 border-neutral-200">
+                        <a href="{{ route('books.index') }}" class="block px-3 py-2 text-sm text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded transition-colors">All Categories</a>
+                        <a href="{{ route('books.index') }}" class="block px-3 py-2 text-sm text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded transition-colors">All Authors</a>
+                        <a href="{{ route('book-fair.index') }}" class="block px-3 py-2 text-sm text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded transition-colors">Book Fair Editions</a>
+                    </div>
+                </div>
+
+                {{-- Stationery Dropdown (Mobile) --}}
+                <div x-data="{ open: false }" class="space-y-1">
+                    <button @click="open = !open" class="flex items-center justify-between w-full px-3 py-3 text-sm font-medium text-neutral-700 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg transition-colors">
+                        <span class="flex items-center gap-3">
+                            <x-icon name="cog" class="w-5 h-5 text-neutral-400" />
+                            Stationery
+                        </span>
+                        <x-icon name="chevron-down" class="w-5 h-5 text-neutral-400" x-bind:class="{ 'rotate-180': open }" />
+                    </button>
+                    <div x-show="open" x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0 -translate-y-1" x-transition:enter-end="opacity-100 translate-y-0" class="pl-8 space-y-1 border-l border-neutral-200 ml-2 pt-2">
+                        <a href="{{ route('stationeries.index') }}" class="block px-3 py-2 text-sm text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded transition-colors">All Stationery</a>
+                        <a href="{{ route('stationeries.index') }}?sort=newest" class="block px-3 py-2 text-sm text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded transition-colors">New Arrivals</a>
+                        <hr class="my-2 border-neutral-200">
+                        <a href="{{ route('stationeries.brand', 'matador') }}" class="block px-3 py-2 text-sm text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded transition-colors">Matador</a>
+                        <a href="{{ route('stationeries.brand', 'mango') }}" class="block px-3 py-2 text-sm text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded transition-colors">Mango</a>
+                        <a href="{{ route('stationeries.brand', 'deli') }}" class="block px-3 py-2 text-sm text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded transition-colors">Deli</a>
+                        <a href="{{ route('stationeries.brand', 'signature') }}" class="block px-3 py-2 text-sm text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded transition-colors">Signature</a>
+                        <hr class="my-2 border-neutral-200">
+                        <a href="{{ route('stationeries.index') }}" class="block px-3 py-2 text-sm text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded transition-colors">All Brands</a>
+                    </div>
+                </div>
+
+                {{-- Blog Dropdown (Mobile) --}}
+                <div x-data="{ open: false }" class="space-y-1">
+                    <button @click="open = !open" class="flex items-center justify-between w-full px-3 py-3 text-sm font-medium text-neutral-700 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg transition-colors">
+                        <span class="flex items-center gap-3">
+                            <x-icon name="document" class="w-5 h-5 text-neutral-400" />
+                            Blog
+                        </span>
+                        <x-icon name="chevron-down" class="w-5 h-5 text-neutral-400" x-bind:class="{ 'rotate-180': open }" />
+                    </button>
+                    <div x-show="open" x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0 -translate-y-1" x-transition:enter-end="opacity-100 translate-y-0" class="pl-8 space-y-1 border-l border-neutral-200 ml-2 pt-2">
+                        <a href="{{ route('blog.index') }}" class="block px-3 py-2 text-sm text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded transition-colors">All Posts</a>
+                        <hr class="my-2 border-neutral-200">
+                        <a href="{{ route('blog.index') }}?category=book-reviews" class="block px-3 py-2 text-sm text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded transition-colors">Book Reviews</a>
+                        <a href="{{ route('blog.index') }}?category=author-interviews" class="block px-3 py-2 text-sm text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded transition-colors">Author Interviews</a>
+                        <a href="{{ route('blog.index') }}?category=literary-news" class="block px-3 py-2 text-sm text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded transition-colors">Literary News</a>
+                        <a href="{{ route('blog.index') }}?category=reading-tips" class="block px-3 py-2 text-sm text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded transition-colors">Reading Tips</a>
+                        <hr class="my-2 border-neutral-200">
+                        <a href="{{ route('blog.index') }}?category=all" class="block px-3 py-2 text-sm text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded transition-colors">All Categories</a>
+                        <a href="{{ route('blog.index') }}?tag=all" class="block px-3 py-2 text-sm text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded transition-colors">All Tags</a>
+                    </div>
+                </div>
+
+                {{-- More Dropdown (Mobile) --}}
+                <div x-data="{ open: false }" class="space-y-1">
+                    <button @click="open = !open" class="flex items-center justify-between w-full px-3 py-3 text-sm font-medium text-neutral-700 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg transition-colors">
+                        <span class="flex items-center gap-3">
+                            <x-icon name="ellipsis" class="w-5 h-5 text-neutral-400" />
+                            More
+                        </span>
+                        <x-icon name="chevron-down" class="w-5 h-5 text-neutral-400" x-bind:class="{ 'rotate-180': open }" />
+                    </button>
+                    <div x-show="open" x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0 -translate-y-1" x-transition:enter-end="opacity-100 translate-y-0" class="pl-8 space-y-1 border-l border-neutral-200 ml-2 pt-2">
+                        <a href="{{ route('events.index') }}" class="block px-3 py-2 text-sm text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded transition-colors">
+                            <x-icon name="calendar" class="w-4 h-4 mr-2" /> Events
+                        </a>
+                        <a href="{{ route('book-fair.index') }}" class="block px-3 py-2 text-sm text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded transition-colors">
+                            <x-icon name="book" class="w-4 h-4 mr-2" /> Book Fair
+                        </a>
+                        <hr class="my-2 border-neutral-200">
+                        <a href="{{ route('publication') }}" class="block px-3 py-2 text-sm text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded transition-colors">
+                            <x-icon name="book" class="w-4 h-4 mr-2" /> Submit Manuscript
+                        </a>
+                        <hr class="my-2 border-neutral-200">
+                        <a href="{{ route('about') }}" class="block px-3 py-2 text-sm text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded transition-colors">
+                            <x-icon name="info" class="w-4 h-4 mr-2" /> About Us
+                        </a>
+                        <a href="{{ route('contact') }}" class="block px-3 py-2 text-sm text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded transition-colors">
+                            <x-icon name="mail" class="w-4 h-4 mr-2" /> Contact
+                        </a>
+                        <hr class="my-2 border-neutral-200">
+                        <a href="{{ route('privacy-policy') }}" class="block px-3 py-2 text-sm text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded transition-colors">Privacy Policy</a>
+                        <a href="{{ route('terms-conditions') }}" class="block px-3 py-2 text-sm text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded transition-colors">Terms & Conditions</a>
+                        <a href="{{ route('return-refund') }}" class="block px-3 py-2 text-sm text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded transition-colors">Return & Refund</a>
+                    </div>
+                </div>
+
                 <hr class="my-3 border-neutral-200">
                 @auth
                     <a href="{{ route('wishlist') }}" class="flex items-center gap-3 px-3 py-3 text-sm font-medium text-neutral-700 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg transition-colors">
@@ -146,7 +393,27 @@
                         Register
                     </a>
                 @endguest
-            </div>
+            </nav>
         </div>
     </div>
+
+    <script>
+        function dropdownNavigation() {
+            return {
+                dropdowns: { books: false, stationery: false, blog: false, more: false },
+                timers: {},
+
+                openDropdown(name) {
+                    clearTimeout(this.timers[name]);
+                    this.dropdowns[name] = true;
+                },
+
+                closeDropdown(name) {
+                    this.timers[name] = setTimeout(() => {
+                        this.dropdowns[name] = false;
+                    }, 150);
+                }
+            }
+        }
+    </script>
 </div>

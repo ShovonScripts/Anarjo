@@ -10,12 +10,12 @@ class SettingsSeeder extends Seeder
     public function run(): void
     {
         $settings = [
-            ['key' => 'site_name', 'value' => 'Anarjo'],
-            ['key' => 'site_tagline', 'value' => "Bangladesh's leading publication house delivering knowledge since inception."],
-            ['key' => 'site_description', 'value' => 'Anarjo Publications - Discover books, authors, and literary works from Bangladesh.'],
+            ['key' => 'site_name', 'value' => 'অনার্য পাবলিকেশনাল লি.'],
+            ['key' => 'site_tagline', 'value' => 'বাংলাদেশের একটি শীর্ষস্থানীয় প্রকাশনা প্রতিষ্ঠান। আমরা বিশ্বাস করি জ্ঞানের আলো ছড়িয়ে দেওয়াই আমাদের মূল লক্ষ্য।'],
+            ['key' => 'site_description', 'value' => 'সাহিত্য, শিক্ষা, জ্ঞান ও শিশু সাহিত্য — আমাদের বইয়ের পরিসর আপনাকে নিয়ে যাবে জ্ঞানের নতুন জগতে।'],
             ['key' => 'currency_symbol', 'value' => '৳'],
             ['key' => 'currency_code', 'value' => 'BDT'],
-            ['key' => 'contact_address', 'value' => 'Dhaka, Bangladesh'],
+            ['key' => 'contact_address', 'value' => 'ঢাকা, বাংলাদেশ'],
             ['key' => 'contact_phone', 'value' => ''],
             ['key' => 'contact_email', 'value' => 'info@anarjo.com'],
             ['key' => 'shipping_flat_rate_inside', 'value' => '60'],
@@ -23,9 +23,17 @@ class SettingsSeeder extends Seeder
             ['key' => 'shipping_free_threshold', 'value' => '500'],
             ['key' => 'mail_driver', 'value' => 'log'],
             ['key' => 'mail_from_address', 'value' => 'noreply@anarjo.com'],
-            ['key' => 'mail_from_name', 'value' => 'Anarjo'],
-            ['key' => 'seo_meta_title', 'value' => 'Anarjo Publications - Bangladesh\'s Premier Book Publisher'],
-            ['key' => 'seo_meta_description', 'value' => 'Discover a world of knowledge with Anarjo Publications. Explore books, meet authors, and stay updated with literary events.'],
+            ['key' => 'mail_from_name', 'value' => 'অনার্য পাবলিকেশনাল লি.'],
+            ['key' => 'seo_meta_title', 'value' => 'অনার্য পাবলিকেশনাল লি. - বাংলাদেশের শীর্ষ প্রকাশনা প্রতিষ্ঠান'],
+            ['key' => 'seo_meta_description', 'value' => 'বাংলাদেশের শীর্ষস্থানীয় প্রকাশনা প্রতিষ্ঠান। সাহিত্য, শিক্ষা, জ্ঞান ও শিশু সাহিত্যের বই। জ্ঞানের আলো ছড়িয়ে দেওয়াই আমাদের লক্ষ্য।'],
+            ['key' => 'about_label', 'value' => 'আমাদের সম্পর্কে'],
+            ['key' => 'about_hero_title', 'value' => 'জ্ঞানের আলো ছড়িয়ে দেওয়া আমাদের লক্ষ্য'],
+            ['key' => 'about_subtitle', 'value' => 'একটি আধুনিক ও সৃজনশীল প্রকাশনা প্রতিষ্ঠান, যা নতুন চিন্তা, মানসম্মত সাহিত্য এবং মেধাবী লেখকদের সৃষ্টিকে পাঠকের কাছে পৌঁছে দিতে প্রতিশ্রুতিবদ্ধ।'],
+            ['key' => 'about_content', 'value' => '<p>অনার্য পাবলিকেশনাল লি. একটি আধুনিক ও সৃজনশীল প্রকাশনা প্রতিষ্ঠান, যা নতুন চিন্তা, মানসম্মত সাহিত্য এবং মেধাবী লেখকদের সৃষ্টিকে পাঠকের কাছে পৌঁছে দিতে প্রতিশ্রুতিবদ্ধ। আমরা নবীন ও প্রতিষ্ঠিত—উভয় ধরনের লেখকের পাণ্ডুলিপিকে আন্তরিকভাবে স্বাগত জানাই এবং যত্নশীল সম্পাদনা, নান্দনিক প্রকাশনা ও পেশাদার সেবার মাধ্যমে প্রতিটি বইকে সর্বোচ্চ মানে প্রকাশ করার লক্ষ্য নিয়ে কাজ করি।</p><p>অনার্য প্রকাশন বিশ্বাস করে—একটি ভালো বই কেবল একটি প্রকাশনা নয়, এটি একটি প্রজন্মের চিন্তা ও সংস্কৃতির ধারক।</p>'],
+            ['key' => 'about_mission', 'value' => '<p>আমরা নবীন ও প্রতিষ্ঠিত—উভয় ধরনের লেখকের পাণ্ডুলিপিকে আন্তরিকভাবে স্বাগত জানাই এবং যত্নশীল সম্পাদনা, নান্দনিক প্রকাশনা ও পেশাদার সেবার মাধ্যমে প্রতিটি বইকে সর্বোচ্চ মানে প্রকাশ করার লক্ষ্য নিয়ে কাজ করি।</p><p>অনার্য প্রকাশন বিশ্বাস করে—একটি ভালো বই কেবল একটি প্রকাশনা নয়, এটি একটি প্রজন্মের চিন্তা ও সংস্কৃতির ধারক।</p>'],
+            ['key' => 'about_mission_heading', 'value' => 'আমাদের মিশন'],
+            ['key' => 'about_vision', 'value' => '<p>সাহিত্য, শিক্ষা, জ্ঞান ও শিশু সাহিত্যের মাধ্যমে বাংলাদেশে পাঠক সম্প্রদায়কে সমৃদ্ধ করা এবং মেধাবী লেখকদের সৃষ্টিকে বিশ্বস্তরে পৌঁছে দেওয়া।</p><p>আমরা চাই, প্রতিটি বই পাঠকের মনে একটি অমিট ছাপ রেখে যায় এবং জ্ঞান আর্জনের পথে তাদের সathi হয়।</p>'],
+            ['key' => 'about_vision_heading', 'value' => 'আমাদের দৃষ্টিভঙ্গি'],
         ];
 
         foreach ($settings as $setting) {

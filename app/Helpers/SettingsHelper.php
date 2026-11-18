@@ -8,3 +8,10 @@ if (! function_exists('setting')) {
         return app(SettingsService::class)->get($key, $default);
     }
 }
+
+if (! function_exists('stationeryEnabled')) {
+    function stationeryEnabled(): bool
+    {
+        return (bool) setting('stationery_enabled', true);
+    }
+}

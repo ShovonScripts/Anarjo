@@ -26,6 +26,9 @@
             <button wire:click="$set('tab', 'shipping')" class="px-5 py-3 text-sm font-semibold uppercase tracking-wider border-b-2 transition-colors {{ $tab === 'shipping' ? 'border-black text-black' : 'border-transparent text-neutral-500 hover:text-black hover:border-neutral-300' }}">
                 Shipping
             </button>
+            <button wire:click="$set('tab', 'features')" class="px-5 py-3 text-sm font-semibold uppercase tracking-wider border-b-2 transition-colors {{ $tab === 'features' ? 'border-black text-black' : 'border-transparent text-neutral-500 hover:text-black hover:border-neutral-300' }}">
+                Features
+            </button>
         </nav>
     </div>
 
@@ -340,6 +343,44 @@
                         <p class="mt-1 text-xs text-neutral-400">Orders above this get free shipping.</p>
                     </div>
                 </div>
+                <div class="flex items-center gap-4 pt-2">
+                    <button type="submit" class="btn-primary" wire:loading.attr="disabled">Save Changes</button>
+                    <div wire:loading wire:target="save" class="text-sm text-neutral-500">Saving...</div>
+                </div>
+            </form>
+        </div>
+
+    {{-- Features Tab --}}
+    @elseif ($tab === 'features')
+        <div class="border border-neutral-200 bg-white">
+            <div class="px-8 py-6 border-b border-neutral-200">
+                <h2 class="text-lg font-bold tracking-tight">Feature Toggles</h2>
+                <p class="mt-1 text-sm text-neutral-500">Enable or disable optional site features.</p>
+            </div>
+            <form wire:submit="save" class="px-8 py-6 space-y-6">
+                {{-- Stationery --}}
+                <div class="border border-neutral-200 p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-sm font-bold">Stationery</h3>
+                            <p class="text-xs text-neutral-400 mt-1">Enable stationery products (pens, notebooks, etc.) on the frontend.</p>
+                        </div>
+                        <label class="inline-flex items-center gap-3 cursor-pointer">
+                            <input type="checkbox" wire:model="stationery_enabled" class="w-5 h-5 border-neutral-300 text-black focus:ring-black rounded">
+                            <span class="text-sm font-medium">{{ stationery_enabled ? 'Enabled' : 'Disabled' }}</span>
+                        </label>
+                    </div>
+                    <div class="mt-4 p-3 bg-neutral-50 border border-neutral-200 text-sm text-neutral-600">
+                        <p>When disabled:</p>
+                        <ul class="list-disc list-inside mt-1 space-y-1">
+                            <li>Stationery section hidden from navigation</li>
+                            <li>Stationery routes return 404</li>
+                            <li>Stationery hidden from admin sidebar</li>
+                            <li>Cart/checkout won't show stationery items</li>
+                        </ul>
+                    </div>
+                </div>
+
                 <div class="flex items-center gap-4 pt-2">
                     <button type="submit" class="btn-primary" wire:loading.attr="disabled">Save Changes</button>
                     <div wire:loading wire:target="save" class="text-sm text-neutral-500">Saving...</div>

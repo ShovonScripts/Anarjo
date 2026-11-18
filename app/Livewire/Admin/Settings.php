@@ -79,6 +79,8 @@ class Settings extends Component
 
     public string $shipping_free_threshold = '';
 
+    public bool $stationery_enabled = true;
+
     protected SettingsService $settings;
 
     public function boot(SettingsService $settings): void
@@ -100,13 +102,14 @@ class Settings extends Component
             'payment_bkash_app_key', 'payment_bkash_app_secret', 'payment_bkash_username', 'payment_bkash_password',
             'payment_sslcommerz_store_id', 'payment_sslcommerz_store_passwd',
             'shipping_flat_rate_inside', 'shipping_flat_rate_outside', 'shipping_free_threshold',
+            'stationery_enabled',
 
         ];
 
         foreach ($keys as $key) {
             $value = $this->settings->get($key);
             if (property_exists($this, $key)) {
-                if (in_array($key, ['payment_sslcommerz_sandbox', 'payment_bkash_sandbox', 'pm_cod', 'pm_bkash', 'pm_sslcommerz'])) {
+                if (in_array($key, ['payment_sslcommerz_sandbox', 'payment_bkash_sandbox', 'pm_cod', 'pm_bkash', 'pm_sslcommerz', 'stationery_enabled'])) {
                     $this->$key = $value === '1' || $value === true;
                 } else {
                     $this->$key = $value ?? '';
@@ -182,6 +185,10 @@ class Settings extends Component
                 'shipping_flat_rate_inside' => $this->shipping_flat_rate_inside,
                 'shipping_flat_rate_outside' => $this->shipping_flat_rate_outside,
                 'shipping_free_threshold' => $this->shipping_free_threshold,
+            ];
+        } elseif ($this->tab === 'features') {
+            $data = [
+                'stationery_enabled' => $this->stationery_enabled ? '1' : '0',
             ];
         }
 

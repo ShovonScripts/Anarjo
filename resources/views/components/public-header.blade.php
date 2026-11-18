@@ -71,6 +71,7 @@
                         </div>
 
                         {{-- Stationery Dropdown --}}
+                        @if (stationeryEnabled())
                         <div class="relative" @mouseenter="openDropdown('stationery')" @mouseleave="closeDropdown('stationery')">
                             <button
                                 type="button"
@@ -110,6 +111,7 @@
                                 <a href="{{ route('stationeries.index') }}" class="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900">All Brands</a>
                             </div>
                         </div>
+                        @endif
 
                         {{-- Blog Dropdown --}}
                         <div class="relative" @mouseenter="openDropdown('blog')" @mouseleave="closeDropdown('blog')">
@@ -294,6 +296,7 @@
                 </div>
 
                 {{-- Stationery Dropdown (Mobile) --}}
+                @if (stationeryEnabled())
                 <div x-data="{ open: false }" class="space-y-1">
                     <button @click="open = !open" class="flex items-center justify-between w-full px-3 py-3 text-sm font-medium text-neutral-700 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg transition-colors">
                         <span class="flex items-center gap-3">
@@ -314,6 +317,7 @@
                         <a href="{{ route('stationeries.index') }}" class="block px-3 py-2 text-sm text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded transition-colors">All Brands</a>
                     </div>
                 </div>
+                @endif
 
                 {{-- Blog Dropdown (Mobile) --}}
                 <div x-data="{ open: false }" class="space-y-1">

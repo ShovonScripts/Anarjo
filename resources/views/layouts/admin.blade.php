@@ -75,6 +75,7 @@
                         </div>
 
                         {{-- Stationery Dropdown --}}
+                        @if (stationeryEnabled())
                         @php $stationeryActive = request()->routeIs('admin.stationeries*') || request()->routeIs('admin.brands*'); @endphp
                         <div x-data="{ open: @json($stationeryActive) }">
                             <button @click="open = !open" class="flex items-center justify-between w-full px-4 py-2 text-sm font-medium border-l-2 transition-all duration-150 {{ $stationeryActive ? 'text-white bg-white/[0.07] border-brand-500' : 'text-neutral-400 hover:text-white hover:bg-white/[0.04] border-transparent' }}">
@@ -89,6 +90,7 @@
                                 <x-admin.nav-item :href="route('admin.brands')" :active="request()->routeIs('admin.brands*')" label="Brands" />
                             </div>
                         </div>
+                        @endif
 
                         {{-- Blogs Dropdown --}}
                         @php $blogsActive = request()->routeIs('admin.blogs*') || request()->routeIs('admin.blog-categories*') || request()->routeIs('admin.blog-tags*'); @endphp

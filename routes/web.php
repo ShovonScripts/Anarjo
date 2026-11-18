@@ -45,7 +45,7 @@ Route::prefix('author')->name('author.')->group(function () {
     Route::get('/{slug}', [AuthorController::class, 'show'])->name('show');
 });
 
-Route::prefix('stationeries')->name('stationeries.')->group(function () {
+Route::prefix('stationeries')->name('stationeries.')->middleware('stationery.enabled')->group(function () {
     Route::get('/', [StationeryController::class, 'index'])->name('index');
     Route::get('/brand/{slug}', [StationeryController::class, 'brand'])->name('brand');
     Route::get('/{slug}', [StationeryController::class, 'show'])->name('show');

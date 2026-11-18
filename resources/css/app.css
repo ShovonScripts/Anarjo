@@ -184,6 +184,18 @@
         animation-play-state: paused;
     }
 
+    .writers-marquee.dragging .writers-marquee-track {
+        cursor: grabbing;
+    }
+
+    .writers-marquee.dragging {
+        cursor: grabbing;
+    }
+
+    .writers-marquee.dragging .group {
+        pointer-events: none;
+    }
+
     .branding-mobile-pagination.swiper-pagination-horizontal {
         bottom: 10px;
     }

@@ -7,6 +7,8 @@ import 'swiper/css/effect-fade';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 
+import { initWritersMarquee } from './marquee.js';
+
 // Store active swiper instances to prevent memory leaks during Livewire navigation
 const activeSwipers = new Map();
 
@@ -37,7 +39,7 @@ function initSwipers() {
     // 2. Featured Book Rotator (Hero Left)
     const featuredBookSwiperEl = document.querySelector('.featured-book-swiper');
     if (featuredBookSwiperEl && !featuredBookSwiperEl.swiper) {
-        const slideCount = featuredBookSwiperEl.querySelectorAll('.swiper-slide').length;
+        const slideCount = featuredBookSwiperEl.query.querySelectorAll('.swiper-slide').length;
         const swiper = new Swiper(featuredBookSwiperEl, {
             modules: [Autoplay, Pagination, Navigation],
             slidesPerView: 1,
@@ -165,6 +167,7 @@ function initScrollReveals() {
 }
 
 function initAll() {
+    initWritersMarquee();
     initSwipers();
     initTypewriter();
     initScrollReveals();

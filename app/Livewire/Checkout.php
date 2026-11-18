@@ -45,6 +45,8 @@ class Checkout extends Component
 
     public int $selected_address_id = 0;
 
+    public array $savedAddresses = [];
+
     protected CartService $cartService;
 
     public function boot(CartService $cartService): void
@@ -89,6 +91,8 @@ class Checkout extends Component
         }
 
         if (auth()->check()) {
+            $this->savedAddresses = Address::where('user_id', auth()->id())->latest()->get()->toArray();
+
             $address = Address::where('user_id', auth()->id())->latest()->first();
             if ($address) {
                 $this->name = $address->name;
@@ -103,6 +107,31 @@ class Checkout extends Component
                 $this->phone = auth()->user()->phone ?? '';
             }
         }
+    }
+
+    public function selectAddress(int $addressId): void
+    {
+        $address = collect($this->savedAddresses)->firstWhere('id', $addressId);
+        if ($address) {
+            $this->name = $address['name'];
+            $this->phone = $address['phone'];
+            $this->district = $address['district'];
+            $this->area = $address['area'];
+            $this->address = $address['address'];
+            $this->postal_code = $address['postal_code'];
+            $this->selected_address_id = $addressId;
+        }
+    }
+
+    public function useNewAddress(): void
+    {
+        $this->selected_address_id = 0;
+        $this->name = auth()->user()->name ?? '';
+        $this->phone = auth()->user()->phone ?? '';
+        $this->district = '';
+        $this->area = '';
+        $this->address = '';
+        $this->postal_code = '';
     }
 
     protected function isDhaka(): bool

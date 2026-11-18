@@ -23,6 +23,14 @@
         </span>
     </div>
 
+    {{-- Back to Checkout Link --}}
+    <div class="mb-6 text-center sm:text-left">
+        <a href="{{ route('checkout') }}" class="inline-flex items-center gap-2 text-sm font-medium text-neutral-600 hover:text-brand-600 transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+            Back to Checkout
+        </a>
+    </div>
+
     {{-- Main 2-Column Grid --}}
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
 
@@ -55,7 +63,23 @@
                     </div>
                 </div>
 
+                {{-- Estimated Delivery --}}
+                @if($order->address)
+                <div class="bg-blue-50 border border-blue-100 p-4 mb-6 rounded-none">
+                    <div class="flex items-start gap-3">
+                        <svg class="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 17l4 4 4-4m-4-5v9M20.88 18.09A5 5 0 0018 9h-1.26A8 8 0 103 16.29"/></svg>
+                        <div>
+                            <p class="text-xs font-bold text-blue-800 uppercase tracking-wider">Estimated Delivery</p>
+                            <p class="text-sm text-blue-700 mt-1">
+                                {{ $order->address->district === 'Dhaka' || str_contains(strtolower($order->address->district), 'dhaka') ? '1-2 Business Days (Inside Dhaka)' : '3-5 Business Days (Outside Dhaka)' }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                @endif
+
                 {{-- SSLCommerz Gateway Section --}}
+                @if(setting('pm_sslcommerz') && \App\Services\SslCommerzService::isConfigured())
                 <div x-show="selectedMethod === 'sslcommerz'" class="space-y-6">
                     <div class="border-2 border-blue-500 bg-blue-50/30 p-5 sm:p-6 relative">
                         <div class="flex items-center justify-between mb-3">
@@ -65,7 +89,7 @@
                                 </div>
                                 <div>
                                     <h3 class="text-base font-bold text-neutral-900">SSLCommerz Secure Gateway</h3>
-                                    <p class="text-xs text-neutral-500">Cards, Mobile Banking &amp; Net Banking</p>
+                                    <p class="text-xs text-neutral-500">Cards, Mobile Banking & Net Banking</p>
                                 </div>
                             </div>
                             <span class="inline-flex items-center gap-1 bg-green-100 text-green-800 text-[10px] font-bold uppercase px-2 py-0.5 rounded tracking-wider">
@@ -129,14 +153,18 @@
                     </div>
 
                     {{-- Switch to bKash button if bKash is configured --}}
+                    @if(setting('pm_bkash') && \App\Services\BkashService::isConfigured())
                     <div class="text-center pt-2">
                         <button type="button" @click="selectedMethod = 'bkash'" class="text-xs text-neutral-500 hover:text-brand-600 font-semibold underline transition-colors">
                             Want to pay with bKash direct tokenized checkout instead? Click here
                         </button>
                     </div>
+                    @endif
                 </div>
+                @endif
 
                 {{-- bKash Direct Gateway Section --}}
+                @if(setting('pm_bkash') && \App\Services\BkashService::isConfigured())
                 <div x-show="selectedMethod === 'bkash'" class="space-y-6">
                     <div class="border-2 border-[#E2136E] bg-[#FDF2F8]/40 p-5 sm:p-6">
                         <div class="flex items-center justify-between mb-3">
@@ -200,11 +228,23 @@
                         </button>
                     </div>
                 </div>
-            </div>
+                @endif
+
+                {{-- No Gateway Configured Fallback --}}
+                @if(!setting('pm_sslcommerz') || !\App\Services\SslCommerzService::isConfigured())
+                    @if(!setting('pm_bkash') || !\App\Services\BkashService::isConfigured())
+                <div class="bg-neutral-50 border border-neutral-200 p-8 text-center">
+                    <svg class="w-12 h-12 text-neutral-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
+                    <h3 class="text-lg font-bold text-neutral-900 mb-2">No Payment Gateway Configured</h3>
+                    <p class="text-neutral-600 mb-4">Please contact the store administrator to enable online payment methods.</p>
+                    <a href="{{ route('checkout') }}" class="btn-outline inline-flex">Back to Checkout</a>
+                </div>
+                    @endif
+                @endif
 
             {{-- Trust & Security Badges Card --}}
             <div class="bg-neutral-50 border border-neutral-200 p-5 sm:p-6 text-xs text-neutral-600 space-y-3">
-                <h4 class="font-bold text-neutral-900 uppercase tracking-wider text-[11px]">Security &amp; Guarantee</h4>
+                <h4 class="font-bold text-neutral-900 uppercase tracking-wider text-[11px]">Security & Guarantee</h4>
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
                     <div class="flex items-center gap-2 bg-white border border-neutral-200 p-2.5">
                         <svg class="w-4 h-4 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>

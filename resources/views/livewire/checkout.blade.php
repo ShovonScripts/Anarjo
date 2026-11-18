@@ -37,6 +37,27 @@
             <div class="border border-neutral-200 p-6 md:p-8 bg-white">
                 <h2 class="text-lg font-bold uppercase tracking-wider mb-8">Shipping Address</h2>
                 <div class="space-y-5">
+                    {{-- Saved Addresses Dropdown (Logged-in Users) --}}
+                    @if(auth()->check() && count($savedAddresses) > 0)
+                        <div class="bg-neutral-50 border border-neutral-200 p-4 rounded-none">
+                            <label class="block text-xs font-semibold uppercase tracking-widest mb-2">Saved Addresses</label>
+                            <div class="flex items-center gap-4">
+                                <select wire:model="selected_address_id" class="flex-1 input-field appearance-none bg-white"
+                                    wire:change="selectAddress({{ $wire.entangle('selected_address_id').value }})">
+                                    <option value="0">-- Select a saved address --</option>
+                                    @foreach($savedAddresses as $addr)
+                                        <option value="{{ $addr['id'] }}">
+                                            {{ $addr['name'] }} — {{ $addr['address'] }}, {{ $addr['area'] }}, {{ $addr['district'] }} ({{ $addr['phone'] }})
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <button type="button" wire:click="useNewAddress" class="text-sm font-semibold text-brand-600 hover:text-brand-700 whitespace-nowrap">
+                                    Use New Address
+                                </button>
+                            </div>
+                            <p class="text-xs text-neutral-500 mt-2">Select an address to auto-fill the form below, or click "Use New Address".</p>
+                        </div>
+                    @endif
                     <div class="grid grid-cols-2 gap-5">
                         @guest
                         <div class="col-span-2">
